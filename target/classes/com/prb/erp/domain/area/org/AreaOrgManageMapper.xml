@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+ 
+<mapper namespace="com.prb.erp.domain.area.org.AreaOrgManageMapper">
+    <select id="getAreaOrgList" resultType="areaOrgManageVO" parameterType="hashMap" statementType="PREPARED">   
+WITH SAMPLE_CTE(AREA_CD,ORG_CLASS,ORG_DEPTH,ORG_CD, PARENT_ORG_CD, ORG_NM, SORT,REMARK,UPDATED_BY,UPDATED_AT, DEP_SORT, DEP_NAME, LV) AS (
+		SELECT
+			A.AREA_CD,
+			A.ORG_CLASS,
+			A.ORG_DEPTH,
+			A.ORG_CD,
+			A.PARENT_ORG_CD,
+			A.ORG_NM,
+			A.SORT,
+			A.REMARK,
+			A.UPDATED_BY,
+			CONVERT(CHAR(10), A.UPDATED_AT, 23) UPDATED_AT,
+			CONVERT(varchar(255), RIGHT('0000' + CONVERT(VARCHAR(4), A.SORT), 4)),
+			CONVERT(varchar(255), A.ORG_NM),
+			1
+		FROM
+			TB_ERP_AREA100 A
+		WHERE ISNULL(PARENT_ORG_CD,'') = ''
+		<!-- 지역사코드 -->
+		<if test="map.areaCd != null and map.areaCd != ''">  
+				AND A.AREA_CD = #{map.areaCd}
+		</if>   
+		
+		<!-- 조직분류 -->
+		<if test="map.orgClass != null and map.orgClass != ''">  
+				AND A.ORG_CLASS = #{map.orgClass}
+		</if>   
+		
+		UNION ALL
+		SELECT
+			B.AREA_CD,
+			B.ORG_CLASS,
+			B.ORG_DEPTH,
+			B.ORG_CD,
+			B.PARENT_ORG_CD,
+			B.ORG_NM,
+			B.SORT,
+			B.REMARK,
+			B.UPDATED_BY,
+			CONVERT(CHAR(10), B.UPDATED_AT, 23) UPDATED_AT,
+			CONVERT(varchar(255), C.DEP_SORT + ' > ' + RIGHT('0000' + CONVERT(VARCHAR(4), B.SORT), 4)) DEP_SORT,
+			CONVERT(varchar(255), C.DEP_NAME + ' > ' + B.ORG_NM) DEP_NAME,
+			(C.LV + 1) LV
+		FROM
+			TB_ERP_AREA100 B,
+			SAMPLE_CTE C
+		WHERE B.PARENT_ORG_CD = C.ORG_CD 
+				<![CDATA[  
+			AND C.LV + 1 <= 3
+	  			]]>
+	)
+	SELECT
+		AREA_CD areaCd,
+		ORG_CLASS orgClass,
+		ORG_DEPTH orgDepth,
+		ORG_CD orgCd,  
+		PARENT_ORG_CD parentOrgCd,
+		-- REPLICATE('ㄴ', LV) + ORG_NM orgNm,
+		ORG_NM orgNm,
+		SORT sort,
+		REMARK remark,
+		(SELECT COUNT(1) FROM TB_ERP_AREA100 Z WHERE Z.PARENT_ORG_CD = AA.ORG_CD) childCount,
+		UPDATED_BY regUserNm,
+		UPDATED_AT regDt,
+		 DEP_SORT,
+		 DEP_NAME,
+		LV orgLv
+	FROM SAMPLE_CTE AA		
+	WHERE 1=1
+	
+	ORDER BY DEP_SORT
+    </select>
+    
+    <select id="getAreaOrgAllList10" resultType="areaOrgManageListVO" parameterType="hashMap" statementType="PREPARED">   
+    SELECT	   T0.AREA_CD areaCd,
+			   T0.AREA_NM areaNm,
+    			T1.ORG_CLASS orgClass,
+	           T1.ORG_CD org1Cd,
+	           T1.ORG_NM org1Nm,
+	           T2.ORG_CD org2Cd,
+	           T2.ORG_NM org2Nm,
+	           T3.ORG_CD org3Cd,
+	           T3.ORG_NM org3Nm,
+			   T3.REMARK remark,
+			   (SELECT USER_NM FROM TB_ERP_USER000 Z WHERE USER_CD = T3.UPDATED_BY) regUserNm,
+			   CONVERT(CHAR(10), T3.UPDATED_AT, 23) regDt
+	    FROM   TB_ERP_AREA000 t0
+		       INNER JOIN TB_ERP_AREA100 t1
+			   ON t0.AREA_CD = t1.AREA_CD		       
+	           LEFT OUTER JOIN
+			        TB_ERP_AREA100 T2             
+			            ON     T1.ORG_CLASS   = T2.ORG_CLASS     
+			            AND    T1.ORG_CD   = T2.PARENT_ORG_CD             
+			            AND    T2.ORG_DEPTH = 'DEPTH2'             
+			    LEFT OUTER JOIN
+			        TB_ERP_AREA100 T3             
+			            ON     T2.ORG_CLASS   = T3.ORG_CLASS     
+			            AND     T2.ORG_CD   = T3.PARENT_ORG_CD             
+			            AND    T3.ORG_DEPTH = 'DEPTH3'      
+	    WHERE  T1.ORG_DEPTH        = 'DEPTH1' AND T1.ORG_CLASS  = '12'
+	    
+		<!-- 지역사코드 -->
+		<if test="map.areaCd != null and map.areaCd != ''">  
+				AND T1.AREA_CD = #{map.areaCd}
+		</if>   
+		
+		<!-- 조직분류 -->
+		<if test="map.orgClass != null and map.orgClass != ''">  
+				AND T1.ORG_CLASS = #{map.orgClass}
+		</if>   
+	    
+		<!-- 총국 -->						
+		<if test="map.searchType != null and map.searchType != '' and map.searchType eq '10'.toString() and map.searchText != null and map.searchText != ''">  
+				<![CDATA[  
+	      			AND  T1.ORG_NM LIKE UPPER('%'+#{map.searchText}+'%')
+	  			]]>
+		</if>      
+		<!-- 지국 -->						
+		<if test="map.searchType != null and map.searchType != '' and map.searchType eq '20'.toString() and map.searchText != null and map.searchText != ''">  
+				<![CDATA[  
+	      			AND  T2.ORG_NM LIKE UPPER('%'+#{map.searchText}+'%')
+	  			]]>
+		</if>      
+		<!-- 본부 -->						
+		<if test="map.searchType != null and map.searchType != '' and map.searchType eq '30'.toString() and map.searchText != null and map.searchText != ''">  
+				<![CDATA[  
+	      			AND  T3.ORG_NM LIKE UPPER('%'+#{map.searchText}+'%')
+	  			]]>
+		</if>       	    
+    </select>
+    
+    <select id="getAreaOrgAllList20" resultType="areaOrgManageListVO" parameterType="hashMap" statementType="PREPARED">   
+    SELECT	   T0.AREA_CD areaCd,
+			   T0.AREA_NM areaNm,
+    			T1.ORG_CLASS orgClass,
+	           T1.ORG_CD org1Cd,
+	           T1.ORG_NM org1Nm,
+	           T2.ORG_CD org2Cd,
+	           T2.ORG_NM org2Nm,
+	           T3.ORG_CD org3Cd,
+	           T3.ORG_NM org3Nm,
+			   T3.REMARK remark,
+			   (SELECT USER_NM FROM TB_ERP_USER000 Z WHERE USER_CD = T3.UPDATED_BY) regUserNm,
+			   CONVERT(CHAR(10), T3.UPDATED_AT, 23) regDt
+	    FROM   TB_ERP_AREA000 t0
+		       INNER JOIN TB_ERP_AREA100 t1
+			   ON t0.AREA_CD = t1.AREA_CD		
+	           LEFT OUTER JOIN
+			        TB_ERP_AREA100 T2             
+			            ON     T1.ORG_CLASS   = T2.ORG_CLASS     
+			            AND    T1.ORG_CD   = T2.PARENT_ORG_CD             
+			            AND    T2.ORG_DEPTH = 'DEPTH2'             
+			    LEFT OUTER JOIN
+			        TB_ERP_AREA100 T3             
+			            ON     T2.ORG_CLASS   = T3.ORG_CLASS     
+			            AND     T2.ORG_CD   = T3.PARENT_ORG_CD             
+			            AND    T3.ORG_DEPTH = 'DEPTH3'      
+	    WHERE  T1.ORG_DEPTH        =  'DEPTH1' AND T1.ORG_CLASS        = '14'
+	    
+		<!-- 지역사코드 -->
+		<if test="map.areaCd != null and map.areaCd != ''">  
+				AND T1.AREA_CD = #{map.areaCd}
+		</if>   
+		
+		<!-- 조직분류 -->
+		<if test="map.orgClass != null and map.orgClass != ''">  
+				AND T1.ORG_CLASS = #{map.orgClass}
+		</if>   
+	    
+		<!-- 총국 -->						
+		<if test="map.searchType != null and map.searchType != '' and map.searchType eq '10'.toString() and map.searchText != null and map.searchText != ''">  
+				<![CDATA[  
+	      			AND  T1.ORG_NM LIKE UPPER('%'+#{map.searchText}+'%')
+	  			]]>
+		</if>      
+		<!-- 지국 -->						
+		<if test="map.searchType != null and map.searchType != '' and map.searchType eq '20'.toString() and map.searchText != null and map.searchText != ''">  
+				<![CDATA[  
+	      			AND  T2.ORG_NM LIKE UPPER('%'+#{map.searchText}+'%')
+	  			]]>
+		</if>      
+		<!-- 본부 -->						
+		<if test="map.searchType != null and map.searchType != '' and map.searchType eq '30'.toString() and map.searchText != null and map.searchText != ''">  
+				<![CDATA[  
+	      			AND  T3.ORG_NM LIKE UPPER('%'+#{map.searchText}+'%')
+	  			]]>
+		</if>       	    
+    </select>
+    
+    <select id="getAreaOrgAllList30" resultType="areaOrgManageListVO" parameterType="hashMap" statementType="PREPARED">   
+    SELECT	   T0.AREA_CD areaCd,
+			   T0.AREA_NM areaNm,
+    			T1.ORG_CLASS orgClass,
+	           T1.ORG_CD org1Cd,
+	           T1.ORG_NM org1Nm,
+	           T2.ORG_CD org2Cd,
+	           T2.ORG_NM org2Nm,
+	           T3.ORG_CD org3Cd,
+	           T3.ORG_NM org3Nm,
+			   T3.REMARK remark,
+			   (SELECT USER_NM FROM TB_ERP_USER000 Z WHERE USER_CD = T3.UPDATED_BY) regUserNm,
+			   CONVERT(CHAR(10), T3.UPDATED_AT, 23) regDt
+	    FROM   TB_ERP_AREA000 t0
+		       INNER JOIN TB_ERP_AREA100 t1
+			   ON t0.AREA_CD = t1.AREA_CD		
+	           LEFT OUTER JOIN TB_ERP_AREA100 T2
+	           ON     T1.ORG_CD   = T2.PARENT_ORG_CD
+	           AND    T2.ORG_DEPTH = 'DEPTH2'
+	           LEFT OUTER JOIN TB_ERP_AREA100 T3
+	           ON     T2.ORG_CD   = T3.PARENT_ORG_CD
+	           AND    T3.ORG_DEPTH = 'DEPTH3'
+	    WHERE  T1.ORG_DEPTH        = 'DEPTH1' AND T1.ORG_CLASS        = '10'
+	    
+		<!-- 지역사코드 -->
+		<if test="map.areaCd != null and map.areaCd != ''">  
+				AND T1.AREA_CD = #{map.areaCd}
+		</if>   
+		
+		<!-- 조직분류 -->
+		<if test="map.orgClass != null and map.orgClass != ''">  
+				AND T1.ORG_CLASS = #{map.orgClass}
+		</if>   
+	    
+		<!-- 총국 -->						
+		<if test="map.searchType != null and map.searchType != '' and map.searchType eq '10'.toString() and map.searchText != null and map.searchText != ''">  
+				<![CDATA[  
+	      			AND  T1.ORG_NM LIKE UPPER('%'+#{map.searchText}+'%')
+	  			]]>
+		</if>      
+		<!-- 지국 -->						
+		<if test="map.searchType != null and map.searchType != '' and map.searchType eq '20'.toString() and map.searchText != null and map.searchText != ''">  
+				<![CDATA[  
+	      			AND  T2.ORG_NM LIKE UPPER('%'+#{map.searchText}+'%')
+	  			]]>
+		</if>      
+		<!-- 본부 -->						
+		<if test="map.searchType != null and map.searchType != '' and map.searchType eq '30'.toString() and map.searchText != null and map.searchText != ''">  
+				<![CDATA[  
+	      			AND  T3.ORG_NM LIKE UPPER('%'+#{map.searchText}+'%')
+	  			]]>
+		</if>       	    
+    </select>
+</mapper>

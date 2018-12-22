@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.prb.erp.domain.item.goods.category.GoodsCategoryMapper">
+ 
+ 	<!-- 카테고리조회 -->
+    <select id="getCategoryProduct" resultType="goodsCategoryVO" parameterType="hashMap" statementType="PREPARED">   
+		SELECT A.GOODS_CD goodsCd,
+		       A.CATEGORY_TYPE categoryType, 
+		       A.CATEGORY_CD categoryCd,
+		       A.CATEGORY_NM categoryNm,
+		       A.SORT sort,
+		       B.PRODUCT_CD productCd,
+			   C.PRODUCT_NM productNm,
+			   (SELECT COUNT(1) FROM TB_ERP_GOODS150 Z WHERE Z.GOODS_CD = A.GOODS_CD AND Z.CATEGORY_CD = A.CATEGORY_CD) categoryCount
+		FROM   TB_ERP_GOODS100 A
+		       LEFT OUTER JOIN TB_ERP_GOODS150 B
+		       ON     A.GOODS_CD    = B.GOODS_CD
+		       AND    A.CATEGORY_CD = B.CATEGORY_CD 
+		       LEFT OUTER JOIN TB_ERP_PROD000 C
+		       ON     B.PRODUCT_CD    = C.PRODUCT_CD 
+		WHERE 1=1
+		<if test="map.goodsCd != null and map.goodsCd != ''">  
+				AND A.GOODS_CD = #{map.goodsCd}
+		</if>
+		<if test="map.categoryType != null and map.categoryType != ''">  
+				AND A.CATEGORY_TYPE = #{map.categoryType}
+		</if>
+    </select>
+</mapper>

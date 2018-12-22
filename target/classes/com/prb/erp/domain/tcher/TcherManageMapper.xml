@@ -1,0 +1,600 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.prb.erp.domain.tcher.TcherManageMapper">
+ 
+ 	<!-- 교사조회 페이징-->
+    <select id="getTcherList" resultType="tcherManageVO" parameterType="hashMap" statementType="PREPARED">   
+    	DECLARE @RowsPerPage INT = 10, @PageNumber INT = #{map.pageNumber}
+    	SELECT * FROM (
+				SELECT   
+		         ROW_NUMBER() OVER (ORDER BY A.UPDATED_AT ASC) AS RowNum,
+				 ROW_NUMBER() OVER (ORDER BY A.UPDATED_AT DESC) AS RowNum2,
+		         A.TCHER_CD tcherCd,
+		         A.TCHER_NM tcherNm,
+		         A.TCHER_TYPE tcherType,
+				 DBO.FN_BASECODE('TCHER_TYPE',A.TCHER_TYPE,'') tcherTypeNm,
+		         A.TCHER_TEL_NO tcherTelNo,
+		         A.TCHER_HP_NO tcherHpNo,
+		         A.TCHER_EMAIL tcherEmail,
+		         A.TCHER_EMAIL_TYPE tcherEmailType,
+		         A.LOCAL_CD localCd,
+				 DBO.FN_BASECODE('LOCAL_CD',A.LOCAL_CD,'') localCdNm,
+		         A.TCHER_BIRTHDAY tcherBirthday,
+		         A.COUNTRY_CD countyCd,
+				 DBO.FN_BASECODE('COUNTRY_CD',A.COUNTRY_CD,'') countyCdNm,
+		         A.RESIDENCE_TYPE residenceType,
+				 DBO.FN_BASECODE('RESIDENCE_TYPE',A.RESIDENCE_TYPE,'') residenceTypeNm,
+		         A.TCHER_ZIPCODE tcherZipCode,
+		         A.TCHER_ADDRESS1 tcherAddress1,
+		         A.TCHER_ADDRESS2 tcherAddress2,
+		         A.JOIN_DT joinDt,
+		         A.OUT_DT outDt,
+		         A.OUT_REASON_CD outReasonCd,
+				 DBO.FN_BASECODE('OUT_REASON_CD',A.OUT_REASON_CD,'') outReasonCdNm,
+		         A.WORK_CD workCd,
+				 DBO.FN_BASECODE('WORK_CD',A.WORK_CD,'') workCdNm,
+		         A.WORK_REASON_CD workReasonCd,
+				 DBO.FN_BASECODE('WORK_REASON_CD',A.WORK_REASON_CD,'') workReasonCdNm,
+		         A.WORK_REG_CD workRegCd,
+				 DBO.FN_BASECODE('WORK_REG_CD',A.WORK_REG_CD,'') workRegCdNm,
+		         A.ORG_CD orgCd,
+		         (SELECT Z.ORG_NM FROM TB_ERP_AREA100 Z WHERE Z.ORG_CD = A.ORG_CD AND Z.ORG_CLASS = A.TCHER_TYPE) orgNm,         
+		         A.CC_ORG_CD ccOrgCd,
+		         (SELECT Z.ORG_NM FROM TB_ERP_AREA100 Z WHERE Z.ORG_CD = A.CC_ORG_CD AND Z.ORG_CLASS = A.TCHER_TYPE) ccOrgNm,         
+		         A.RANK_CD rankCd,
+				 DBO.FN_BASECODE('RANK_CD',A.RANK_CD,'') rankCdNm,
+		         A.CC_RANK_CD ccRankCd,
+				 DBO.FN_BASECODE('RANK_CD',A.RANK_CD,'') ccRankCdNm,
+		         A.EDU_YEAR eduYear,
+		         A.EDU_MONTH eduMonth,
+		         A.EDU_YEAR + '-' + EDU_MONTH eduDt,
+		         A.GUARANTEE_DOC_CD guaranteeDocCd,
+				 DBO.FN_BASECODE('GUARANTEE_DOC_CD',A.GUARANTEE_DOC_CD,'') guaranteeDocCdNm,
+		         A.INCOME_TYPE incomeType,
+				 DBO.FN_BASECODE('INCOME_TYPE',A.INCOME_TYPE,'') incomeTypeNm,
+		         A.COMPANY_TYPE companyType,
+				 DBO.FN_BASECODE('COMPANY_TYPE',A.COMPANY_TYPE,'') companyTypeNm,
+		         A.SECT_CODE sectCode,
+				 DBO.FN_BASECODE('SECT_CODE',A.SECT_CODE,'') sectCodeNm,
+		         A.COMPANY_REG_NUM companyRegNum,
+		         A.BANK_CD bankCd,
+				 DBO.FN_BASECODE('BANK_CD',A.BANK_CD,'') bankCdNm,
+		         A.BANK_ACCOUNT_NM bankAccountNm,
+		         A.BANK_ACCOUNT_NO bankAccountNo,
+		         A.REMARK remark,		         
+				 (SELECT COUNT(1) FROM TB_ERP_TCHER100 Z WHERE Z.APPROVAL_USER_CD = A.TCHER_CD AND Z.LAST_YN = 'Y') memberCount,
+		         B.USER_CD regUserCd,
+		         B.USER_NM regUserNm,
+		         CONVERT(CHAR(10), A.UPDATED_AT, 23) regDt
+		FROM     TB_ERP_TCHER000 A
+		         INNER JOIN TB_ERP_USER000 B
+		         ON       A.UPDATED_BY = B.USER_CD
+		WHERE    1=1
+			
+			<!-- 사번 -->
+			<if test="map.tcherCd != null and map.tcherCd != ''">  
+					AND A.TCHER_CD = #{map.tcherCd}
+			</if>   
+			
+			<!-- 교사유형 -->
+			<if test="map.tcherType != null and map.tcherType != ''">  
+					AND A.TCHER_TYPE = #{map.tcherType}
+			</if>       
+			
+			<!-- 직급 -->
+			<if test="map.rankCd != null and map.rankCd != ''">  
+					AND A.RANK_CD = #{map.rankCd}
+			</if>       
+			
+			<!-- 조직 -->
+			<if test="map.orgCd != null and map.orgCd != ''">  			
+					AND A.ORG_CD IN (SELECT ORG_CD from DBO.FN_ORGCD(#{map.orgCd}))
+			</if>       
+			
+			
+			<!-- 교육년 -->
+			<if test="map.eduYear != null and map.eduYear != ''">  
+					AND A.EDU_YEAR = #{map.eduYear}
+			</if>       
+			
+			<!-- 교육월 -->
+			<if test="map.eduMonth != null and map.eduMonth != ''">  
+					AND A.EDU_MONTH = #{map.eduMonth}
+			</if>       
+			
+			
+			<!-- 근무상태 -->
+			<if test="map.workCd != null and map.workCd != ''">  
+					AND A.WORK_CD = #{map.workCd}
+			</if>       
+			<!-- 보증서류 -->
+			<if test="map.guaranteeDocCd != null and map.guaranteeDocCd != ''">  
+					AND A.GUARANTEE_DOC_CD = #{map.guaranteeDocCd}
+			</if>       
+			
+			<!-- 지역사 -->
+			<if test="map.areaCd != null and map.areaCd != ''">  
+					AND A.AREA_CD = #{map.areaCd}
+			</if>       
+			
+			<!-- 검색유형 교사명-->
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '10'.toString() and map.searchText != null and map.searchText != ''">  
+					<![CDATA[  
+		      			AND   A.TCHER_NM LIKE UPPER('%'+#{map.searchText}+'%')
+		  			]]>
+			</if>       
+	        	
+			<!-- 검색유형 휴대전화번호-->
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '20'.toString() and map.searchText != null and map.searchText != ''">  
+					<![CDATA[  
+		      			AND   REPLACE(A.TCHER_HP_NO,'-','') LIKE UPPER('%'+#{map.searchText}+'%')
+		  			]]>
+			</if>     
+	        	
+			<!-- 검색유형 사번-->
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '30'.toString() and map.searchText != null and map.searchText != ''">  
+					<![CDATA[  
+		      			AND   REPLACE(A.TCHER_CD,'-','') LIKE UPPER('%'+#{map.searchText}+'%')
+		  			]]>
+			</if>     
+			
+			<!-- 입사일 -->
+			<if test="map.dtType != null and map.dtType != '' and map.dtType eq 'joinDt'.toString()">  
+				<if test="map.fromDt != null and map.fromDt != ''">  
+					<![CDATA[  
+						AND A.JOIN_DT >= #{map.fromDt}
+		  			]]>
+				</if>       				
+				<if test="map.toDt != null and map.toDt != ''">  
+					<![CDATA[  
+						AND A.JOIN_DT <= #{map.toDt}
+		  			]]>
+				</if> 
+			</if>    
+			
+			<!-- 퇴사일 -->
+			<if test="map.dtType != null and map.dtType != '' and map.dtType eq 'outDt'.toString()">  
+				<if test="map.fromDt != null and map.fromDt != ''">  
+					<![CDATA[  
+						AND A.OUT_DT >= #{map.fromDt}
+		  			]]>
+				</if>       				
+				<if test="map.toDt != null and map.toDt != ''">  
+					<![CDATA[  
+						AND A.OUT_DT <= #{map.toDt}
+		  			]]>
+				</if> 
+				AND A.OUT_DT IS NOT NULL
+			</if>    
+			
+			<!-- 영입사원 -->
+			<if test="map.bringTcherCd != null and map.bringTcherCd != ''">  
+					AND A.BRING_TCHER_CD = #{map.bringTcherCd}
+			</if>       
+			
+			) AS SOD
+	   
+		WHERE SOD.RowNum2 BETWEEN ((@PageNumber-1)*@RowsPerPage)+1
+		AND @RowsPerPage*(@PageNumber)
+    </select>
+    
+    <!-- 교사조회 카운트 -->
+    <select id="getTcherListCount" resultType="java.lang.Integer" parameterType="hashMap" statementType="PREPARED">   
+		SELECT   COUNT(1)
+		FROM     TB_ERP_TCHER000 A
+		WHERE    1=1
+			
+			<!-- 사번 -->
+			<if test="map.tcherCd != null and map.tcherCd != ''">  
+					AND A.TCHER_CD = #{map.tcherCd}
+			</if>   
+			
+			<!-- 교사유형 -->
+			<if test="map.tcherType != null and map.tcherType != ''">  
+					AND A.TCHER_TYPE = #{map.tcherType}
+			</if>       
+			
+			<!-- 직급 -->
+			<if test="map.rankCd != null and map.rankCd != ''">  
+					AND A.RANK_CD = #{map.rankCd}
+			</if>    
+			   
+			<!-- 조직 -->
+			<if test="map.orgCd != null and map.orgCd != ''">  			
+					AND A.ORG_CD IN (SELECT ORG_CD from DBO.FN_ORGCD(#{map.orgCd}))
+			</if>       
+			<!-- 교육년 -->
+			<if test="map.eduYear != null and map.eduYear != ''">  
+					AND A.EDU_YEAR = #{map.eduYear}
+			</if>       
+			
+			<!-- 교육월 -->
+			<if test="map.eduMonth != null and map.eduMonth != ''">  
+					AND A.EDU_MONTH = #{map.eduMonth}
+			</if>       
+			<!-- 근무상태 -->
+			<if test="map.workCd != null and map.workCd != ''">  
+					AND A.WORK_CD = #{map.workCd}
+			</if>       
+			<!-- 보증서류 -->
+			<if test="map.guaranteeDocCd != null and map.guaranteeDocCd != ''">  
+					AND A.GUARANTEE_DOC_CD = #{map.guaranteeDocCd}
+			</if>       
+			
+			<!-- 지역사 -->
+			<if test="map.areaCd != null and map.areaCd != ''">  
+					AND A.AREA_CD = #{map.areaCd}
+			</if>       
+			
+			<!-- 검색유형 교사명-->
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '10'.toString() and map.searchText != null and map.searchText != ''">  
+					<![CDATA[  
+		      			AND   A.TCHER_NM LIKE UPPER('%'+#{map.searchText}+'%')
+		  			]]>
+			</if>       
+	        	
+			<!-- 검색유형 휴대전화번호-->
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '20'.toString() and map.searchText != null and map.searchText != ''">  
+					<![CDATA[  
+		      			AND   REPLACE(A.TCHER_HP_NO,'-','') LIKE UPPER('%'+#{map.searchText}+'%')
+		  			]]>
+			</if>     
+			
+			<!-- 입사일 -->
+			<if test="map.dtType != null and map.dtType != '' and map.dtType eq 'joinDt'.toString()">  
+				<if test="map.fromDt != null and map.fromDt != ''">  
+					<![CDATA[  
+						AND A.JOIN_DT >= #{map.fromDt}
+		  			]]>
+				</if>       				
+				<if test="map.toDt != null and map.toDt != ''">  
+					<![CDATA[  
+						AND A.JOIN_DT <= #{map.toDt}
+		  			]]>
+				</if> 
+			</if>    
+			
+			<!-- 퇴사일 -->
+			<if test="map.dtType != null and map.dtType != '' and map.dtType eq 'outDt'.toString()">  
+				<if test="map.fromDt != null and map.fromDt != ''">  
+					<![CDATA[  
+						AND A.OUT_DT >= #{map.fromDt}
+		  			]]>
+				</if>       				
+				<if test="map.toDt != null and map.toDt != ''">  
+					<![CDATA[  
+						AND A.OUT_DT <= #{map.toDt}
+		  			]]>
+				</if> 
+				AND A.OUT_DT IS NOT NULL
+			</if>    
+			
+			<!-- 영입사원 -->
+			<if test="map.bringTcherCd != null and map.bringTcherCd != ''">  
+					AND A.BRING_TCHER_CD = #{map.bringTcherCd}
+			</if>       
+			
+    </select>
+    
+    
+    
+ 	<!-- 교사조회 단건 -->
+    <select id="getTcher" resultType="tcherManageVO" parameterType="hashMap" statementType="PREPARED">   
+				SELECT   
+		         A.TCHER_CD tcherCd,
+		         A.TCHER_NM tcherNm,
+		         A.TCHER_TYPE tcherType,
+				 DBO.FN_BASECODE('TCHER_TYPE',A.TCHER_TYPE,'') tcherTypeNm,
+		         A.TCHER_TEL_NO tcherTelNo,
+		         A.TCHER_HP_NO tcherHpNo,
+		         A.TCHER_EMAIL tcherEmail,
+		         A.TCHER_EMAIL_TYPE tcherEmailType,
+		         A.LOCAL_CD localCd,
+				 DBO.FN_BASECODE('LOCAL_CD',A.LOCAL_CD,'') localCdNm,
+		         A.TCHER_BIRTHDAY tcherBirthday,
+		         A.COUNTRY_CD countyCd,
+				 DBO.FN_BASECODE('COUNTRY_CD',A.COUNTRY_CD,'') countyCdNm,
+		         A.RESIDENCE_TYPE residenceType,
+				 DBO.FN_BASECODE('RESIDENCE_TYPE',A.RESIDENCE_TYPE,'') residenceTypeNm,
+		         A.TCHER_ZIPCODE tcherZipCode,
+		         A.TCHER_ADDRESS1 tcherAddress1,
+		         A.TCHER_ADDRESS2 tcherAddress2,
+		         A.JOIN_DT joinDt,
+		         A.OUT_DT outDt,
+		         A.OUT_REASON_CD outReasonCd,
+				 DBO.FN_BASECODE('OUT_REASON_CD',A.OUT_REASON_CD,'') outReasonCdNm,
+		         A.WORK_CD workCd,
+				 DBO.FN_BASECODE('WORK_CD',A.WORK_CD,'') workCdNm,
+		         A.WORK_REASON_CD workReasonCd,
+				 DBO.FN_BASECODE('WORK_REASON_CD',A.WORK_REASON_CD,'') workReasonCdNm,
+		         A.WORK_REG_CD workRegCd,
+				 DBO.FN_BASECODE('WORK_REG_CD',A.WORK_REG_CD,'') workRegCdNm,
+		         A.ORG_CD orgCd,
+		         (SELECT Z.ORG_NM FROM TB_ERP_AREA100 Z WHERE Z.ORG_CD = A.ORG_CD AND Z.ORG_CLASS = A.TCHER_TYPE) orgNm,      
+		         A.CC_ORG_CD ccOrgCd,
+		         (SELECT Z.ORG_NM FROM TB_ERP_AREA100 Z WHERE Z.ORG_CD = A.CC_ORG_CD AND Z.ORG_CLASS = A.TCHER_TYPE) ccOrgNm,                  
+		         A.RANK_CD rankCd,
+				 DBO.FN_BASECODE('RANK_CD',A.RANK_CD,'') rankCdNm,
+		         A.CC_RANK_CD ccRankCd,
+				 DBO.FN_BASECODE('RANK_CD',A.RANK_CD,'') ccRankCdNm,
+		         A.EDU_YEAR eduYear,
+		         A.EDU_MONTH eduMonth,
+		         A.EDU_YEAR + '-' + EDU_MONTH eduDt,
+		         A.GUARANTEE_DOC_CD guaranteeDocCd,
+				 DBO.FN_BASECODE('GUARANTEE_DOC_CD',A.GUARANTEE_DOC_CD,'') guaranteeDocCdNm,
+		         A.INCOME_TYPE incomeType,
+				 DBO.FN_BASECODE('INCOME_TYPE',A.INCOME_TYPE,'') incomeTypeNm,
+		         A.COMPANY_TYPE companyType,
+				 DBO.FN_BASECODE('COMPANY_TYPE',A.COMPANY_TYPE,'') companyTypeNm,
+		         A.SECT_CODE sectCode,
+				 DBO.FN_BASECODE('SECT_CODE',A.SECT_CODE,'') sectCodeNm,
+		         A.COMPANY_REG_NUM companyRegNum,
+		         A.BANK_CD bankCd,
+				 DBO.FN_BASECODE('BANK_CD',A.BANK_CD,'') bankCdNm,
+		         A.BANK_ACCOUNT_NM bankAccountNm,
+		         A.BANK_ACCOUNT_NO bankAccountNo,
+		         A.REMARK remark,
+				 (SELECT COUNT(1) FROM TB_ERP_TCHER100 Z WHERE Z.APPROVAL_USER_CD = A.TCHER_CD AND Z.LAST_YN = 'Y') memberCount,
+		         B.USER_CD regUserCd,
+		         B.USER_NM regUserNm,
+		         CONVERT(CHAR(10), A.UPDATED_AT, 23) regDt,
+		         ROW_NUMBER() OVER (ORDER BY A.UPDATED_AT) AS RowNum
+		FROM     TB_ERP_TCHER000 A
+		         INNER JOIN TB_ERP_USER000 B
+		         ON       A.UPDATED_BY = B.USER_CD
+		WHERE    1=1
+			
+			<!-- 사번 -->
+			<if test="map.tcherCd != null and map.tcherCd != ''">  
+					AND A.TCHER_CD = #{map.tcherCd}
+			</if>   
+			
+			<!-- 교사유형 -->
+			<if test="map.tcherType != null and map.tcherType != ''">  
+					AND A.TCHER_TYPE = #{map.tcherType}
+			</if>       
+			
+			<!-- 직급 -->
+			<if test="map.rankCd != null and map.rankCd != ''">  
+					AND A.RANK_CD = #{map.rankCd}
+			</if>     
+			  
+			<!-- 조직 -->
+			<if test="map.orgCd != null and map.orgCd != ''">  			
+					AND A.ORG_CD IN (SELECT ORG_CD from DBO.FN_ORGCD(#{map.orgCd}))
+			</if>       
+			
+			<!-- 교육년 -->
+			<if test="map.eduYear != null and map.eduYear != ''">  
+					AND A.EDU_YEAR = #{map.eduYear}
+			</if>       
+			
+			<!-- 교육월 -->
+			<if test="map.eduMonth != null and map.eduMonth != ''">  
+					AND A.EDU_MONTH = #{map.eduMonth}
+			</if>       
+			<!-- 근무상태 -->
+			<if test="map.workCd != null and map.workCd != ''">  
+					AND A.WORK_CD = #{map.workCd}
+			</if>       
+			<!-- 보증서류 -->
+			<if test="map.guaranteeDocCd != null and map.guaranteeDocCd != ''">  
+					AND A.GUARANTEE_DOC_CD = #{map.guaranteeDocCd}
+			</if>       
+			
+			<!-- 지역사 -->
+			<if test="map.areaCd != null and map.areaCd != ''">  
+					AND A.AREA_CD = #{map.areaCd}
+			</if>       
+			
+			<!-- 검색유형 교사명-->
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '10'.toString() and map.searchText != null and map.searchText != ''">  
+					<![CDATA[  
+		      			AND   A.TCHER_NM LIKE UPPER('%'+#{map.searchText}+'%')
+		  			]]>
+			</if>       
+	        	
+			<!-- 검색유형 휴대전화번호-->
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '20'.toString() and map.searchText != null and map.searchText != ''">  
+					<![CDATA[  
+		      			AND   REPLACE(A.TCHER_HP_NO,'-','') LIKE UPPER('%'+#{map.searchText}+'%')
+		  			]]>
+			</if>     
+			
+			<!-- 입사일 -->
+			<if test="map.dtType != null and map.dtType != '' and map.dtType eq 'joinDt'.toString()">  
+				<if test="map.fromDt != null and map.fromDt != ''">  
+					<![CDATA[  
+						AND A.JOIN_DT >= #{map.fromDt}
+		  			]]>
+				</if>       				
+				<if test="map.toDt != null and map.toDt != ''">  
+					<![CDATA[  
+						AND A.JOIN_DT <= #{map.toDt}
+		  			]]>
+				</if> 
+			</if>    
+			
+			<!-- 퇴사일 -->
+			<if test="map.dtType != null and map.dtType != '' and map.dtType eq 'outDt'.toString()">  
+				<if test="map.fromDt != null and map.fromDt != ''">  
+					<![CDATA[  
+						AND A.OUT_DT >= #{map.fromDt}
+		  			]]>
+				</if>       				
+				<if test="map.toDt != null and map.toDt != ''">  
+					<![CDATA[  
+						AND A.OUT_DT <= #{map.toDt}
+		  			]]>
+				</if> 
+				AND A.OUT_DT IS NOT NULL
+			</if>    
+			
+			<!-- 영입사원 -->
+			<if test="map.bringTcherCd != null and map.bringTcherCd != ''">  
+					AND A.BRING_TCHER_CD = #{map.bringTcherCd}
+			</if>       
+			
+    </select>
+    
+    <!-- 교사조회 전체-->
+    <select id="getTcherListAll" resultType="tcherManageVO" parameterType="hashMap" statementType="PREPARED">   
+				SELECT   
+		         A.TCHER_CD tcherCd,
+		         A.TCHER_NM tcherNm,
+		         A.TCHER_TYPE tcherType,
+				 DBO.FN_BASECODE('TCHER_TYPE',A.TCHER_TYPE,'') tcherTypeNm,
+		         A.TCHER_TEL_NO tcherTelNo,
+		         A.TCHER_HP_NO tcherHpNo,
+		         A.TCHER_EMAIL tcherEmail,
+		         A.TCHER_EMAIL_TYPE tcherEmailType,
+		         A.LOCAL_CD localCd,
+				 DBO.FN_BASECODE('LOCAL_CD',A.LOCAL_CD,'') localCdNm,
+		         A.TCHER_BIRTHDAY tcherBirthday,
+		         A.COUNTRY_CD countyCd,
+				 DBO.FN_BASECODE('COUNTRY_CD',A.COUNTRY_CD,'') countyCdNm,
+		         A.RESIDENCE_TYPE residenceType,
+				 DBO.FN_BASECODE('RESIDENCE_TYPE',A.RESIDENCE_TYPE,'') residenceTypeNm,
+		         A.TCHER_ZIPCODE tcherZipCode,
+		         A.TCHER_ADDRESS1 tcherAddress1,
+		         A.TCHER_ADDRESS2 tcherAddress2,
+		         A.JOIN_DT joinDt,
+		         A.OUT_DT outDt,
+		         A.OUT_REASON_CD outReasonCd,
+				 DBO.FN_BASECODE('OUT_REASON_CD',A.OUT_REASON_CD,'') outReasonCdNm,
+		         A.WORK_CD workCd,
+				 DBO.FN_BASECODE('WORK_CD',A.WORK_CD,'') workCdNm,
+		         A.WORK_REASON_CD workReasonCd,
+				 DBO.FN_BASECODE('WORK_REASON_CD',A.WORK_REASON_CD,'') workReasonCdNm,				 
+		         A.WORK_REG_CD workRegCd,
+				 DBO.FN_BASECODE('WORK_REG_CD',A.WORK_REG_CD,'') workRegCdNm,
+		         A.ORG_CD orgCd,
+		         (SELECT Z.ORG_NM FROM TB_ERP_AREA100 Z WHERE Z.ORG_CD = A.ORG_CD AND Z.ORG_CLASS = A.TCHER_TYPE) orgNm,               
+		         A.RANK_CD rankCd,
+				 DBO.FN_BASECODE('RANK_CD',A.RANK_CD,'') rankCdNm,
+		         A.CC_RANK_CD ccRankCd,
+				 DBO.FN_BASECODE('RANK_CD',A.RANK_CD,'') ccRankCdNm,
+		         A.EDU_YEAR eduYear,
+		         A.EDU_MONTH eduMonth,
+		         A.EDU_YEAR + '-' + EDU_MONTH eduDt,
+		         A.GUARANTEE_DOC_CD guaranteeDocCd,
+				 DBO.FN_BASECODE('GUARANTEE_DOC_CD',A.GUARANTEE_DOC_CD,'') guaranteeDocCdNm,
+		         A.INCOME_TYPE incomeType,
+				 DBO.FN_BASECODE('INCOME_TYPE',A.INCOME_TYPE,'') incomeTypeNm,
+		         A.COMPANY_TYPE companyType,
+				 DBO.FN_BASECODE('COMPANY_TYPE',A.COMPANY_TYPE,'') companyTypeNm,
+		         A.SECT_CODE sectCode,
+				 DBO.FN_BASECODE('SECT_CODE',A.SECT_CODE,'') sectCodeNm,
+		         A.COMPANY_REG_NUM companyRegNum,
+		         A.BANK_CD bankCd,
+				 DBO.FN_BASECODE('BANK_CD',A.BANK_CD,'') bankCdNm,
+		         A.BANK_ACCOUNT_NM bankAccountNm,
+		         A.BANK_ACCOUNT_NO bankAccountNo,
+		         A.REMARK remark,
+				 (SELECT COUNT(1) FROM TB_ERP_TCHER100 Z WHERE Z.APPROVAL_USER_CD = A.TCHER_CD AND Z.LAST_YN = 'Y') memberCount,
+		         B.USER_CD regUserCd,
+		         B.USER_NM regUserNm,
+		         CONVERT(CHAR(10), A.UPDATED_AT, 23) regDt,
+		         ROW_NUMBER() OVER (ORDER BY A.UPDATED_AT) AS RowNum
+		FROM     TB_ERP_TCHER000 A
+		         INNER JOIN TB_ERP_USER000 B
+		         ON       A.UPDATED_BY = B.USER_CD
+		WHERE    1=1
+			
+			<!-- 사번 -->
+			<if test="map.tcherCd != null and map.tcherCd != ''">  
+					AND A.TCHER_CD = #{map.tcherCd}
+			</if>   
+			
+			<!-- 교사유형 -->
+			<if test="map.tcherType != null and map.tcherType != ''">  
+					AND A.TCHER_TYPE = #{map.tcherType}
+			</if>       
+			
+			<!-- 직급 -->
+			<if test="map.rankCd != null and map.rankCd != ''">  
+					AND A.RANK_CD = #{map.rankCd}
+			</if>      
+			 
+			<!-- 조직 -->
+			<if test="map.orgCd != null and map.orgCd != ''">  			
+					AND A.ORG_CD IN (SELECT ORG_CD from DBO.FN_ORGCD(#{map.orgCd}))
+			</if>       
+			
+			<!-- 교육년 -->
+			<if test="map.eduYear != null and map.eduYear != ''">  
+					AND A.EDU_YEAR = #{map.eduYear}
+			</if>       
+			
+			<!-- 교육월 -->
+			<if test="map.eduMonth != null and map.eduMonth != ''">  
+					AND A.EDU_MONTH = #{map.eduMonth}
+			</if>       
+			
+			<!-- 근무상태 -->
+			<if test="map.workCd != null and map.workCd != ''">  
+					AND A.WORK_CD = #{map.workCd}
+			</if>       
+			<!-- 보증서류 -->
+			<if test="map.guaranteeDocCd != null and map.guaranteeDocCd != ''">  
+					AND A.GUARANTEE_DOC_CD = #{map.guaranteeDocCd}
+			</if>       
+			
+			<!-- 지역사 -->
+			<if test="map.areaCd != null and map.areaCd != ''">  
+					AND A.AREA_CD = #{map.areaCd}
+			</if>       
+			
+			<!-- 검색유형 교사명-->
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '10'.toString() and map.searchText != null and map.searchText != ''">  
+					<![CDATA[  
+		      			AND   A.TCHER_NM LIKE UPPER('%'+#{map.searchText}+'%')
+		  			]]>
+			</if>       
+	        	
+			<!-- 검색유형 휴대전화번호-->
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '20'.toString() and map.searchText != null and map.searchText != ''">  
+					<![CDATA[  
+		      			AND   REPLACE(A.TCHER_HP_NO,'-','') LIKE UPPER('%'+#{map.searchText}+'%')
+		  			]]>
+			</if>     
+			
+			<!-- 입사일 -->
+			<if test="map.dtType != null and map.dtType != '' and map.dtType eq 'joinDt'.toString()">  
+				<if test="map.fromDt != null and map.fromDt != ''">  
+					<![CDATA[  
+						AND A.JOIN_DT >= #{map.fromDt}
+		  			]]>
+				</if>       				
+				<if test="map.toDt != null and map.toDt != ''">  
+					<![CDATA[  
+						AND A.JOIN_DT <= #{map.toDt}
+		  			]]>
+				</if> 
+			</if>    
+			
+			<!-- 퇴사일 -->
+			<if test="map.dtType != null and map.dtType != '' and map.dtType eq 'outDt'.toString()">  
+				<if test="map.fromDt != null and map.fromDt != ''">  
+					<![CDATA[  
+						AND A.OUT_DT >= #{map.fromDt}
+		  			]]>
+				</if>       				
+				<if test="map.toDt != null and map.toDt != ''">  
+					<![CDATA[  
+						AND A.OUT_DT <= #{map.toDt}
+		  			]]>
+				</if> 
+				AND A.OUT_DT IS NOT NULL
+			</if> 
+			
+			<!-- 영입사원 -->
+			<if test="map.bringTcherCd != null and map.bringTcherCd != ''">  
+					AND A.BRING_TCHER_CD = #{map.bringTcherCd}
+			</if>       
+			
+    </select>
+</mapper>

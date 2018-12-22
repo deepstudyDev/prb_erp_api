@@ -1,0 +1,21 @@
+{
+  "title": "DEEP STUDY :: ERP Application Framework",
+  "copyrights": "DEEP STUDY :: ERP Application Framework © 2018 :: 주소 : 서울특별시 강남구 대치동  삼성로 86길 20 ( 956-1 ) 도림빌딩 4층  마인드에듀 / 대표 : 허 영 / 사업자등록번호 : 563-74-00176 / 대표번호 : 02-3452-0360",
+  "logo": {
+    "header": "/assets/images/header-logo.png",
+    "login": "/assets/images/header-logo.png",
+    "logo": "logo.png"
+  },
+  "background": {
+    "login": "/assets/images/login-bg-not.jpg"
+  },
+  "layout": {
+    "leftSideMenu": "visible"
+  },
+  "sessionCookie": "d08370cd-59db-4e70-ae08-4e02d189511e",
+  "extendedCss": [
+    "/assets/css/ppmboot.css"
+  ],
+  "extendedCssforIE9": [
+  ]
+}  

@@ -1,0 +1,928 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+ 
+<mapper namespace="com.prb.erp.domain.member.MemberManageMapper">
+	<select id="getMember" resultType="memberManageVO" parameterType="hashMap" statementType="PREPARED">   
+		SELECT   A.CUST_CD custCd,
+				 (SELECT COUNT(1) FROM TB_ERP_MEMBER200 Z WHERE Z.CUST_CD = A.CUST_CD AND Z.MEMBER_STATUS != '3') custCdCount,
+			     C.CHILD_CD childCd,
+		         A.GD1_NM gd1Nm,
+		         A.GD1_RELATION_CD gd1RelationCd,
+		         DBO.FN_BASECODE('GD_RELATION_CD',A.GD1_RELATION_CD,'') gd1RelationCdNm,
+		         A.GD1_BIRTHDAY gd1Birthday,
+		         A.GD1_USER_CD gd1UserCd,
+		         A.GD2_NM gd2Nm,
+		         A.GD2_RELATION_CD gd2RelationCd,
+		         DBO.FN_BASECODE('GD_RELATION_CD',A.GD2_RELATION_CD,'') gd2RelationCdNm,
+		         A.GD2_BIRTHDAY gd2Birthday,
+		         A.TEL_NO telNo,
+		         A.HP_NO hpNo,
+		         A.EMAIL email,
+		         A.EMAIL_TYPE emailType,
+		         A.HOME_ZIPCODE homeZipcode,
+		         A.HOME_ADDRESS1 homeAddress1,
+		         A.HOME_ADDRESS2 homeAddress2,
+		         A.DELIVERY_ZIPCODE deliveryZipcode,
+		         A.DELIVERY_ADDRESS1 deliveryAddress1,
+		         A.DELIVERY_ADDRESS2 deliveryAddress2,
+		         C.MEMBER_STATUS memberStatus,
+		         DBO.FN_BASECODE('MEMBER_STATUS',C.MEMBER_STATUS,'') memberStatusNm,		         	 
+		         
+		         B.SALES_TYPE salesType,
+		         DBO.FN_BASECODE('SALES_TYPE',B.SALES_TYPE,'') salesTypeNm,
+		         
+		         B.CONTRACT_DT contractDt,
+		         B.GOODS_CD goodsCd,
+        			(SELECT Z.GOODS_NM FROM TB_ERP_GOODS000 Z WHERE Z.GOODS_CD = B.GOODS_CD) goodsNm,
+		         B.SUBJECT_NM subjectNm,
+		         B.AGREEMENT_CD agreementCd,
+		         DBO.FN_BASECODE('AGREEMENT_CD',B.AGREEMENT_CD,'') agreementCdNm,
+		         B.TOTAL_PRICE totalPrice,
+		         B.MONTH_PRICE monthPrice,
+		         B.CONTRACT_PRICE contractPrice,
+		         
+		         B.CONTRACT_PAYMENT_WAY contractPaymentWay,
+		         DBO.FN_BASECODE('PAYMENT_WAY',B.CONTRACT_PAYMENT_WAY,'') contractPaymentWayNm,			         
+		         B.CONTRACT_PAYMENT_METHOD contractPaymentMethod,
+		         DBO.FN_BASECODE('PAYMENT_METHOD',B.CONTRACT_PAYMENT_METHOD,'') contractPaymentMethodNm,			         
+		         B.PAYMENT_PRICE paymentPrice,
+		         B.PAYMENT_WAY paymentWay,
+		         DBO.FN_BASECODE('PAYMENT_WAY',B.PAYMENT_WAY,'') paymentWayNm,			         
+		         B.PAYMENT_METHOD paymentMethod,
+		         DBO.FN_BASECODE('PAYMENT_METHOD',B.PAYMENT_METHOD,'') paymentMethodNm,			   
+		         B.PAYMENT_YN paymentYn,
+		         DBO.FN_BASECODE('PAYMENT_YN',B.PAYMENT_YN,'') paymentYnNm,
+		         
+		         C.CHILDREN_CONTRACT_DT childrenContractDt,
+		         C.CONTRACT_TYPE contractType,
+		         DBO.FN_BASECODE('CONTRACT_TYPE',C.CONTRACT_TYPE,'') contractTypeNm,
+		         C.CHILDREN_USER_CD childrenUserCd,
+		         C.CHILDREN_NM childrenNm,
+		         C.CHILDREN_SEX childrenSex,
+		         DBO.FN_BASECODE('SEX',C.CHILDREN_SEX,'') childrenSexNm,
+		         C.CHILDREN_BIRTHDAY childrenBirthday,
+		         C.CHILDREN_HP_NO childrenHpNo,
+		         C.CHILDREN_SCHOOL_NM childrenSchoolNm,
+		         C.CHILDREN_GRADE_CD childrenGradeCd,
+		         DBO.FN_BASECODE('GRADE_CD',C.CHILDREN_GRADE_CD,'') childrenGradeCdNm,
+		         
+		         C.ONLINE_SERVICE_STATUS onlineServiceStatus,
+		         DBO.FN_BASECODE('ONLINE_SERVICE_STATUS',C.ONLINE_SERVICE_STATUS,'') onlineServiceStatusNm,
+		         C.ONLINE_SERVICE_YN onlineServiceYn,
+		         DBO.FN_BASECODE('SERVICE_USE_YN',C.ONLINE_SERVICE_YN,'') onlineServiceYnNm,
+		         C.ONLINE_SERVICE_PRICE onlineServicePrice,
+		         C.VISIT_SERVICE_STATUS visitServiceStatus,
+		         DBO.FN_BASECODE('VISIT_SERVICE_STATUS',C.VISIT_SERVICE_STATUS,'') visitServiceStatusNm,
+		         C.VISIT_SERVICE_YN visitServiceYn,
+		         DBO.FN_BASECODE('SERVICE_USE_YN',C.VISIT_SERVICE_YN,'') visitServiceYnNm,			         
+		         C.VISIT_NUMBER_CD visitTimeCd,
+		         DBO.FN_BASECODE('VISIT_NUMBER_CD',C.VISIT_NUMBER_CD,'') visitTimeCdNm,
+		         C.VISIT_TIME_CD visitNumberCd,
+		         DBO.FN_BASECODE('VISIT_TIME_CD',C.VISIT_TIME_CD,'') visitNumberCdNm,
+		         
+		         
+		         C.ONLINE_PAYMENT_WAY onlinePaymentWay,
+		         DBO.FN_BASECODE('PAYMENT_WAY',C.ONLINE_PAYMENT_WAY,'') onlinePaymentWayNm,
+		         C.VISIT_PAYMENT_WAY visitPaymentWay,
+		         DBO.FN_BASECODE('PAYMENT_WAY',C.VISIT_PAYMENT_WAY,'') visitPaymentWayNm,
+		         
+		         C.ONLINE_PAYMENT_METHOD onlinePaymentMethod,
+		         DBO.FN_BASECODE('PAYMENT_METHOD',C.ONLINE_PAYMENT_METHOD,'') onlinePaymentMethodNm,
+		         C.VISIT_PAYMENT_METHOD visitPaymentMethod,
+		         DBO.FN_BASECODE('PAYMENT_METHOD',C.VISIT_PAYMENT_METHOD,'') visitPaymentMethodNm,
+		         
+		         C.VISIT_START_DT visitStartDt,
+		         C.VISIT_END_DT visitEndDt,
+		         C.VISIT_SERVICE_PRICE visitServicePrice,
+		         
+		         A.AREA_CD areaCd,
+		         (SELECT Z.AREA_NM FROM TB_ERP_AREA000 Z WHERE Z.AREA_CD = A.AREA_CD) areaNm,
+		         A.ORG_CD orgCd,
+		         (SELECT Z.ORG_NM FROM TB_ERP_AREA100 Z WHERE Z.ORG_CD = A.ORG_CD AND Z.ORG_CLASS='12') orgNm,
+		         A.AREA_HP_NO areaHpNo,
+		         C.COUNSELOR1_TCHER_CD counselor1TcherCd,
+		         (SELECT TCHER_NM FROM TB_ERP_TCHER000 Z WHERE Z.TCHER_CD = C.COUNSELOR1_TCHER_CD) counselor1TcherNm,
+		         C.COUNSELOR1_TCHER_HP_NO counselor1TcherHpNo,
+		         C.COUNSELOR2_TCHER_CD counselor2TcherCd,
+		         (SELECT TCHER_NM FROM TB_ERP_TCHER000 Z WHERE Z.TCHER_CD = C.COUNSELOR2_TCHER_CD) counselor2TcherNm,
+		         C.COUNSELOR2_TCHER_HP_NO counselor2TcherHpNo,
+		         DBO.FN_VISIT_TCHERCD(C.CUST_CD , C.CHILD_CD) visitorTcherCd,
+		         DBO.FN_VISIT_TCHERNM(C.CUST_CD , C.CHILD_CD) visitorTcherNm,
+			     DBO.FN_VISIT_TCHERHPNO(C.CUST_CD , C.CHILD_CD) visitorTcherHpNo,
+		         C.REMARK,
+			     (SELECT MAX(LINK_KEY) FROM TMSG_QUEUE Z WHERE Z.LINK_KEY =  A.CUST_CD) linkKey,
+		         A.CREATED_AT createdAt,
+		         A.CREATED_BY createdBy,
+		         A.UPDATED_AT updatedAt,
+		         A.UPDATED_BY updatedBy,
+		         E.USER_CD regUserCd,
+		         E.USER_NM regUserNm,
+		         CONVERT(CHAR(10), A.UPDATED_AT, 23) regDt,
+		         ROW_NUMBER() OVER (ORDER BY A.UPDATED_AT) AS RowNum
+		FROM     TB_ERP_MEMBER000 A
+		         LEFT OUTER JOIN TB_ERP_MEMBER100 B
+		         ON       A.CUST_CD = B.CUST_CD
+		         LEFT OUTER JOIN TB_ERP_MEMBER200 C
+		         ON       A.CUST_CD = C.CUST_CD
+				 AND      C.CONTRACT_TYPE = '1'
+		         INNER JOIN TB_ERP_USER000 E
+		         ON       A.UPDATED_BY = E.USER_CD
+		WHERE    1=1
+			
+			<!-- 회원유형 -->				
+			<if test="map.userType != null and map.userType != ''">  
+					AND  A.USER_TYPE = #{map.userType}
+			</if>      
+			<!-- 회원계약코드 -->				
+			<if test="map.custCd != null and map.custCd != ''">  
+					AND C.CUST_CD = #{map.custCd}
+			</if>     
+						
+			<!-- 계약자명 -->						
+			<if test="map.gd1Nm != null and map.gd1Nm != ''">  
+					<![CDATA[  
+		      			AND   A.GD1_NM LIKE UPPER('%'+#{map.gd1Nm}+'%')
+		  			]]>
+			</if>       	   
+			
+			<!-- 지국 -->				 
+			<if test="map.areaCd != null and map.areaCd != ''">  
+					AND A.AREA_CD = #{map.areaCd}
+			</if>        
+			<!-- 센터 -->				 
+			<if test="map.orgCd != null and map.orgCd != ''">  			
+					AND A.ORG_CD IN (SELECT ORG_CD from DBO.FN_ORGCD(#{map.orgCd}))
+			</if>     
+			<!-- 상품 -->				
+			<if test="map.goodsCd != null and map.goodsCd != ''">  
+					AND B.GOODS_CD = #{map.goodsCd}
+			</if>   
+			
+			<!-- 온라인서비스상태 -->				 
+			<if test="map.onlineServiceStatus != null and map.onlineServiceStatus != ''">  
+					AND C.ONLINE_SERVICE_STATUS = #{map.onlineServiceStatus}
+			</if>    
+			
+			<!-- 방문서비스상태 -->				 
+			<if test="map.visitServiceStatus != null and map.visitServiceStatus != ''">  
+					AND C.VISIT_SERVICE_STATUS = #{map.visitServiceStatus}
+			</if> 
+			
+			<!--등록일 시작 -->				 
+			<if test="map.fromDate != null and map.fromDate != ''">  
+					<![CDATA[  
+						AND CONVERT(CHAR(10), A.UPDATED_AT, 23) >= #{map.fromDate}
+		  			]]>
+			</if>    
+			
+			<!--등록일 종료 -->				 
+			<if test="map.toDate != null and map.toDate != ''">  
+					<![CDATA[  
+						AND CONVERT(CHAR(10), A.UPDATED_AT, 23) <= #{map.toDate}
+		  			]]>
+			</if>    
+			
+			<!-- 계약자 -->						
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '10'.toString() and map.searchText != null and map.searchText != ''">  
+					<![CDATA[  
+		      			AND   A.GD1_NM LIKE UPPER('%'+#{map.searchText}+'%')
+		  			]]>
+			</if>       	    
+			<!-- 휴대전화번호 -->    	
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '20'.toString() and map.searchText != null and map.searchText != ''">  
+					<![CDATA[  
+		      			AND REPLACE(A.HP_NO,'-','')  LIKE UPPER('%'+#{map.searchText}+'%')
+		  			]]>
+			</if>
+			
+			
+			<!-- 교사 -->				 
+			<if test="map.tcherCd != null and map.tcherCd != ''">  
+					<![CDATA[  
+						AND (C.COUNSELOR1_TCHER_CD = #{map.tcherCd} OR C.COUNSELOR2_TCHER_CD = #{map.tcherCd} OR DBO.FN_VISIT_TCHERCD(C.CUST_CD , C.CHILD_CD) = #{map.tcherCd})
+		  			]]>
+			</if>
+    </select>
+    <select id="getMemberList" resultType="memberManageVO" parameterType="hashMap" statementType="PREPARED">   
+    	DECLARE @RowsPerPage INT = 10, @PageNumber INT = #{map.pageNumber}
+    	SELECT * FROM (
+			SELECT   A.CUST_CD custCd,
+				 (SELECT COUNT(1) FROM TB_ERP_MEMBER200 Z WHERE Z.CUST_CD = A.CUST_CD AND Z.MEMBER_STATUS != '3') custCdCount,
+			         C.CHILD_CD childCd,
+			         A.GD1_NM gd1Nm,
+			         A.GD1_RELATION_CD gd1RelationCd,
+			         DBO.FN_BASECODE('GD_RELATION_CD',A.GD1_RELATION_CD,'') gd1RelationCdNm,
+			         A.GD1_BIRTHDAY gd1Birthday,
+		         	 A.GD1_USER_CD gd1UserCd,
+			         A.GD2_NM gd2Nm,
+			         A.GD2_RELATION_CD gd2RelationCd,
+			         DBO.FN_BASECODE('GD_RELATION_CD',A.GD2_RELATION_CD,'') gd2RelationCdNm,
+			         A.GD2_BIRTHDAY gd2Birthday,
+			         A.TEL_NO telNo,
+			         A.HP_NO hpNo,
+			         A.EMAIL email,
+		         	 A.EMAIL_TYPE emailType,
+			         A.HOME_ZIPCODE homeZipcode,
+			         A.HOME_ADDRESS1 homeAddress1,
+			         A.HOME_ADDRESS2 homeAddress2,
+			         A.DELIVERY_ZIPCODE deliveryZipcode,
+			         A.DELIVERY_ADDRESS1 deliveryAddress1,
+			         A.DELIVERY_ADDRESS2 deliveryAddress2,
+		         	 C.MEMBER_STATUS memberStatus,
+		         	 DBO.FN_BASECODE('MEMBER_STATUS',C.MEMBER_STATUS,'') memberStatusNm,         	 
+			         B.SALES_TYPE salesType,
+			         DBO.FN_BASECODE('SALES_TYPE',B.SALES_TYPE,'') salesTypeNm,
+		         
+			         B.CONTRACT_DT contractDt,
+			         B.GOODS_CD goodsCd,
+         			(SELECT Z.GOODS_NM FROM TB_ERP_GOODS000 Z WHERE Z.GOODS_CD = B.GOODS_CD) goodsNm,
+			         B.SUBJECT_NM subjectNm,
+			         B.AGREEMENT_CD agreementCd,
+			         DBO.FN_BASECODE('AGREEMENT_CD',B.AGREEMENT_CD,'') agreementCdNm,
+			         B.TOTAL_PRICE totalPrice,
+			         B.MONTH_PRICE monthPrice,
+			         B.CONTRACT_PRICE contractPrice,
+			         
+			         B.CONTRACT_PAYMENT_WAY contractPaymentWay,
+			         DBO.FN_BASECODE('PAYMENT_WAY',B.CONTRACT_PAYMENT_WAY,'') contractPaymentWayNm,			         
+			         B.CONTRACT_PAYMENT_METHOD contractPaymentMethod,
+			         DBO.FN_BASECODE('PAYMENT_METHOD',B.CONTRACT_PAYMENT_METHOD,'') contractPaymentMethodNm,			         
+			         B.PAYMENT_PRICE paymentPrice,
+			         B.PAYMENT_WAY paymentWay,
+			         DBO.FN_BASECODE('PAYMENT_WAY',B.PAYMENT_WAY,'') paymentWayNm,			         
+			         B.PAYMENT_METHOD paymentMethod,
+			         DBO.FN_BASECODE('PAYMENT_METHOD',B.PAYMENT_METHOD,'') paymentMethodNm,			   
+			         B.PAYMENT_YN paymentYn,
+			         DBO.FN_BASECODE('PAYMENT_YN',B.PAYMENT_YN,'') paymentYnNm,
+			         
+			         C.CHILDREN_CONTRACT_DT childrenContractDt,
+			         C.CONTRACT_TYPE contractType,
+			         DBO.FN_BASECODE('CONTRACT_TYPE',C.CONTRACT_TYPE,'') contractTypeNm,
+		         	 C.CHILDREN_USER_CD childrenUserCd,
+			         C.CHILDREN_NM childrenNm,
+			         C.CHILDREN_SEX childrenSex,
+			         DBO.FN_BASECODE('SEX',C.CHILDREN_SEX,'') childrenSexNm,
+			         C.CHILDREN_BIRTHDAY childrenBirthday,
+			         C.CHILDREN_HP_NO childrenHpNo,
+			         C.CHILDREN_SCHOOL_NM childrenSchoolNm,
+			         C.CHILDREN_GRADE_CD childrenGradeCd,
+			         DBO.FN_BASECODE('GRADE_CD',C.CHILDREN_GRADE_CD,'') childrenGradeCdNm,
+			         
+			         C.ONLINE_SERVICE_STATUS onlineServiceStatus,
+			         DBO.FN_BASECODE('ONLINE_SERVICE_STATUS',C.ONLINE_SERVICE_STATUS,'') onlineServiceStatusNm,
+			         C.ONLINE_SERVICE_YN onlineServiceYn,
+			         DBO.FN_BASECODE('SERVICE_USE_YN',C.ONLINE_SERVICE_YN,'') onlineServiceYnNm,
+			         C.ONLINE_SERVICE_PRICE onlineServicePrice,
+			         C.VISIT_SERVICE_STATUS visitServiceStatus,
+			         DBO.FN_BASECODE('VISIT_SERVICE_STATUS',C.VISIT_SERVICE_STATUS,'') visitServiceStatusNm,
+			         C.VISIT_SERVICE_YN visitServiceYn,
+			         DBO.FN_BASECODE('SERVICE_USE_YN',C.VISIT_SERVICE_YN,'') visitServiceYnNm,			
+			                  
+			         C.VISIT_TIME_CD visitTimeCd,
+			         DBO.FN_BASECODE('VISIT_TIME_CD',C.VISIT_TIME_CD,'') visitTimeCdNm,
+			         C.VISIT_NUMBER_CD visitNumberCd,
+			         DBO.FN_BASECODE('VISIT_NUMBER_CD',C.VISIT_NUMBER_CD,'') visitNumberCdNm,
+			         
+			         
+			         C.ONLINE_PAYMENT_WAY onlinePaymentWay,
+			         DBO.FN_BASECODE('PAYMENT_WAY',C.ONLINE_PAYMENT_WAY,'') onlinePaymentWayNm,
+			         C.VISIT_PAYMENT_WAY visitPaymentWay,
+			         DBO.FN_BASECODE('PAYMENT_WAY',C.VISIT_PAYMENT_WAY,'') visitPaymentWayNm,
+			         
+			         C.ONLINE_PAYMENT_METHOD onlinePaymentMethod,
+			         DBO.FN_BASECODE('PAYMENT_METHOD',C.ONLINE_PAYMENT_METHOD,'') onlinePaymentMethodNm,
+			         C.VISIT_PAYMENT_METHOD visitPaymentMethod,
+			         DBO.FN_BASECODE('PAYMENT_METHOD',C.VISIT_PAYMENT_METHOD,'') visitPaymentMethodNm,
+			         
+			         C.VISIT_START_DT visitStartDt,
+			         C.VISIT_END_DT visitEndDt,
+			         C.VISIT_SERVICE_PRICE visitServicePrice,
+			         
+			         A.AREA_CD areaCd,
+			         (SELECT Z.AREA_NM FROM TB_ERP_AREA000 Z WHERE Z.AREA_CD = A.AREA_CD) areaNm,
+			         A.ORG_CD orgCd,
+			         (SELECT Z.ORG_NM FROM TB_ERP_AREA100 Z WHERE Z.ORG_CD = A.ORG_CD AND Z.ORG_CLASS='12') orgNm,
+			         A.AREA_HP_NO areaHpNo,
+			         C.COUNSELOR1_TCHER_CD counselor1TcherCd,
+			         (SELECT TCHER_NM FROM TB_ERP_TCHER000 Z WHERE Z.TCHER_CD = C.COUNSELOR1_TCHER_CD) counselor1TcherNm,
+			         C.COUNSELOR1_TCHER_HP_NO counselor1TcherHpNo,
+			         C.COUNSELOR2_TCHER_CD counselor2TcherCd,
+			         (SELECT TCHER_NM FROM TB_ERP_TCHER000 Z WHERE Z.TCHER_CD = C.COUNSELOR2_TCHER_CD) counselor2TcherNm,
+			         C.COUNSELOR2_TCHER_HP_NO counselor2TcherHpNo,
+			         DBO.FN_VISIT_TCHERCD(C.CUST_CD , C.CHILD_CD) visitorTcherCd,
+			         DBO.FN_VISIT_TCHERNM(C.CUST_CD , C.CHILD_CD) visitorTcherNm,
+			    	 DBO.FN_VISIT_TCHERHPNO(C.CUST_CD , C.CHILD_CD) visitorTcherHpNo,
+			         C.REMARK,
+			         (SELECT MAX(LINK_KEY) FROM TMSG_QUEUE Z WHERE Z.LINK_KEY =  A.CUST_CD) linkKey,
+			         A.CREATED_AT createdAt,
+			         A.CREATED_BY createdBy,
+			         A.UPDATED_AT updatedAt,
+			         A.UPDATED_BY updatedBy,
+			         E.USER_CD regUserCd,
+			         E.USER_NM regUserNm,
+			         CONVERT(CHAR(10), A.UPDATED_AT, 23) regDt,
+			         ROW_NUMBER() OVER (ORDER BY A.UPDATED_AT ASC) AS RowNum,
+			         ROW_NUMBER() OVER (ORDER BY A.UPDATED_AT DESC) AS RowNum2
+			FROM     TB_ERP_MEMBER000 A
+		         LEFT OUTER JOIN TB_ERP_MEMBER100 B
+		         ON       A.CUST_CD = B.CUST_CD
+		         LEFT OUTER JOIN TB_ERP_MEMBER200 C
+		         ON       A.CUST_CD = C.CUST_CD
+				 AND      CONTRACT_TYPE = '1'
+		         INNER JOIN TB_ERP_USER000 E
+		         ON       A.UPDATED_BY = E.USER_CD
+			WHERE    1=1
+			
+			<!-- 회원유형 -->				
+			<if test="map.userType != null and map.userType != ''">  
+					AND  A.USER_TYPE = #{map.userType}
+			</if>      
+        
+			<!-- 회원계약코드 -->				
+			<if test="map.custCd != null and map.custCd != ''">  
+					AND A.CUST_CD = #{map.custCd}
+			</if>      
+			
+			<!-- 계약자명 -->						
+			<if test="map.gd1Nm != null and map.gd1Nm != ''">  
+					<![CDATA[  
+		      			AND   A.GD1_NM LIKE UPPER('%'+#{map.gd1Nm}+'%')
+		  			]]>
+			</if>      
+			
+			<!-- 지국 -->				 
+			<if test="map.areaCd != null and map.areaCd != ''">  
+					AND A.AREA_CD = #{map.areaCd}
+			</if>        
+			<!-- 센터 -->				 
+			<if test="map.orgCd != null and map.orgCd != ''">  			
+					AND A.ORG_CD IN (SELECT ORG_CD from DBO.FN_ORGCD(#{map.orgCd}))
+			</if>     
+			<!-- 상품 -->				
+			<if test="map.goodsCd != null and map.goodsCd != ''">  
+					AND B.GOODS_CD = #{map.goodsCd}
+			</if>   
+			
+			<!-- 온라인서비스상태 -->				 
+			<if test="map.onlineServiceStatus != null and map.onlineServiceStatus != ''">  
+					AND C.ONLINE_SERVICE_STATUS = #{map.onlineServiceStatus}
+			</if>    
+			
+			<!-- 방문서비스상태 -->				 
+			<if test="map.visitServiceStatus != null and map.visitServiceStatus != ''">  
+					AND C.VISIT_SERVICE_STATUS = #{map.visitServiceStatus}
+			</if>    
+			
+			
+			<!--등록일 시작 -->				 
+			<if test="map.fromDate != null and map.fromDate != ''">  
+					<![CDATA[  
+						AND CONVERT(CHAR(10), A.UPDATED_AT, 23) >= #{map.fromDate}
+		  			]]>
+			</if>    
+			
+			<!--등록일 종료 -->				 
+			<if test="map.toDate != null and map.toDate != ''">  
+					<![CDATA[  
+						AND CONVERT(CHAR(10), A.UPDATED_AT, 23) <= #{map.toDate}
+		  			]]>
+			</if>    
+			
+			<!-- 계약자 -->						
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '10'.toString() and map.searchText != null and map.searchText != ''">  
+					<![CDATA[  
+		      			AND   A.GD1_NM LIKE UPPER('%'+#{map.searchText}+'%')
+		  			]]>
+			</if>       	    
+			<!-- 휴대전화번호 -->    	
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '20'.toString() and map.searchText != null and map.searchText != ''">  
+					<![CDATA[  
+		      			AND REPLACE(A.HP_NO,'-','')  LIKE UPPER('%'+#{map.searchText}+'%')
+		  			]]>
+			</if>
+			
+			
+			<!-- 교사 -->				 
+			<if test="map.tcherCd != null and map.tcherCd != ''">  
+					<![CDATA[  
+						AND (C.COUNSELOR1_TCHER_CD = #{map.tcherCd} OR C.COUNSELOR2_TCHER_CD = #{map.tcherCd} OR DBO.FN_VISIT_TCHERCD(C.CUST_CD , C.CHILD_CD) = #{map.tcherCd})
+		  			]]>
+			</if>
+			) AS SO
+	   
+		WHERE SO.RowNum2 BETWEEN ((@PageNumber-1)*@RowsPerPage)+1
+		AND @RowsPerPage*(@PageNumber)
+    </select>
+    
+    <select id="getMemberListCount" resultType="java.lang.Integer" parameterType="hashMap" statementType="PREPARED">   
+			SELECT  COUNT(1)
+			FROM     TB_ERP_MEMBER000 A
+		         LEFT OUTER JOIN TB_ERP_MEMBER100 B
+		         ON       A.CUST_CD = B.CUST_CD
+		         LEFT OUTER JOIN TB_ERP_MEMBER200 C
+		         ON       A.CUST_CD = C.CUST_CD
+				 AND      CONTRACT_TYPE = '1'
+		         INNER JOIN TB_ERP_USER000 E
+		         ON       A.UPDATED_BY = E.USER_CD
+			WHERE    1=1
+        
+			
+			<!-- 회원유형 -->				
+			<if test="map.userType != null and map.userType != ''">  
+					AND  A.USER_TYPE = #{map.userType}
+			</if>      
+        
+			<!-- 회원계약코드 -->				
+			<if test="map.custCd != null and map.custCd != ''">  
+					AND A.CUST_CD = #{map.custCd}
+			</if>      			
+			
+			<!-- 계약자명 -->						
+			<if test="map.gd1Nm != null and map.gd1Nm != ''">  
+					<![CDATA[  
+		      			AND   A.GD1_NM LIKE UPPER('%'+#{map.gd1Nm}+'%')
+		  			]]>
+			</if>      
+			
+			<!-- 지국 -->				 
+			<if test="map.areaCd != null and map.areaCd != ''">  
+					AND A.AREA_CD = #{map.areaCd}
+			</if>        
+			<!-- 센터 -->				 
+			<if test="map.orgCd != null and map.orgCd != ''">  			
+					AND A.ORG_CD IN (SELECT ORG_CD from DBO.FN_ORGCD(#{map.orgCd}))
+			</if>     
+			<!-- 상품 -->				
+			<if test="map.goodsCd != null and map.goodsCd != ''">  
+					AND B.GOODS_CD = #{map.goodsCd}
+			</if>   
+			
+			<!-- 온라인서비스상태 -->				 
+			<if test="map.onlineServiceStatus != null and map.onlineServiceStatus != ''">  
+					AND C.ONLINE_SERVICE_STATUS = #{map.onlineServiceStatus}
+			</if>    
+			
+			<!-- 방문서비스상태 -->				 
+			<if test="map.visitServiceStatus != null and map.visitServiceStatus != ''">  
+					AND C.VISIT_SERVICE_STATUS = #{map.visitServiceStatus}
+			</if>    
+			
+			
+			<!--등록일 시작 -->				 
+			<if test="map.fromDate != null and map.fromDate != ''">  
+					<![CDATA[  
+						AND CONVERT(CHAR(10), A.UPDATED_AT, 23) >= #{map.fromDate}
+		  			]]>
+			</if>    
+			
+			<!--등록일 종료 -->				 
+			<if test="map.toDate != null and map.toDate != ''">  
+					<![CDATA[  
+						AND CONVERT(CHAR(10), A.UPDATED_AT, 23) <= #{map.toDate}
+		  			]]>
+			</if>    
+			
+			<!-- 계약자 -->						
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '10'.toString() and map.searchText != null and map.searchText != ''">  
+					<![CDATA[  
+		      			AND   A.GD1_NM LIKE UPPER('%'+#{map.searchText}+'%')
+		  			]]>
+			</if>       	    
+			<!-- 휴대전화번호 -->    	
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '20'.toString() and map.searchText != null and map.searchText != ''">  
+					<![CDATA[  
+		      			AND REPLACE(A.HP_NO,'-','')  LIKE UPPER('%'+#{map.searchText}+'%')
+		  			]]>
+			</if>
+			
+			
+			<!-- 교사 -->				 
+			<if test="map.tcherCd != null and map.tcherCd != ''">  
+					<![CDATA[  
+						AND (C.COUNSELOR1_TCHER_CD = #{map.tcherCd} OR C.COUNSELOR2_TCHER_CD = #{map.tcherCd} OR DBO.FN_VISIT_TCHERCD(C.CUST_CD , C.CHILD_CD) = #{map.tcherCd})
+		  			]]>
+			</if>
+    </select>
+    
+    <select id="getMemberDetail" resultType="memberDetailVO" parameterType="hashMap" statementType="PREPARED">   
+		SELECT   C.CUST_CD custCd,
+		         C.MEMBER_STATUS memberStatus,
+		         DBO.FN_BASECODE('MEMBER_STATUS',C.MEMBER_STATUS,'') memberStatusNm,		  
+		         (SELECT Z.APPROVAL_DT FROM TB_ERP_MEMBER050 Z WHERE Z.CUST_CD = C.CUST_CD AND Z.CHILD_CD = C.CHILD_CD AND Z.APPROVAL_YN = 'Y') cancelDt,       	
+		         C.CHILD_CD childCd,
+		         C.CHILDREN_CONTRACT_DT childrenContractDt,
+		         C.CONTRACT_TYPE contractType,
+		         C.CHILDREN_USER_CD childrenUserCd,
+		         DBO.FN_BASECODE('CONTRACT_TYPE',C.CONTRACT_TYPE,'') contractTypeNm,
+		         C.CHILDREN_NM childrenNm,
+		         C.CHILDREN_SEX childrenSex,
+		         DBO.FN_BASECODE('SEX',C.CHILDREN_SEX,'') childrenSexNm,
+		         C.CHILDREN_BIRTHDAY childrenBirthday,
+		         C.CHILDREN_HP_NO childrenHpNo,
+		         C.CHILDREN_SCHOOL_NM childrenSchoolNm,
+		         C.CHILDREN_GRADE_CD childrenGradeCd,
+		         DBO.FN_BASECODE('GRADE_CD',C.CHILDREN_GRADE_CD,'') childrenGradeCdNm,
+		         
+		         C.ONLINE_SERVICE_STATUS onlineServiceStatus,
+		         DBO.FN_BASECODE('ONLINE_SERVICE_STATUS',C.ONLINE_SERVICE_STATUS,'') onlineServiceStatusNm,
+		         C.ONLINE_SERVICE_YN onlineServiceYn,
+		         DBO.FN_BASECODE('SERVICE_USE_YN',C.ONLINE_SERVICE_YN,'') onlineServiceYnNm,
+		         C.ONLINE_SERVICE_PRICE onlineServicePrice,
+		         C.VISIT_SERVICE_STATUS visitServiceStatus,
+		         DBO.FN_BASECODE('VISIT_SERVICE_STATUS',C.VISIT_SERVICE_STATUS,'') visitServiceStatusNm,
+		         C.VISIT_SERVICE_YN visitServiceYn,
+		         DBO.FN_BASECODE('SERVICE_USE_YN',C.VISIT_SERVICE_YN,'') visitServiceYnNm,		
+		         	         
+		         C.VISIT_TIME_CD visitTimeCd,
+		         DBO.FN_BASECODE('VISIT_TIME_CD',C.VISIT_TIME_CD,'') visitTimeCdNm,
+		         
+		         C.VISIT_NUMBER_CD visitNumberCd,
+		         DBO.FN_BASECODE('VISIT_NUMBER_CD',C.VISIT_NUMBER_CD,'') visitNumberCdNm,
+		         
+		         
+		         C.ONLINE_PAYMENT_WAY onlinePaymentWay,
+		         DBO.FN_BASECODE('PAYMENT_WAY',C.ONLINE_PAYMENT_WAY,'') onlinePaymentWayNm,
+		         C.VISIT_PAYMENT_WAY visitPaymentWay,
+		         DBO.FN_BASECODE('PAYMENT_WAY',C.VISIT_PAYMENT_WAY,'') visitPaymentWayNm,
+		         
+		         C.ONLINE_PAYMENT_METHOD onlinePaymentMethod,
+		         DBO.FN_BASECODE('PAYMENT_METHOD',C.ONLINE_PAYMENT_METHOD,'') onlinePaymentMethodNm,
+		         C.VISIT_PAYMENT_METHOD visitPaymentMethod,
+		         DBO.FN_BASECODE('PAYMENT_METHOD',C.VISIT_PAYMENT_METHOD,'') visitPaymentMethodNm,		         
+		         C.VISIT_START_DT visitStartDt,
+		         C.VISIT_END_DT visitEndDt,
+		         C.VISIT_SERVICE_PRICE visitServicePrice,		
+		         C.COUNSELOR1_TCHER_CD counselor1TcherCd,
+		         (SELECT TCHER_NM FROM TB_ERP_TCHER000 Z WHERE Z.TCHER_CD = C.COUNSELOR1_TCHER_CD) counselor1TcherNm,
+		         C.COUNSELOR1_TCHER_HP_NO counselor1TcherHpNo,
+		         C.COUNSELOR2_TCHER_CD counselor2TcherCd,
+		         (SELECT TCHER_NM FROM TB_ERP_TCHER000 Z WHERE Z.TCHER_CD = C.COUNSELOR2_TCHER_CD) counselor2TcherNm,
+		         C.COUNSELOR2_TCHER_HP_NO counselor2TcherHpNo,
+		         DBO.FN_VISIT_TCHERCD(C.CUST_CD , C.CHILD_CD) visitorTcherCd,
+		         DBO.FN_VISIT_TCHERNM(C.CUST_CD , C.CHILD_CD) visitorTcherNm,
+			     DBO.FN_VISIT_TCHERHPNO(C.CUST_CD , C.CHILD_CD) visitorTcherHpNo,
+		         C.REMARK
+		FROM TB_ERP_MEMBER200 C
+		WHERE    1=1
+        
+			<!-- 회원계약코드 -->				
+			<if test="map.custCd != null and map.custCd != ''">  
+					AND C.CUST_CD = #{map.custCd}
+			</if>      
+        
+			<!-- 자녀계약코드 -->				
+			<if test="map.childCd != null and map.childCd != ''">  
+					AND C.CHILD_CD = #{map.childCd}
+			</if>     
+			
+    </select>
+	<select id="getMemberChildren" resultType="memberManageVO" parameterType="hashMap" statementType="PREPARED">   
+		SELECT   A.CUST_CD custCd,
+				 (SELECT COUNT(1) FROM TB_ERP_MEMBER200 Z WHERE Z.CUST_CD = A.CUST_CD AND Z.MEMBER_STATUS != '3') custCdCount,
+			     C.CHILD_CD childCd,
+		         A.GD1_NM gd1Nm,
+		         A.GD1_RELATION_CD gd1RelationCd,
+		         DBO.FN_BASECODE('GD_RELATION_CD',A.GD1_RELATION_CD,'') gd1RelationCdNm,
+		         A.GD1_BIRTHDAY gd1Birthday,
+		         A.GD1_USER_CD gd1UserCd,
+		         A.GD2_NM gd2Nm,
+		         A.GD2_RELATION_CD gd2RelationCd,
+		         DBO.FN_BASECODE('GD_RELATION_CD',A.GD2_RELATION_CD,'') gd2RelationCdNm,
+		         A.GD2_BIRTHDAY gd2Birthday,
+		         A.TEL_NO telNo,
+		         A.HP_NO hpNo,
+		         A.EMAIL email,
+		         A.EMAIL_TYPE emailType,
+		         A.HOME_ZIPCODE homeZipcode,
+		         A.HOME_ADDRESS1 homeAddress1,
+		         A.HOME_ADDRESS2 homeAddress2,
+		         A.DELIVERY_ZIPCODE deliveryZipcode,
+		         A.DELIVERY_ADDRESS1 deliveryAddress1,
+		         A.DELIVERY_ADDRESS2 deliveryAddress2,
+		         C.MEMBER_STATUS memberStatus,
+		         DBO.FN_BASECODE('MEMBER_STATUS',C.MEMBER_STATUS,'') memberStatusNm,         	 
+		         (SELECT Z.APPROVAL_DT FROM TB_ERP_MEMBER050 Z WHERE Z.CUST_CD = C.CUST_CD AND Z.CHILD_CD = C.CHILD_CD AND Z.APPROVAL_YN = 'Y') cancelDt,
+		         B.SALES_TYPE salesType,
+		         DBO.FN_BASECODE('SALES_TYPE',B.SALES_TYPE,'') salesTypeNm,
+		         
+		         B.CONTRACT_DT contractDt,
+		         B.GOODS_CD goodsCd,
+        			(SELECT Z.GOODS_NM FROM TB_ERP_GOODS000 Z WHERE Z.GOODS_CD = B.GOODS_CD) goodsNm,
+		         B.SUBJECT_NM subjectNm,
+		         B.AGREEMENT_CD agreementCd,
+		         DBO.FN_BASECODE('AGREEMENT_CD',B.AGREEMENT_CD,'') agreementCdNm,
+		         B.TOTAL_PRICE totalPrice,
+		         B.MONTH_PRICE monthPrice,
+		         B.CONTRACT_PRICE contractPrice,
+		         
+		         B.CONTRACT_PAYMENT_WAY contractPaymentWay,
+		         DBO.FN_BASECODE('PAYMENT_WAY',B.CONTRACT_PAYMENT_WAY,'') contractPaymentWayNm,			         
+		         B.CONTRACT_PAYMENT_METHOD contractPaymentMethod,
+		         DBO.FN_BASECODE('PAYMENT_METHOD',B.CONTRACT_PAYMENT_METHOD,'') contractPaymentMethodNm,			         
+		         B.PAYMENT_PRICE paymentPrice,
+		         B.PAYMENT_WAY paymentWay,
+		         DBO.FN_BASECODE('PAYMENT_WAY',B.PAYMENT_WAY,'') paymentWayNm,			         
+		         B.PAYMENT_METHOD paymentMethod,
+		         DBO.FN_BASECODE('PAYMENT_METHOD',B.PAYMENT_METHOD,'') paymentMethodNm,			   
+		         B.PAYMENT_YN paymentYn,
+		         DBO.FN_BASECODE('PAYMENT_YN',B.PAYMENT_YN,'') paymentYnNm,
+		         C.CHILDREN_CONTRACT_DT childrenContractDt,
+		         C.CONTRACT_TYPE contractType,
+		         DBO.FN_BASECODE('CONTRACT_TYPE',C.CONTRACT_TYPE,'') contractTypeNm,
+		         C.CHILDREN_USER_CD childrenUserCd,
+		         C.CHILDREN_NM childrenNm,
+		         C.CHILDREN_SEX childrenSex,
+		         DBO.FN_BASECODE('SEX',C.CHILDREN_SEX,'') childrenSexNm,
+		         C.CHILDREN_BIRTHDAY childrenBirthday,
+		         C.CHILDREN_HP_NO childrenHpNo,
+		         C.CHILDREN_SCHOOL_NM childrenSchoolNm,
+		         C.CHILDREN_GRADE_CD childrenGradeCd,
+		         DBO.FN_BASECODE('GRADE_CD',C.CHILDREN_GRADE_CD,'') childrenGradeCdNm,
+		         
+		         C.ONLINE_SERVICE_STATUS onlineServiceStatus,
+		         DBO.FN_BASECODE('ONLINE_SERVICE_STATUS',C.ONLINE_SERVICE_STATUS,'') onlineServiceStatusNm,
+		         C.ONLINE_SERVICE_YN onlineServiceYn,
+		         DBO.FN_BASECODE('SERVICE_USE_YN',C.ONLINE_SERVICE_YN,'') onlineServiceYnNm,
+		         C.ONLINE_SERVICE_PRICE onlineServicePrice,
+		         C.VISIT_SERVICE_STATUS visitServiceStatus,
+		         DBO.FN_BASECODE('VISIT_SERVICE_STATUS',C.VISIT_SERVICE_STATUS,'') visitServiceStatusNm,
+		         C.VISIT_SERVICE_YN visitServiceYn,
+		         DBO.FN_BASECODE('SERVICE_USE_YN',C.VISIT_SERVICE_YN,'') visitServiceYnNm,	
+		         		         
+		         C.VISIT_TIME_CD visitTimeCd,
+		         DBO.FN_BASECODE('VISIT_TIME_CD',C.VISIT_TIME_CD,'') visitTimeCdNm,
+		         
+		         C.VISIT_NUMBER_CD visitNumberCd,
+		         DBO.FN_BASECODE('VISIT_NUMBER_CD',C.VISIT_NUMBER_CD,'') visitNumberCdNm,
+		         
+		         
+		         C.ONLINE_PAYMENT_WAY onlinePaymentWay,
+		         DBO.FN_BASECODE('PAYMENT_WAY',C.ONLINE_PAYMENT_WAY,'') onlinePaymentWayNm,
+		         C.VISIT_PAYMENT_WAY visitPaymentWay,
+		         DBO.FN_BASECODE('PAYMENT_WAY',C.VISIT_PAYMENT_WAY,'') visitPaymentWayNm,
+		         
+		         C.ONLINE_PAYMENT_METHOD onlinePaymentMethod,
+		         DBO.FN_BASECODE('PAYMENT_METHOD',C.ONLINE_PAYMENT_METHOD,'') onlinePaymentMethodNm,
+		         C.VISIT_PAYMENT_METHOD visitPaymentMethod,
+		         DBO.FN_BASECODE('PAYMENT_METHOD',C.VISIT_PAYMENT_METHOD,'') visitPaymentMethodNm,
+		         
+		         C.VISIT_START_DT visitStartDt,
+		         C.VISIT_END_DT visitEndDt,
+		         C.VISIT_SERVICE_PRICE visitServicePrice,
+		         
+		         A.AREA_CD areaCd,
+		         (SELECT Z.AREA_NM FROM TB_ERP_AREA000 Z WHERE Z.AREA_CD = A.AREA_CD) areaNm,
+		         A.ORG_CD orgCd,
+		         (SELECT Z.ORG_NM FROM TB_ERP_AREA100 Z WHERE Z.ORG_CD = A.ORG_CD AND Z.ORG_CLASS='12') orgNm,
+		         A.AREA_HP_NO areaHpNo,
+		         C.COUNSELOR1_TCHER_CD counselor1TcherCd,
+		         (SELECT TCHER_NM FROM TB_ERP_TCHER000 Z WHERE Z.TCHER_CD = C.COUNSELOR1_TCHER_CD) counselor1TcherNm,
+		         C.COUNSELOR1_TCHER_HP_NO counselor1TcherHpNo,
+		         C.COUNSELOR2_TCHER_CD counselor2TcherCd,
+		         (SELECT TCHER_NM FROM TB_ERP_TCHER000 Z WHERE Z.TCHER_CD = C.COUNSELOR2_TCHER_CD) counselor2TcherNm,
+		         C.COUNSELOR2_TCHER_HP_NO counselor2TcherHpNo,
+		         DBO.FN_VISIT_TCHERCD(C.CUST_CD , C.CHILD_CD) visitorTcherCd,
+		         DBO.FN_VISIT_TCHERNM(C.CUST_CD , C.CHILD_CD) visitorTcherNm,
+			     DBO.FN_VISIT_TCHERHPNO(C.CUST_CD , C.CHILD_CD) visitorTcherHpNo,
+		         C.REMARK,
+			     (SELECT MAX(LINK_KEY) FROM TMSG_QUEUE Z WHERE Z.LINK_KEY =  A.CUST_CD) linkKey,
+		         A.CREATED_AT createdAt,
+		         A.CREATED_BY createdBy,
+		         A.UPDATED_AT updatedAt,
+		         A.UPDATED_BY updatedBy,
+		         E.USER_CD regUserCd,
+		         E.USER_NM regUserNm,
+		         CONVERT(CHAR(10), A.UPDATED_AT, 23) regDt,
+		         ROW_NUMBER() OVER (ORDER BY A.UPDATED_AT) AS RowNum
+		FROM     TB_ERP_MEMBER000 A
+		         LEFT OUTER JOIN TB_ERP_MEMBER100 B
+		         ON       A.CUST_CD = B.CUST_CD
+		         LEFT OUTER JOIN TB_ERP_MEMBER200 C
+		         ON       A.CUST_CD = C.CUST_CD
+		         INNER JOIN TB_ERP_USER000 E
+		         ON       A.UPDATED_BY = E.USER_CD
+		WHERE    1=1
+			
+			<!-- 회원계약코드 -->				
+			<if test="map.custCd != null and map.custCd != ''">  
+					AND C.CUST_CD = #{map.custCd}
+			</if>     
+			        
+			<!-- 자녀계약코드 -->
+			<if test="map.childCd != null and map.childCd != ''">  
+					AND C.CHILD_CD = #{map.childCd}
+			</if>     
+    </select>
+    
+     <select id="getMemberListAll" resultType="memberManageVO" parameterType="hashMap" statementType="PREPARED">   
+			SELECT   A.CUST_CD custCd,
+				 (SELECT COUNT(1) FROM TB_ERP_MEMBER200 Z WHERE Z.CUST_CD = A.CUST_CD AND Z.MEMBER_STATUS != '3') custCdCount,
+			         C.CHILD_CD childCd,
+			         A.GD1_NM gd1Nm,
+			         A.GD1_RELATION_CD gd1RelationCd,
+			         DBO.FN_BASECODE('GD_RELATION_CD',A.GD1_RELATION_CD,'') gd1RelationCdNm,
+			         A.GD1_BIRTHDAY gd1Birthday,
+		         	 A.GD1_USER_CD gd1UserCd,
+			         A.GD2_NM gd2Nm,
+			         A.GD2_RELATION_CD gd2RelationCd,
+			         DBO.FN_BASECODE('GD_RELATION_CD',A.GD2_RELATION_CD,'') gd2RelationCdNm,
+			         A.GD2_BIRTHDAY gd2Birthday,
+			         A.TEL_NO telNo,
+			         A.HP_NO hpNo,
+			         A.EMAIL email,
+		         	 A.EMAIL_TYPE emailType,
+			         A.HOME_ZIPCODE homeZipcode,
+			         A.HOME_ADDRESS1 homeAddress1,
+			         A.HOME_ADDRESS2 homeAddress2,
+			         A.DELIVERY_ZIPCODE deliveryZipcode,
+			         A.DELIVERY_ADDRESS1 deliveryAddress1,
+			         A.DELIVERY_ADDRESS2 deliveryAddress2,
+		         	 C.MEMBER_STATUS memberStatus,
+		         	 DBO.FN_BASECODE('MEMBER_STATUS',C.MEMBER_STATUS,'') memberStatusNm,         	 
+			         B.SALES_TYPE salesType,
+			         DBO.FN_BASECODE('SALES_TYPE',B.SALES_TYPE,'') salesTypeNm,
+		         
+			         B.CONTRACT_DT contractDt,
+			         B.GOODS_CD goodsCd,
+         			(SELECT Z.GOODS_NM FROM TB_ERP_GOODS000 Z WHERE Z.GOODS_CD = B.GOODS_CD) goodsNm,
+			         B.SUBJECT_NM subjectNm,
+			         B.AGREEMENT_CD agreementCd,
+			         DBO.FN_BASECODE('AGREEMENT_CD',B.AGREEMENT_CD,'') agreementCdNm,
+			         B.TOTAL_PRICE totalPrice,
+			         B.MONTH_PRICE monthPrice,
+			         B.CONTRACT_PRICE contractPrice,
+			         
+			         B.CONTRACT_PAYMENT_WAY contractPaymentWay,
+			         DBO.FN_BASECODE('PAYMENT_WAY',B.CONTRACT_PAYMENT_WAY,'') contractPaymentWayNm,			         
+			         B.CONTRACT_PAYMENT_METHOD contractPaymentMethod,
+			         DBO.FN_BASECODE('PAYMENT_METHOD',B.CONTRACT_PAYMENT_METHOD,'') contractPaymentMethodNm,			         
+			         B.PAYMENT_PRICE paymentPrice,
+			         B.PAYMENT_WAY paymentWay,
+			         DBO.FN_BASECODE('PAYMENT_WAY',B.PAYMENT_WAY,'') paymentWayNm,			         
+			         B.PAYMENT_METHOD paymentMethod,
+			         DBO.FN_BASECODE('PAYMENT_METHOD',B.PAYMENT_METHOD,'') paymentMethodNm,			   
+			         B.PAYMENT_YN paymentYn,
+			         DBO.FN_BASECODE('PAYMENT_YN',B.PAYMENT_YN,'') paymentYnNm,
+			         
+			         C.CHILDREN_CONTRACT_DT childrenContractDt,
+			         C.CONTRACT_TYPE contractType,
+			         DBO.FN_BASECODE('CONTRACT_TYPE',C.CONTRACT_TYPE,'') contractTypeNm,
+		         	 C.CHILDREN_USER_CD childrenUserCd,
+			         C.CHILDREN_NM childrenNm,
+			         C.CHILDREN_SEX childrenSex,
+			         DBO.FN_BASECODE('SEX',C.CHILDREN_SEX,'') childrenSexNm,
+			         C.CHILDREN_BIRTHDAY childrenBirthday,
+			         C.CHILDREN_HP_NO childrenHpNo,
+			         C.CHILDREN_SCHOOL_NM childrenSchoolNm,
+			         C.CHILDREN_GRADE_CD childrenGradeCd,
+			         DBO.FN_BASECODE('GRADE_CD',C.CHILDREN_GRADE_CD,'') childrenGradeCdNm,
+			         
+			         C.ONLINE_SERVICE_STATUS onlineServiceStatus,
+			         DBO.FN_BASECODE('ONLINE_SERVICE_STATUS',C.ONLINE_SERVICE_STATUS,'') onlineServiceStatusNm,
+			         C.ONLINE_SERVICE_YN onlineServiceYn,
+			         DBO.FN_BASECODE('SERVICE_USE_YN',C.ONLINE_SERVICE_YN,'') onlineServiceYnNm,
+			         C.ONLINE_SERVICE_PRICE onlineServicePrice,
+			         C.VISIT_SERVICE_STATUS visitServiceStatus,
+			         DBO.FN_BASECODE('VISIT_SERVICE_STATUS',C.VISIT_SERVICE_STATUS,'') visitServiceStatusNm,
+			         C.VISIT_SERVICE_YN visitServiceYn,
+			         DBO.FN_BASECODE('SERVICE_USE_YN',C.VISIT_SERVICE_YN,'') visitServiceYnNm,		
+			         	         
+			         C.VISIT_TIME_CD visitTimeCd,
+			         DBO.FN_BASECODE('VISIT_TIME_CD',C.VISIT_TIME_CD,'') visitTimeCdNm,
+			         
+			         C.VISIT_NUMBER_CD visitNumberCd,
+			         DBO.FN_BASECODE('VISIT_NUMBER_CD',C.VISIT_NUMBER_CD,'') visitNumberCdNm,
+			         
+			         
+			         C.ONLINE_PAYMENT_WAY onlinePaymentWay,
+			         DBO.FN_BASECODE('PAYMENT_WAY',C.ONLINE_PAYMENT_WAY,'') onlinePaymentWayNm,
+			         C.VISIT_PAYMENT_WAY visitPaymentWay,
+			         DBO.FN_BASECODE('PAYMENT_WAY',C.VISIT_PAYMENT_WAY,'') visitPaymentWayNm,
+			         
+			         C.ONLINE_PAYMENT_METHOD onlinePaymentMethod,
+			         DBO.FN_BASECODE('PAYMENT_METHOD',C.ONLINE_PAYMENT_METHOD,'') onlinePaymentMethodNm,
+			         C.VISIT_PAYMENT_METHOD visitPaymentMethod,
+			         DBO.FN_BASECODE('PAYMENT_METHOD',C.VISIT_PAYMENT_METHOD,'') visitPaymentMethodNm,
+			         
+			         C.VISIT_START_DT visitStartDt,
+			         C.VISIT_END_DT visitEndDt,
+			         C.VISIT_SERVICE_PRICE visitServicePrice,
+			         
+			         A.AREA_CD areaCd,
+			         (SELECT Z.AREA_NM FROM TB_ERP_AREA000 Z WHERE Z.AREA_CD = A.AREA_CD) areaNm,
+			         A.ORG_CD orgCd,
+			         (SELECT Z.ORG_NM FROM TB_ERP_AREA100 Z WHERE Z.ORG_CD = A.ORG_CD AND Z.ORG_CLASS='12') orgNm,
+			         A.AREA_HP_NO areaHpNo,
+			         C.COUNSELOR1_TCHER_CD counselor1TcherCd,
+			         (SELECT TCHER_NM FROM TB_ERP_TCHER000 Z WHERE Z.TCHER_CD = C.COUNSELOR1_TCHER_CD) counselor1TcherNm,
+			         C.COUNSELOR1_TCHER_HP_NO counselor1TcherHpNo,
+			         C.COUNSELOR2_TCHER_CD counselor2TcherCd,
+			         (SELECT TCHER_NM FROM TB_ERP_TCHER000 Z WHERE Z.TCHER_CD = C.COUNSELOR2_TCHER_CD) counselor2TcherNm,
+			         C.COUNSELOR2_TCHER_HP_NO counselor2TcherHpNo,
+			         DBO.FN_VISIT_TCHERCD(C.CUST_CD , C.CHILD_CD) visitorTcherCd,
+			         DBO.FN_VISIT_TCHERNM(C.CUST_CD , C.CHILD_CD) visitorTcherNm,
+			     	 DBO.FN_VISIT_TCHERHPNO(C.CUST_CD , C.CHILD_CD) visitorTcherHpNo,
+			         C.REMARK,
+			     	(SELECT MAX(LINK_KEY) FROM TMSG_QUEUE Z WHERE Z.LINK_KEY =  A.CUST_CD) linkKey,
+			         A.CREATED_AT createdAt,
+			         A.CREATED_BY createdBy,
+			         A.UPDATED_AT updatedAt,
+			         A.UPDATED_BY updatedBy,
+			         E.USER_CD regUserCd,
+			         E.USER_NM regUserNm,
+			         CONVERT(CHAR(10), A.UPDATED_AT, 23) regDt,
+			         ROW_NUMBER() OVER (ORDER BY A.UPDATED_AT ASC) AS RowNum,
+			         ROW_NUMBER() OVER (ORDER BY A.UPDATED_AT DESC) AS RowNum2
+			FROM     TB_ERP_MEMBER000 A
+		         LEFT OUTER JOIN TB_ERP_MEMBER100 B
+		         ON       A.CUST_CD = B.CUST_CD
+		         LEFT OUTER JOIN TB_ERP_MEMBER200 C
+		         ON       A.CUST_CD = C.CUST_CD
+				 AND      CONTRACT_TYPE = '1'
+		         INNER JOIN TB_ERP_USER000 E
+		         ON       A.UPDATED_BY = E.USER_CD
+			WHERE    1=1
+			
+			<!-- 회원유형 -->				
+			<if test="map.userType != null and map.userType != ''">  
+					AND  A.USER_TYPE = #{map.userType}
+			</if>      
+        
+			<!-- 회원계약코드 -->				
+			<if test="map.custCd != null and map.custCd != ''">  
+					AND A.CUST_CD = #{map.custCd}
+			</if>      
+			
+			<!-- 계약자명 -->						
+			<if test="map.gd1Nm != null and map.gd1Nm != ''">  
+					<![CDATA[  
+		      			AND   A.GD1_NM LIKE UPPER('%'+#{map.gd1Nm}+'%')
+		  			]]>
+			</if>      
+			
+			<!-- 지국 -->				 
+			<if test="map.areaCd != null and map.areaCd != ''">  
+					AND A.AREA_CD = #{map.areaCd}
+			</if>        
+			<!-- 센터 -->				 
+			<if test="map.orgCd != null and map.orgCd != ''">  			
+					AND A.ORG_CD IN (SELECT ORG_CD from DBO.FN_ORGCD(#{map.orgCd}))
+			</if>     
+			<!-- 상품 -->				
+			<if test="map.goodsCd != null and map.goodsCd != ''">  
+					AND B.GOODS_CD = #{map.goodsCd}
+			</if>   
+			
+			<!-- 온라인서비스상태 -->				 
+			<if test="map.onlineServiceStatus != null and map.onlineServiceStatus != ''">  
+					AND C.ONLINE_SERVICE_STATUS = #{map.onlineServiceStatus}
+			</if>    
+			
+			<!-- 방문서비스상태 -->				 
+			<if test="map.visitServiceStatus != null and map.visitServiceStatus != ''">  
+					AND C.VISIT_SERVICE_STATUS = #{map.visitServiceStatus}
+			</if>    
+			
+			
+			<!--등록일 시작 -->				 
+			<if test="map.fromDate != null and map.fromDate != ''">  
+					<![CDATA[  
+						AND CONVERT(CHAR(10), A.UPDATED_AT, 23) >= #{map.fromDate}
+		  			]]>
+			</if>    
+			
+			<!--등록일 종료 -->				 
+			<if test="map.toDate != null and map.toDate != ''">  
+					<![CDATA[  
+						AND CONVERT(CHAR(10), A.UPDATED_AT, 23) <= #{map.toDate}
+		  			]]>
+			</if>    
+			
+			<!-- 계약자 -->						
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '10'.toString() and map.searchText != null and map.searchText != ''">  
+					<![CDATA[  
+		      			AND   A.GD1_NM LIKE UPPER('%'+#{map.searchText}+'%')
+		  			]]>
+			</if>       	    
+			<!-- 휴대전화번호 -->    	
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '20'.toString() and map.searchText != null and map.searchText != ''">  
+					<![CDATA[  
+		      			AND REPLACE(A.HP_NO,'-','')  LIKE UPPER('%'+#{map.searchText}+'%')
+		  			]]>
+			</if>
+			
+			
+			<!-- 교사 -->				 
+			<if test="map.tcherCd != null and map.tcherCd != ''">  
+					<![CDATA[  
+						AND (C.COUNSELOR1_TCHER_CD = #{map.tcherCd} OR C.COUNSELOR2_TCHER_CD = #{map.tcherCd} OR DBO.FN_VISIT_TCHERCD(C.CUST_CD , C.CHILD_CD) = #{map.tcherCd})
+		  			]]>
+			</if>
+    </select>
+
+	<select id="getMemberOrgCd" parameterType="String" resultType="String">
+		SELECT ORG_CD FROM TB_ERP_MEMBER000 WHERE CUST_CD = #{custCd}
+	</select>
+</mapper>

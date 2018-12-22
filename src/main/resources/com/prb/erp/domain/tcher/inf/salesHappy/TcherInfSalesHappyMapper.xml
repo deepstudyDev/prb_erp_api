@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.prb.erp.domain.tcher.inf.salesHappy.TcherInfSalesHappyMapper">
+ 
+    <select id="getTcherSalesHappyList" resultType="tcherInfSalesHappyVO" parameterType="hashMap" statementType="PREPARED">   
+		SELECT   				
+			SALES_YYYYMM salesYyyymm, 
+			TCHER_CD tcherCd,
+			CONT_SALE_AMT contSaleAmt,
+			DED_SUM_AMT dedSumAmt,
+			PERCENTAGE percentage,
+			PLAN_AMT planAmt,
+			REAL_SUM_AMT realSumAmt,
+			WAGES_SUM_AMT wagesSumAmt
+		FROM     TB_ERP_TCHER161 A
+		WHERE    1=1
+			
+		<!-- 사번 -->
+		<if test="map.tcherCd != null and map.tcherCd != ''">  
+				AND A.TCHER_CD = #{map.tcherCd}
+		</if>   
+    </select>
+</mapper>

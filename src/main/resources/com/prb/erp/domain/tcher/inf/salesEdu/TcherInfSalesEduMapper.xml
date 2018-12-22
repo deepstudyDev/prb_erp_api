@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.prb.erp.domain.tcher.inf.salesEdu.TcherInfSalesEduMapper">
+ 
+ 	<!-- 교사조회 페이징-->
+    <select id="getTcherSalesEduList" resultType="tcherInfSalesEduVO" parameterType="hashMap" statementType="PREPARED">   
+			SELECT   
+				SALES_YYYYMM salesYyyymm,	TCHER_CD tcherCd,	EFFECT_RIZ effectRiz,	GNL_AMT gnlAmt,	PLAN_SU planSu,	PRE_AMT preAmt,	RESULT_SU resultSu,	TRANS_AMT transAmt
+		FROM     TB_ERP_TCHER162 A
+		WHERE    1=1
+		
+		<!-- 사번 -->
+		<if test="map.tcherCd != null and map.tcherCd != ''">  
+				AND A.TCHER_CD = #{map.tcherCd}
+		</if>   
+    </select>
+</mapper>

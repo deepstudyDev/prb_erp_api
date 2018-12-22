@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper 
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.prb.erp.domain.code.detail.BasicCodeDetailMapper"> 
+ 	<!-- 기준정보 조회 -->
+    <select id="getAllByCodeMap" resultType="basicCodeDetailVO" parameterType="hashMap" statementType="PREPARED">   
+	 SELECT MAIN_CODE mainCode,
+	        SUB_CODE subCode,
+	        SUB_NAME subName
+	 FROM   TB_ERP_CODE100
+    </select>
+</mapper>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+ 
+<mapper namespace="com.prb.erp.domain.notice.NoticeManageMapper">
+    <select id="getNoticeList" resultType="noticeManageVO" parameterType="hashMap" statementType="PREPARED">   
+    	DECLARE @RowsPerPage INT = 100, @PageNumber INT = #{map.pageNumber}
+    	SELECT * FROM (
+			SELECT   A.NOTICE_CD noticeCd,
+			         A.AREA_CD areaCd,
+			         (SELECT Z.AREA_NM FROM TB_ERP_AREA000 Z WHERE Z.AREA_CD = A.AREA_CD) areaNm,
+			         A.ORG_CD orgCd,
+			         (SELECT Z.ORG_NM FROM TB_ERP_AREA100 Z WHERE Z.ORG_CD = A.ORG_CD) orgNm,
+			         A.NOTICE_TITLE noticeTitle,
+			         A.NOTICE_CONTENTS noticeContents,			         
+			         A.CREATED_AT createdAt,
+			         A.CREATED_BY createdBy,
+			         A.UPDATED_AT updatedAt,
+			         A.UPDATED_BY updatedBy,
+			         B.USER_CD regUserCd,
+			         B.USER_NM regUserNm,
+			         CONVERT(CHAR(10), A.UPDATED_AT, 23) regDt,
+			         --ROW_NUMBER() OVER (ORDER BY A.UPDATED_AT ASC) AS RowNum,
+			         ROW_NUMBER() OVER (ORDER BY A.UPDATED_AT DESC) AS RowNum2
+			FROM     TB_ERP_NOTICE000 A
+			         INNER JOIN TB_ERP_USER000 B
+			         ON       A.UPDATED_BY = B.USER_CD
+			WHERE    1 = 1
+			
+			<if test="map.orgType != null and map.orgType != ''">  
+					AND A.ORG_TYPE = #{map.orgType}
+			</if>      
+			<!-- 공지코드 -->
+			<if test="map.noticeCd != null and map.noticeCd != ''">  
+					AND A.NOTICE_CD = #{map.noticeCd}
+			</if>      
+			<if test="map.areaCd != null and map.areaCd != ''">  
+					AND A.AREA_CD = #{map.areaCd}
+			</if>      
+			<if test="map.orgCd != null and map.orgCd != ''">  			
+					AND A.ORG_CD IN (SELECT ORG_CD from DBO.FN_ORGCD(#{map.orgCd}))
+			</if>         
+			) AS SOD
+	   
+		WHERE SOD.RowNum2 BETWEEN ((@PageNumber-1)*@RowsPerPage)+1
+		AND @RowsPerPage*(@PageNumber)
+    </select>
+    
+    <!-- count -->
+    <select id="getNoticeListCount" resultType="java.lang.Integer" parameterType="hashMap" statementType="PREPARED">  
+			SELECT    COUNT(1)
+			FROM     TB_ERP_NOTICE000 A
+			         INNER JOIN TB_ERP_USER000 B
+			         ON       A.UPDATED_BY = B.USER_CD
+			WHERE    1                     =1
+			<if test="map.orgType != null and map.orgType != ''">  
+					AND A.ORG_TYPE = #{map.orgType}
+			</if>      
+			<!-- 공지코드 -->		
+			<if test="map.noticeCd != null and map.noticeCd != ''">  
+					AND A.NOTICE_CD = #{map.noticeCd}
+			</if>      
+			<if test="map.areaCd != null and map.areaCd != ''">  
+					AND A.AREA_CD = #{map.areaCd}
+			</if>      
+			<if test="map.orgCd != null and map.orgCd != ''"> 			
+					AND A.ORG_CD IN (SELECT ORG_CD from DBO.FN_ORGCD(#{map.orgCd}))
+			</if>         
+    </select>
+    
+    <select id="getNotice" resultType="noticeManageVO" parameterType="hashMap" statementType="PREPARED">   
+			SELECT   A.NOTICE_CD noticeCd,
+			         A.AREA_CD areaCd,
+			         (SELECT Z.AREA_NM FROM TB_ERP_AREA000 Z WHERE Z.AREA_CD = A.AREA_CD) areaNm,
+			         A.ORG_CD orgCd,
+			         (SELECT Z.ORG_NM FROM TB_ERP_AREA100 Z WHERE Z.ORG_CD = A.ORG_CD) orgNm,
+			         A.NOTICE_TITLE noticeTitle,
+			         A.NOTICE_CONTENTS noticeContents,			         
+			         A.CREATED_AT createdAt,
+			         A.CREATED_BY createdBy,
+			         A.UPDATED_AT updatedAt,
+			         A.UPDATED_BY updatedBy,
+					 A.ORG_TYPE orgType,
+			         B.USER_CD regUserCd,
+			         B.USER_NM regUserNm,
+			         CONVERT(CHAR(10), A.UPDATED_AT, 23) regDt,
+			         ROW_NUMBER() OVER (ORDER BY A.UPDATED_AT) AS RowNum
+			FROM     TB_ERP_NOTICE000 A
+			         INNER JOIN TB_ERP_USER000 B
+			         ON       A.UPDATED_BY = B.USER_CD
+			WHERE    1                     =1
+			<if test="map.orgType != null and map.orgType != ''">  
+					AND A.ORG_TYPE = #{map.orgType}
+			</if>              
+			<!-- 공지코드 -->				
+			<if test="map.noticeCd != null and map.noticeCd != ''">  
+					AND A.NOTICE_CD = #{map.noticeCd}
+			</if>      
+			<if test="map.areaCd != null and map.areaCd != ''">  
+					AND A.AREA_CD = #{map.areaCd}
+			</if>      
+			<if test="map.orgCd != null and map.orgCd != ''">  			
+					AND A.ORG_CD IN (SELECT ORG_CD from DBO.FN_ORGCD(#{map.orgCd}))
+			</if>      
+    </select>
+    
+    <!-- 전체조회 페이징없이 -->
+    <select id="getNoticeListAll" resultType="noticeManageVO" parameterType="hashMap" statementType="PREPARED">   
+			SELECT   A.NOTICE_CD noticeCd,
+			         A.AREA_CD areaCd,
+			         (SELECT Z.AREA_NM FROM TB_ERP_AREA000 Z WHERE Z.AREA_CD = A.AREA_CD) areaNm,
+			         A.ORG_CLASS orgClass,
+			         A.ORG_CD orgCd,
+			         (SELECT Z.ORG_NM FROM TB_ERP_AREA100 Z WHERE Z.ORG_CD = A.ORG_CD) orgNm,
+			         A.NOTICE_TITLE noticeTitle,
+			         A.NOTICE_CONTENTS noticeContents,			         
+			         A.CREATED_AT createdAt,
+			         A.CREATED_BY createdBy,
+			         A.UPDATED_AT updatedAt,
+			         A.UPDATED_BY updatedBy,
+			         B.USER_CD regUserCd,
+			         B.USER_NM regUserNm,
+			         CONVERT(CHAR(10), A.UPDATED_AT, 23) regDt,
+			         ROW_NUMBER() OVER (ORDER BY A.UPDATED_AT) AS RowNum
+			FROM     TB_ERP_AREA000 A
+			         INNER JOIN TB_ERP_NOTICE000 B
+			         ON       A.UPDATED_BY = B.USER_CD
+			WHERE    1                     =1
+			<if test="map.orgType != null and map.orgType != ''">  
+					AND A.ORG_TYPE = #{map.orgType}
+			</if>              
+			<!-- 공지코드 -->				
+			<if test="map.noticeCd != null and map.noticeCd != ''">  
+					AND A.NOTICE_CD = #{map.noticeCd}
+			</if>    
+			<if test="map.areaCd != null and map.areaCd != ''">  
+					AND A.AREA_CD = #{map.areaCd}
+			</if>      
+			<if test="map.orgCd != null and map.orgCd != ''">  			
+					AND A.ORG_CD IN (SELECT ORG_CD from DBO.FN_ORGCD(#{map.orgCd}))
+			</if>       
+    </select>
+</mapper>
