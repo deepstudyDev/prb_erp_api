@@ -21,7 +21,7 @@ public class AXBootSwaggerConfig {
     @Bean
     public SwaggerSpringMvcPlugin customImplementation() {
         return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
-                .apiInfo(new ApiInfo("8PM Creative API Swagger For 에듀베이스", "API Demonstration", "", "", "", ""))
+                .apiInfo(new ApiInfo("마인드에듀 API", "API Demonstration", "", "", "", ""))
                 .includePatterns("/api/v4.*")
               //  .includePatterns("/api/edu.*")
                 .ignoredParameterTypes(AuthenticationPrincipal.class, RequestParams.class);
