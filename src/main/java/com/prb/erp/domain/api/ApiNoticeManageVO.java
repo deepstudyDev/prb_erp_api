@@ -15,7 +15,8 @@ public class ApiNoticeManageVO {
 	private String areaNm;	
     private String orgCd;
     private String orgNm;
-	private String noticeTitle;	
+	private String noticeTitle;
+	private int orgType;
 	
 	@Lob
 	private String noticeContents;

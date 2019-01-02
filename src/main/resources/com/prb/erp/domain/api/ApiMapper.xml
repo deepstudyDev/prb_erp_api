@@ -1486,6 +1486,7 @@
 			         A.UPDATED_BY updatedBy,
 			         B.USER_CD regUserCd,
 			         B.USER_NM regUserNm,
+					 A.ORG_TYPE orgType,
 			         CONVERT(CHAR(10), A.UPDATED_AT, 23) regDt,
 			         ROW_NUMBER() OVER (ORDER BY A.UPDATED_AT ASC) AS RowNum,
 			         ROW_NUMBER() OVER (ORDER BY A.UPDATED_AT DESC) AS RowNum2
@@ -1518,6 +1519,9 @@
 		<if test="map.orgCd != null and map.orgCd != ''">
 			AND orgCd IN (SELECT ORG_CD from DBO.FN_ORGCD(#{map.orgCd}))
 		</if>
+		<if test="map.orgType != null and map.orgType != ''">
+			AND orgType = #{map.orgType}
+		</if>
     </select>
     
     
@@ -1535,7 +1539,10 @@
 			</if>      
 			<if test="map.orgCd != null and map.orgCd != ''"> 			
 					AND A.ORG_CD IN (SELECT ORG_CD from DBO.FN_ORGCD(#{map.orgCd}))
-			</if>         
+			</if>
+			<if test="map.orgType != null and map.orgType != ''">
+					AND A.ORG_TYPE = #{map.orgType}
+			</if>
     </select>
     
     <!-- 오늘의 알림 -->

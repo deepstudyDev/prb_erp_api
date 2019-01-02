@@ -969,7 +969,7 @@ public class ApiService extends BaseService {
     	return result;
     	
     }
-    
+
     //오늘의알림
     public List<ApiTodayArmVO> getTodayArm(RequestParams vo) {
     	List<ApiTodayArmVO> details = apiMapper.getTodayArm(vo);    	
