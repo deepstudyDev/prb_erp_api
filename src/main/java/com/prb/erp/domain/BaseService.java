@@ -43,6 +43,10 @@ public class BaseService<T, ID extends Serializable> extends AXBootBaseService<T
 
     protected static final String NEW = "NEW";
     protected static final String N = "N";
+    protected static final String S = "S";
+    protected static final String F1 = "F1";
+    protected static final String SUCCESS = "SUCCESS";
+    protected static final String FAIL = "FAIL";
 
     protected QUserRole qUserRole = QUserRole.userRole;
     protected QAuthGroupMenu qAuthGroupMenu = QAuthGroupMenu.authGroupMenu;

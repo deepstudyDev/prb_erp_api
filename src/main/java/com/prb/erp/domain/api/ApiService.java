@@ -1476,8 +1476,8 @@ public class ApiService extends BaseService {
 			userService.saveChildren(childUser, NEW);
 		}
 
-		resultCode="S";
-		resultMsg="SUCCESS";
+		resultCode = S;
+		resultMsg = SUCCESS;
 
 		ApiResultCodeVO apiResult = new ApiResultCodeVO();
 		apiResult.setResultCode(resultCode);
@@ -1498,11 +1498,11 @@ public class ApiService extends BaseService {
 		String resultMsg="";
     	if (vo.getCustCd() != null) {
 			kiccResultService.saveKiccPaymentResultLog(vo);
-			resultCode = "S";
-			resultMsg = "SUCCESS";
+			resultCode = S;
+			resultMsg = SUCCESS;
 		} else {
-			resultCode = "F";
-			resultMsg = "FAIL";
+			resultCode = F1;
+			resultMsg = "결제코드(custCd)가 없습니다";
 		}
 		ApiResultCodeVO apiResult = new ApiResultCodeVO();
     	apiResult.setResultCode(resultCode);
