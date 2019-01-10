@@ -122,7 +122,8 @@ public class ApiTcherTransManageResponseVO {
 	private String visitorTcherCd;	
 	private String visitorTcherNm;	
 	private String visitorTcherHpNo;	
-	private String remark;	
+	private String remark;
+	private String addContractYn;
 	
     private String regUserCd;
     private String regUserNm;	

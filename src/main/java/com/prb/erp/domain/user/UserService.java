@@ -144,11 +144,11 @@ public class UserService extends BaseService<User, String> {
 			user.setUserStatus("");		
     	    //신규저장
 	        if (mode.equals("NEW")) {
-	        	String generateNum = generateNumber(6) + "";
+	        	//String generateNum = generateNumber(6) + "";
 	        	
-	    	    String password = bCryptPasswordEncoder.encode(generateNum);
-	        	user.setUserPs(password);
-	        	user.setUserPs2(generateNum);
+	    	    //String password = bCryptPasswordEncoder.encode(generateNum);
+	        	//user.setUserPs(password);
+	        	//user.setUserPs2(generateNum);
 	        }
     	    save(user);    	
     	    
@@ -169,10 +169,10 @@ public class UserService extends BaseService<User, String> {
 			
     	    //신규저장
 	        if (mode.equals("NEW")) {
-	        	String generateNum = generateNumber(6) + "";
-	    	    String password = bCryptPasswordEncoder.encode(generateNum);
-	        	user.setUserPs(password);
-	        	user.setUserPs2(generateNum);
+//	        	String generateNum = generateNumber(6) + "";
+//	    	    String password = bCryptPasswordEncoder.encode(generateNum);
+//	        	user.setUserPs(password);
+//	        	user.setUserPs2(generateNum);
 	        }
     	    save(user);    	
     	    

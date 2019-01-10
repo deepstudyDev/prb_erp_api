@@ -10,6 +10,10 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import com.prb.erp.domain.kicc.KiccResultService;
+import com.prb.erp.domain.member.MemberManageVO;
+import com.prb.erp.domain.user.User;
+import com.prb.erp.utils.CommonUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -57,7 +61,9 @@ public class ApiService extends BaseService {
 	@Inject private SendDetailService sendDetailService;
 	@Inject private UserService userService;
 
-	
+	@Inject private KiccResultService kiccResultService;
+
+
 	public List<ApiCommonCodeVO> getCommonCode(RequestParams<ApiCommonCodeVO> vo){
     	return apiMapper.getCommonCode(vo);
     }
@@ -422,6 +428,7 @@ public class ApiService extends BaseService {
 	        trans.setAddress1(apiVo.getAddress1());
 	        trans.setAddress2(apiVo.getAddress2());
 	        trans.setTransRemark(apiVo.getTransRemark());
+	        trans.setRequestStartDt(apiVo.getRequestStartDt());	//첫 수업 요청일 추가 2019. 01. 04 안지호
     		
 	        trans.setTransRequestDt(transRequestDt);
 	        trans.setTransCd(keyManagementService.getCommonCode("TCHER_TRANS","T",4));
@@ -945,8 +952,9 @@ public class ApiService extends BaseService {
     	vo.put("pageNumber" ,pageNumber);
 
     	ApiResultObjectPagingVO result = new ApiResultObjectPagingVO();
-    	List<ApiNoticeManageVO> list = apiMapper.getNoticeList(vo);    	
-    	result.setResult(list);    
+    	List<ApiNoticeManageVO> list = apiMapper.getNoticeList(vo);
+
+    	result.setResult(list);
     	
     	//현재페이지
     	result.setPageNumber(pageNumber);         	  
@@ -969,6 +977,50 @@ public class ApiService extends BaseService {
     	return result;
     	
     }
+
+	//공지조회(전체 + 방문,상담)
+	public ApiResultObjectPagingVO getNewNoticeList(RequestParams vo) {
+
+		String goodsCd = vo.getString("goodsCd","");
+		int pageNumber = 1;
+
+		if(goodsCd.equals("")){
+			pageNumber = vo.getInt("pageNumber",1);
+		}
+
+		vo.put("pageNumber" ,pageNumber);
+
+		ApiResultObjectPagingVO result = new ApiResultObjectPagingVO();
+		List<ApiNoticeManageVO> list = apiMapper.getNoticeList(vo);	//상담, 방문 공지사항
+		List<ApiNoticeManageVO> list2 = apiMapper.getNoticeListTypeAll(vo);	//전체 공지사항
+
+		List<ApiNoticeManageVO> list3 = CommonUtils.mergeTwoList(list2, list);	//두개 리스트 Merge
+
+		result.setResult(list3);
+
+		//현재페이지
+		result.setPageNumber(pageNumber);
+
+		int totalCntTypeAll = apiMapper.getNoticeListCountTypeAll();	//전체공지사항 개수
+		int totalCnt = apiMapper.getNoticeListCount(vo);
+		result.setTotalCnt(totalCntTypeAll + totalCnt);
+
+		String resultCode;
+		String resultMsg;
+
+		if (list.size() > 0){
+			resultCode = "S";
+			resultMsg = "SUCCESS";
+		}else{
+			resultCode = "F1";
+			resultMsg = "결과가 없습니다.";
+		}
+
+		result.setResultCode(resultCode);
+		result.setResultMsg(resultMsg);
+		return result;
+
+	}
 
     //오늘의알림
     public List<ApiTodayArmVO> getTodayArm(RequestParams vo) {
@@ -1374,4 +1426,88 @@ public class ApiService extends BaseService {
     	apiResult.setResultMsg(resultMsg);    	    	
     	return apiResult;    	
     }
+
+    /**
+     * 학부모, 자녀 로그인 정보 저장하기
+     * 작성자 : 안지호
+     * 작성일 : 2019. 01. 04
+     * @param requestParams
+     * @return
+     * @throws Exception
+     */
+    @Transactional
+	public ApiResultCodeVO saveUserLoginInfo(RequestParams<Object> requestParams) throws Exception {
+		String resultCode="";
+		String resultMsg="";
+        //학부모 정보 조회
+		String custCd = requestParams.getString("custCd" , "");
+		String parentLoginId = requestParams.getString("parentLoginId" , "");
+		String parentPassword = requestParams.getString("parentPassword" , "");
+		MemberManageVO memberManageVO = memberManageService.getMemberByCustCd(custCd);
+
+		//자녀 정보 조회
+		String childCd = requestParams.getString("childCd" , "");
+		String childLoginId = requestParams.getString("childLoginId" , "");
+		String childPassword = requestParams.getString("childPassword" , "");
+		MemberManageVO childManageVO = memberManageService.getMemberChildrenChildCd(childCd);
+
+		if (memberManageVO != null) {
+			User user = new User();
+			user.setUserCd(parentLoginId);
+			user.setUserPs(bCryptPasswordEncoder.encode(parentPassword));
+			user.setUserPs2(parentPassword);
+			user.setDecisionYn(N);
+			user.setUserNm(memberManageVO.getGd1Nm());
+			user.setHpNo(memberManageVO.getHpNo());
+			user.setTelNo(memberManageVO.getTelNo());
+            //학부모 로그인 정보 저장
+			userService.saveMember(user, NEW);
+		}
+
+		if (childManageVO != null) {
+			User childUser = new User();
+			childUser.setUserCd(childLoginId);
+			childUser.setUserPs(bCryptPasswordEncoder.encode(childPassword));
+			childUser.setUserPs2(childPassword);
+			childUser.setDecisionYn(N);
+			childUser.setUserNm(childManageVO.getChildrenNm());
+			childUser.setHpNo(childManageVO.getChildrenHpNo());
+            //자녀 로그인 정보 저장
+			userService.saveChildren(childUser, NEW);
+		}
+
+		resultCode="S";
+		resultMsg="SUCCESS";
+
+		ApiResultCodeVO apiResult = new ApiResultCodeVO();
+		apiResult.setResultCode(resultCode);
+		apiResult.setResultMsg(resultMsg);
+		return  apiResult;
+	}
+
+	/**
+	 * kicc 결제 결과 정보 저장하기
+	 * 작성자 : 안지호
+	 * 작성일 : 2019. 01. 10
+	 * @param vo
+	 * @return
+	 */
+	@Transactional
+	public ApiResultCodeVO saveKiccPaymentResult(ApiKiccPaymentResultSaveVO vo) {
+		String resultCode="";
+		String resultMsg="";
+    	if (vo.getCustCd() != null) {
+			kiccResultService.saveKiccPaymentResultLog(vo);
+			resultCode = "S";
+			resultMsg = "SUCCESS";
+		} else {
+			resultCode = "F";
+			resultMsg = "FAIL";
+		}
+		ApiResultCodeVO apiResult = new ApiResultCodeVO();
+    	apiResult.setResultCode(resultCode);
+    	apiResult.setResultMsg(resultMsg);
+    	return apiResult;
+	}
+
 }

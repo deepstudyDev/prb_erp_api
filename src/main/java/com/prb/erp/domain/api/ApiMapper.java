@@ -51,7 +51,10 @@ public interface ApiMapper extends MyBatisMapper {
     List<ApiTcherManageVO> getTcherList(RequestParams vo);
     //공지목록
     List<ApiNoticeManageVO> getNoticeList(RequestParams vo);
+    //전체공지목록
+    List<ApiNoticeManageVO> getNoticeListTypeAll(RequestParams vo);
     int getNoticeListCount(RequestParams vo);
+    int getNoticeListCountTypeAll();
     //오늘의알림
     List<ApiTodayArmVO> getTodayArm(RequestParams vo);
     /*

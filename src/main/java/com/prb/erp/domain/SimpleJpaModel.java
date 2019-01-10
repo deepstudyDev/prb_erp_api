@@ -21,7 +21,8 @@ public abstract class SimpleJpaModel<PK extends Serializable> extends AXBootCrud
     @Override
     @JsonIgnore
     public boolean isNew() {
-        return null == getId();
+        //return null == getId();
+        return false;
     }
 
 }

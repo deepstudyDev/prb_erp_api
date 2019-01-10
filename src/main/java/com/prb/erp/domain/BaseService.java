@@ -39,7 +39,10 @@ import com.prb.erp.domain.user.log.QUserLog;
 import com.prb.erp.domain.user.role.QUserRole;
 
 
-public class BaseService<T, ID extends Serializable> extends AXBootBaseService<T, ID> { 
+public class BaseService<T, ID extends Serializable> extends AXBootBaseService<T, ID> {
+
+    protected static final String NEW = "NEW";
+    protected static final String N = "N";
 
     protected QUserRole qUserRole = QUserRole.userRole;
     protected QAuthGroupMenu qAuthGroupMenu = QAuthGroupMenu.authGroupMenu;

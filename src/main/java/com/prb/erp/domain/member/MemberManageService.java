@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import com.prb.erp.domain.api.ApiResultCodeVO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -39,11 +40,32 @@ public class MemberManageService extends BaseService<MemberManage, MemberManage.
     public MemberManageVO getMember(RequestParams<MemberManageVO> requestParams) {
     	return memberManageMapper.getMember(requestParams);
     }
+
+	/**
+	 * 조회 (단건, custCd조회)
+	 * 작성자 : 안지호
+	 * 작성일 : 2019. 01. 04
+	 */
+
+	public MemberManageVO getMemberByCustCd(String custCd) {
+		return memberManageMapper.getMemberByCustCd(custCd);
+	}
     
     //조회 (단건::자녀)
     public MemberManageVO getMemberChildren(RequestParams<MemberManageVO> requestParams) {
     	return memberManageMapper.getMemberChildren(requestParams);
     }
+
+	/**
+	 * 조회 (단건, childCd조회)
+	 * 작성자 : 안지호
+	 * 작성일 : 2019. 01. 04
+	 * @param childCd
+	 * @return
+	 */
+	public MemberManageVO getMemberChildrenChildCd(String childCd) {
+		return memberManageMapper.getMemberChildrenChildCd(childCd);
+	}
 
     //조회 (리스트)
     public List<MemberManageVO> gets(RequestParams<MemberManageVO> vo) {
@@ -176,7 +198,6 @@ public class MemberManageService extends BaseService<MemberManage, MemberManage.
     public void deleteIfData() throws Exception {
         delete(qMemberManage).where(qMemberManage.ifYn.eq("Y")).execute();
     }
-    
 }
 
 

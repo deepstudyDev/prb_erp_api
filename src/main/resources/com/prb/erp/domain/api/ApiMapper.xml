@@ -1014,7 +1014,8 @@
 			         ISNULL(DBO.FN_VISIT_TCHERCD(C.CUST_CD , C.CHILD_CD),'-') visitorTcherCd,
 			         ISNULL(DBO.FN_VISIT_TCHERNM(C.CUST_CD , C.CHILD_CD),'-') visitorTcherNm,
 			         ISNULL(DBO.FN_VISIT_TCHERHPNO(C.CUST_CD , C.CHILD_CD),'-') visitorTcherHpNo,
-			         ISNULL(C.REMARK,'-') remark
+			         ISNULL(C.REMARK,'-') remark,
+					 ISNULL(DBO.FN_CHILD_OPTION(A.CUST_CD , F.CHILD_CD,'ADDYN'),'-') addContractYn
 			FROM     TB_ERP_MEMBER000 A
 			         INNER JOIN TB_ERP_MEMBER100 B
 			         ON       A.CUST_CD = B.CUST_CD
@@ -1177,7 +1178,8 @@
 			         ISNULL(DBO.FN_VISIT_TCHERCD(C.CUST_CD , C.CHILD_CD),'-') visitorTcherCd,
 			         ISNULL(DBO.FN_VISIT_TCHERNM(C.CUST_CD , C.CHILD_CD),'-') visitorTcherNm,
 			         ISNULL(DBO.FN_VISIT_TCHERHPNO(C.CUST_CD , C.CHILD_CD),'-') visitorTcherHpNo,
-			         ISNULL(C.REMARK,'-') remark
+			         ISNULL(C.REMARK,'-') remark,
+					 ISNULL(DBO.FN_CHILD_OPTION(A.CUST_CD , F.CHILD_CD,'ADDYN'),'-') addContractYn
 			FROM     TB_ERP_MEMBER000 A
 			         INNER JOIN TB_ERP_MEMBER100 B
 			         ON       A.CUST_CD = B.CUST_CD
@@ -1470,7 +1472,7 @@
     </select>
     
     <!-- 공지사항 조회 -->
-    <select id="getNoticeList" resultType="apiNoticeManageVO" parameterType="hashMap" statementType="PREPARED">   
+    <select id="getNoticeList" resultType="apiNoticeManageVO" parameterType="hashMap" statementType="PREPARED">
     	DECLARE @rowsPerPage INT = ISNULL(#{map.rowsPerPage},10), @pageNumber INT = ISNULL(#{map.pageNumber},1)
     	SELECT * FROM (
 			SELECT   A.NOTICE_CD noticeCd,
@@ -1479,7 +1481,7 @@
 			         A.ORG_CD orgCd,
 			         (SELECT Z.ORG_NM FROM TB_ERP_AREA100 Z WHERE Z.ORG_CD = A.ORG_CD) orgNm,
 			         A.NOTICE_TITLE noticeTitle,
-			         A.NOTICE_CONTENTS noticeContents,			         
+			         A.NOTICE_CONTENTS noticeContents,
 			         A.CREATED_AT createdAt,
 			         A.CREATED_BY createdBy,
 			         A.UPDATED_AT updatedAt,
@@ -1523,6 +1525,37 @@
 			AND orgType = #{map.orgType}
 		</if>
     </select>
+
+	<select id="getNoticeListTypeAll" resultType="apiNoticeManageVO" parameterType="hashMap" statementType="PREPARED">
+		DECLARE @rowsPerPage INT = ISNULL(#{map.rowsPerPage},10), @pageNumber INT = ISNULL(#{map.pageNumber},1)
+		SELECT * FROM (
+		SELECT   A.NOTICE_CD noticeCd,
+		A.AREA_CD areaCd,
+		(SELECT Z.AREA_NM FROM TB_ERP_AREA000 Z WHERE Z.AREA_CD = A.AREA_CD) areaNm,
+		A.ORG_CD orgCd,
+		(SELECT Z.ORG_NM FROM TB_ERP_AREA100 Z WHERE Z.ORG_CD = A.ORG_CD) orgNm,
+		A.NOTICE_TITLE noticeTitle,
+		A.NOTICE_CONTENTS noticeContents,
+		A.CREATED_AT createdAt,
+		A.CREATED_BY createdBy,
+		A.UPDATED_AT updatedAt,
+		A.UPDATED_BY updatedBy,
+		B.USER_CD regUserCd,
+		B.USER_NM regUserNm,
+		A.ORG_TYPE orgType,
+		CONVERT(CHAR(10), A.UPDATED_AT, 23) regDt,
+		ROW_NUMBER() OVER (ORDER BY A.UPDATED_AT ASC) AS RowNum,
+		ROW_NUMBER() OVER (ORDER BY A.UPDATED_AT DESC) AS RowNum2
+		FROM     TB_ERP_NOTICE000 A
+		INNER JOIN TB_ERP_USER000 B
+		ON       A.UPDATED_BY = B.USER_CD
+		WHERE    1                     =1
+		) AS SOD
+
+		WHERE SOD.RowNum2 BETWEEN ((@PageNumber-1)*@RowsPerPage)+1
+		AND @RowsPerPage*(@PageNumber)
+		AND orgType = '1'
+	</select>
     
     
     <select id="getNoticeListCount" resultType="java.lang.Integer" parameterType="hashMap" statementType="PREPARED">  
@@ -1544,6 +1577,13 @@
 					AND A.ORG_TYPE = #{map.orgType}
 			</if>
     </select>
+
+	<select id="getNoticeListCountTypeAll" resultType="java.lang.Integer" statementType="PREPARED">
+		SELECT    COUNT(1)
+		FROM     TB_ERP_NOTICE000 A
+		WHERE    1                     =1
+		AND A.ORG_TYPE = '1'
+	</select>
     
     <!-- 오늘의 알림 -->
     <select id="getTodayArm" resultType="apiTodayArmVO" parameterType="hashMap" statementType="PREPARED">   

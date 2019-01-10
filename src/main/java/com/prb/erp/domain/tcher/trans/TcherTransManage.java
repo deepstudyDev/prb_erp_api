@@ -81,7 +81,7 @@ public class TcherTransManage extends BaseJpaModel<TcherTransManage.TcherTransMa
 	@Column(name = "TRANS_REASON_CD", length = 20)
     @ColumnPosition(8)
 	@Comment(value = "사유")
-	private String transReasonCd;	
+	private String transReasonCd;
 
     @Column(name = "REQUEST_START_DT", length = 10)
     @Comment(value = "첫수업시작일")

@@ -40,5 +40,8 @@ public class ApiTcherTransRequestVO {
     private String address2;   
     
     @ApiModelProperty(value="내용", required = false)
-    private String transRemark;        
+    private String transRemark;
+
+    @ApiModelProperty(value="첫 수업 요청일", required = false)
+    private String requestStartDt;
 }

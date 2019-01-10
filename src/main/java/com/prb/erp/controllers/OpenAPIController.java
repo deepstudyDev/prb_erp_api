@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+import com.prb.erp.domain.api.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,39 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.chequer.axboot.core.controllers.BaseController;
 import com.chequer.axboot.core.parameter.RequestParams;
-import com.prb.erp.domain.api.ApiBrotherRequestVO;
-import com.prb.erp.domain.api.ApiBrotherVO;
-import com.prb.erp.domain.api.ApiCommonCodeVO;
-import com.prb.erp.domain.api.ApiContractInfoResultVO;
-import com.prb.erp.domain.api.ApiGoodsManageVO;
-import com.prb.erp.domain.api.ApiMemberChildVO;
-import com.prb.erp.domain.api.ApiMemberDetailResultVO;
-import com.prb.erp.domain.api.ApiMemberDetailsResultVO;
-import com.prb.erp.domain.api.ApiMemberHeaderVO;
-import com.prb.erp.domain.api.ApiMemberManageSaveVO;
-import com.prb.erp.domain.api.ApiMemberManageVO;
-import com.prb.erp.domain.api.ApiMemberModCustVO;
-import com.prb.erp.domain.api.ApiMemberModifyCustVO;
-import com.prb.erp.domain.api.ApiResultCodeVO;
-import com.prb.erp.domain.api.ApiResultObjectPagingVO;
-import com.prb.erp.domain.api.ApiResultObjectVO;
-import com.prb.erp.domain.api.ApiSendMasterVO;
-import com.prb.erp.domain.api.ApiService;
-import com.prb.erp.domain.api.ApiSmsMasterVO;
-import com.prb.erp.domain.api.ApiTcherAssignManageResponseVO;
-import com.prb.erp.domain.api.ApiTcherAssignSaveVO;
-import com.prb.erp.domain.api.ApiTcherManageVO;
-import com.prb.erp.domain.api.ApiTcherRestRequestVO;
-import com.prb.erp.domain.api.ApiTcherRestResponseVO;
-import com.prb.erp.domain.api.ApiTcherRestSaveVO;
-import com.prb.erp.domain.api.ApiTcherTransManageResponseVO;
-import com.prb.erp.domain.api.ApiTcherTransRequestVO;
-import com.prb.erp.domain.api.ApiTcherTransSaveVO;
-import com.prb.erp.domain.api.ApiTodayArmVO;
-import com.prb.erp.domain.api.ApiUserVO;
-import com.prb.erp.domain.api.Result080VO;
-import com.prb.erp.domain.api.Result081VO;
-import com.prb.erp.domain.api.Result082VO;
 import com.prb.erp.domain.user.UserService;
 import com.prb.erp.utils.UserLogUtil;
 import com.wordnik.swagger.annotations.ApiImplicitParam;
@@ -551,13 +519,13 @@ public class OpenAPIController extends BaseController {
 	@ApiOperation("공지목록(전체/상담/방문 구분)")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "orgType", value = "조직구분(1:전체, 12:상담사원, 14:방문사원)", dataType = "int", paramType = "query", required = true),
-			@ApiImplicitParam(name = "orgCd", value = "조직코드(전체는 orgCd 값이 없습니다)", dataType = "String", paramType = "query", required = false),
+			@ApiImplicitParam(name = "orgCd", value = "조직코드(전체는 orgCd 값이 없습니다)", dataType = "String", paramType = "query", required = true),
 			@ApiImplicitParam(name = "rowsPerPage", value = "한페이지당 검색건수", dataType = "int", paramType = "query", required = false),
 			@ApiImplicitParam(name = "pageNumber", value = "현재페이지 번호", dataType = "int", paramType = "query", required = false)
 	})
 	public ApiResultObjectPagingVO getNoticeListByType(RequestParams vo) {
 		UserLogUtil.saveUserLog("OpenAPIController","getNoticeListByType","GET");
-		return apiService.getNoticeList(vo);
+		return apiService.getNewNoticeList(vo);
 	}
 
     //오늘의알림
@@ -901,4 +869,27 @@ public class OpenAPIController extends BaseController {
     	ApiResultCodeVO apiResult = apiService.tcherInfoChange(vo);
     	return apiResult;
     }
+
+	//학무보, 자녀 로그인정보 저장
+	@RequestMapping(value="/api/v4/edu/saveUserLoginInfo", method = {RequestMethod.POST}, produces = APPLICATION_JSON)
+	@ApiOperation("로그인 정보 저장(학부모, 학생)")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "custCd", value = "학부모 코드", dataType = "String", paramType = "query", required = true),
+			@ApiImplicitParam(name = "parentLoginId", value = "학부모 로그인 아이디", dataType = "String", paramType = "query", required = true),
+			@ApiImplicitParam(name = "parentPassword", value = "학부모 로그인 패스워드", dataType = "String", paramType = "query", required = true),
+			@ApiImplicitParam(name = "childCd", value = "학생 코드", dataType = "String", paramType = "query", required = true),
+			@ApiImplicitParam(name = "childLoginId", value = "학생 로그인 아이디", dataType = "String", paramType = "query", required = true),
+			@ApiImplicitParam(name = "childPassword", value = "학생 로그인 패스워드", dataType = "String", paramType = "query", required = true)
+	})
+	public ApiResultCodeVO saveUserLoginInfo(RequestParams<Object> vo) throws Exception {
+		ApiResultCodeVO apiResult = apiService.saveUserLoginInfo(vo);
+		return apiResult;
+	}
+
+	//kicc결제결과 저장
+	@RequestMapping(value = "/api/v4/edu/saveKiccPaymentResult", method = {RequestMethod.POST}, produces = APPLICATION_JSON)
+	@ApiOperation("kicc결제결과 저장")
+	public ApiResultCodeVO saveKiccPaymentResult(@ModelAttribute ApiKiccPaymentResultSaveVO vo) {
+		return apiService.saveKiccPaymentResult(vo);
+	}
 }
