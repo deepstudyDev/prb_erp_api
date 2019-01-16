@@ -197,7 +197,7 @@ public class User extends BaseJpaModel<String> {
 	@Column(name = "IF_YN", length = 10)
     @ColumnPosition(35)
 	@Comment(value = "if데이터유무")
-	private String ifYn;	
+	private String ifYn;
 
     @Transient
     private List<UserRole> roleList;

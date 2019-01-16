@@ -1460,6 +1460,7 @@ public class ApiService extends BaseService {
 			user.setUserNm(memberManageVO.getGd1Nm());
 			user.setHpNo(memberManageVO.getHpNo());
 			user.setTelNo(memberManageVO.getTelNo());
+			user.setCustCd(custCd);
             //학부모 로그인 정보 저장
 			userService.saveMember(user, NEW);
 		}
@@ -1472,6 +1473,7 @@ public class ApiService extends BaseService {
 			childUser.setDecisionYn(N);
 			childUser.setUserNm(childManageVO.getChildrenNm());
 			childUser.setHpNo(childManageVO.getChildrenHpNo());
+			childUser.setCustCd(custCd);
             //자녀 로그인 정보 저장
 			userService.saveChildren(childUser, NEW);
 		}

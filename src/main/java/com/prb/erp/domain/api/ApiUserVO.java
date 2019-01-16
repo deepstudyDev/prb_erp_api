@@ -38,4 +38,5 @@ public class ApiUserVO {
     private String userStatusNm;
     private String decisionYn;
     private String lastLoginDate;
+    private String custCd;
 }

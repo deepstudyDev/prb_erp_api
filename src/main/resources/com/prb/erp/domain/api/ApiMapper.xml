@@ -39,7 +39,7 @@
 	         AND     Z.TCHER_TYPE = A.USER_TYPE
 	         ),'-') workCdNm,	         
 	         ISNULL(A.RANK_CD,'-') rankCd,
-	         DBO.FN_BASECODE('RANK_CD',A.RANK_CD,'') rankCdNm,
+	         DBO.FN_BASECODE('RANK_CD', A.RANK_CD,'') rankCdNm,
 	         ISNULL(A.TEL_NO,'-') telNo,
 	         ISNULL(A.HP_NO,'-') hpNo,
 	         ISNULL(A.BIRTHDAY,'-') birthday,
@@ -47,7 +47,7 @@
 	         ISNULL(A.OUT_DT,'-') outDt,
 	         ISNULL(A.MARRIAGE_YN,'-') marriageYn,
 	         DBO.FN_BASECODE('MARRIAGE_YN',A.MARRIAGE_YN,'') marriageYnNm,
-	         ISNULL(A.CHILDREN_YN,'-') childrenYn ,
+	         ISNULL(A.CHILDREN_YN,'-') childrenYn,
 	         DBO.FN_BASECODE('CHILDREN_YN',A.CHILDREN_YN,'') childrenYnNm,
 	         ISNULL(A.EMERGENCY_NM,'-') emergencyNm,
 	         ISNULL(A.EMERGENCY_TEL,'-') emergencyTel,
@@ -58,6 +58,7 @@
 	         DBO.FN_BASECODE('USER_STATUS',A.USER_STATUS,'') userStatusNm,
 	         DBO.FN_BASECODE('ID_STATUS',A.ID_STATUS,'') idStatusNm,
 	         A.USE_YN useYn,
+			 A.CUST_CD custCd,
 			 A.LAST_LOGIN_DATE lastLoginDate
 	FROM     TB_ERP_USER000 A
 	WHERE    1=1

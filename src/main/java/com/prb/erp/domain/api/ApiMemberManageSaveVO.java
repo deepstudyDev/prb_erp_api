@@ -150,5 +150,17 @@ public class ApiMemberManageSaveVO {
 	@ApiModelProperty(value="상담사원2(교사사번)", required = false)
 	private String counselor2TcherCd;	
 	@ApiModelProperty(value="휴대전화번호2(000-0000-0000)", required = false)
-	private String counselor2TcherHpNo;	
+	private String counselor2TcherHpNo;
+
+	@ApiModelProperty(value = "은행코드(은행코드 API 참조)", required = false)
+	private String bankCd;
+
+	@ApiModelProperty(value = "예금주", required = false)
+	private String bankAccountNm;
+
+	@ApiModelProperty(value = "계좌번호", required = false)
+	private String bankAccountNo;
+
+	@ApiModelProperty(value = "출금요청일", required = false)
+	private int withDrawDay;
 }
