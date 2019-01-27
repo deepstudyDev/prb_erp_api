@@ -1496,8 +1496,8 @@ public class ApiService extends BaseService {
 	 */
 	@Transactional
 	public ApiResultCodeVO saveKiccPaymentResult(ApiKiccPaymentResultSaveVO vo) {
-		String resultCode="";
-		String resultMsg="";
+		String resultCode = "";
+		String resultMsg = "";
     	if (vo.getCustCd() != null) {
 			kiccResultService.saveKiccPaymentResultLog(vo);
 			resultCode = S;

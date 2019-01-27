@@ -118,5 +118,5 @@ public class ApiMemberChildVO {
 	private String remainPrice;	
 	private String paymentInfo;
 	private String contractDt;
-	private int agreementCd;
+	private String agreementCd;
 }

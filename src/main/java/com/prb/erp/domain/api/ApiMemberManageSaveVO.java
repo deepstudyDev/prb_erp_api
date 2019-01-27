@@ -68,7 +68,7 @@ public class ApiMemberManageSaveVO {
 	private String contractDt;		
 	@ApiModelProperty(value="과목명  (length = 200)", required = false)
 	private String subjectNm;	
-	@ApiModelProperty(value="약정기간, 24:24개월 36:36개월", required = true,allowableValues = "24,26")
+	@ApiModelProperty(value="약정기간, 24:24개월 36:36개월", required = true,allowableValues = "24, 36")
 	private String agreementCd;	
 	@ApiModelProperty(value="총 금액", required = true)
 	private BigDecimal totalPrice;	
@@ -161,6 +161,6 @@ public class ApiMemberManageSaveVO {
 	@ApiModelProperty(value = "계좌번호", required = false)
 	private String bankAccountNo;
 
-	@ApiModelProperty(value = "출금요청일", required = false)
+	@ApiModelProperty(value = "출금요청일 1,5,10,15,20,25,30일", required = false, allowableValues = "1,5,10,15,20,25,30")
 	private int withDrawDay;
 }

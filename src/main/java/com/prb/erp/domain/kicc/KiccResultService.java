@@ -24,7 +24,6 @@ public class KiccResultService {
                 vo.getNoint(), vo.getPartCancelYn(), vo.getCardGubun(), vo.getCardBizGubun(), vo.getCponFlag(),
                 vo.getUsedCpon(), vo.getCancAcqDate(), vo.getCancDate(), vo.getAccountNo()
         );
-        RequestParams<KiccResult> kiccResultRequestParams = new RequestParams<>();
         kiccResultMapper.saveKiccPaymentResultLog(kiccResult);
     }
 }

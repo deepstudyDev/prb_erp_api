@@ -70,5 +70,10 @@ public class ApiMemberHeaderVO {
 	private String transCd;
 
 	private String lastBillDt;
+
+	private String bankAccountNm;
+	private String bankAccountNo;
+	private String bankCd;
+	private String withDrawDay;
 	
 }

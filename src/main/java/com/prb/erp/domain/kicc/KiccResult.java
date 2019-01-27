@@ -1,24 +1,6 @@
 package com.prb.erp.domain.kicc;
 
-import com.chequer.axboot.core.annotations.ColumnPosition;
-import com.chequer.axboot.core.annotations.Comment;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.prb.erp.domain.BaseJpaModel;
-
-import com.prb.erp.domain.SimpleJpaModel;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
-import org.apache.ibatis.type.Alias;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Data
 public class KiccResult {
