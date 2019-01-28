@@ -112,7 +112,28 @@ public class MemberItem extends BaseJpaModel<MemberItem.MemberItemId> {
 	@Column(name = "PAYMENT_YN", length = 20)
 	@Comment(value = "납부현황")
     @ColumnPosition(15)
-	private String paymentYn;	
+	private String paymentYn;
+
+	//결제기능 추가 2019. 01. 11
+	@Column(name = "BANK_CD", length = 20)
+	@ColumnPosition(16)
+	@Comment(value = "은행코드")
+	private String bankCd;
+
+	@Column(name = "BANK_ACCOUNT_NM", length=200)
+	@Comment(value = "예금주")
+	@ColumnPosition(17)
+	private String bankAccountNm;
+
+	@Column(name = "BANK_ACCOUNT_NO", length = 50)
+	@ColumnPosition(18)
+	@Comment(value = "계좌번호")
+	private String bankAccountNo;
+
+	@Column(name = "WITH_DRAW_DAY", length = 2)
+	@ColumnPosition(19)
+	@Comment(value = "출금요청일")
+	private Integer withDrawDay;
     
 @Override
 public MemberItemId getId() {

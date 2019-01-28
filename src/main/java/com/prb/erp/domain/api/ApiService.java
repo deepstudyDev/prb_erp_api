@@ -309,7 +309,11 @@ public class ApiService extends BaseService {
 				memberItem.setContractPaymentWay(apiVo.getContractPaymentWay());
 				memberItem.setContractPaymentMethod(apiVo.getContractPaymentMethod());
 				memberItem.setPaymentWay(apiVo.getPaymentWay());
-				memberItem.setPaymentMethod(apiVo.getPaymentMethod());			
+				memberItem.setPaymentMethod(apiVo.getPaymentMethod());
+				memberItem.setBankCd(apiVo.getBankCd());
+				memberItem.setBankAccountNm(apiVo.getBankAccountNm());
+				memberItem.setBankAccountNo(apiVo.getBankAccountNo());
+				memberItem.setWithDrawDay(apiVo.getWithDrawDay());
 				memberItemService.saveDetail(memberItem);
 				
 
