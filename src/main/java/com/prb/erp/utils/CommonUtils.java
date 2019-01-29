@@ -19,5 +19,19 @@ public class CommonUtils {
 	public static<T> List<T> mergeTwoList(List<T> list1, List<T> list2) {
 		return Stream.of(list1, list2).flatMap(x -> x.stream()).collect(Collectors.toList());
 	}
+
+	//주민번호만들가(yymmdd1,2)
+	public static String getRepreNum(String birthDay, String gd1RelationCd) {
+		if ("".endsWith(birthDay) || "".equals(gd1RelationCd)) return null;
+		//주민번호 앞자리 생성 ex) 880101
+		String[] firstRepreNum = StringUtils.stringSplit(birthDay, "-");
+		String firstRepreNum1 = firstRepreNum[0].substring(2, 4);
+		//남성인지 여성인지 확인 후 1 또는 2 생성
+		if ("0".equals(gd1RelationCd) || "2".equals(gd1RelationCd)) gd1RelationCd = "1";
+		else gd1RelationCd = "2";
+
+		String repreNnm = firstRepreNum1 + firstRepreNum[1] + firstRepreNum[2] + gd1RelationCd;
+		return repreNnm;
+	}
 	
 }

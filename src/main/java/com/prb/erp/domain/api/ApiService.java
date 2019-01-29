@@ -259,7 +259,9 @@ public class ApiService extends BaseService {
 				
 				member.setCustCd(apiVo.getCustCd());
 				member.setAreaCd(apiVo.getAreaCd());
-				member.setOrgCd(apiVo.getOrgCd()); 
+				member.setOrgCd(apiVo.getOrgCd());
+				//주민번호 관련 추가 2019. 01. 29 안지호
+				member.setRepreNum( CommonUtils.getRepreNum(apiVo.getGd1Birthday(), apiVo.getGd1RelationCd()) );
 				member.setAreaHpNo(apiVo.getAreaHpNo()); 
 				member.setGd1UserCd(apiVo.getCustCd());
 				member.setGd1Nm(apiVo.getGd1Nm());
@@ -279,10 +281,10 @@ public class ApiService extends BaseService {
 				member.setDeliveryZipcode(apiVo.getDeliveryZipcode());
 				member.setDeliveryAddress1(apiVo.getDeliveryAddress1());
 				member.setDeliveryAddress2(apiVo.getDeliveryAddress2());
-				member.setBankAccountNm(apiVo.getBankAccountNm());
-				member.setBankAccountNo(apiVo.getBankAccountNo());
-				member.setBankCd(apiVo.getBankCd());
-				member.setWithDrawDay(apiVo.getWithDrawDay());
+//				member.setBankAccountNm(apiVo.getBankAccountNm());
+//				member.setBankAccountNo(apiVo.getBankAccountNo());
+//				member.setBankCd(apiVo.getBankCd());
+//				member.setWithDrawDay(apiVo.getWithDrawDay());
 				memberManageService.save(member); 
 				/*
 			    User user = new User();
