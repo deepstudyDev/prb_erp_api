@@ -229,7 +229,7 @@
     	DECLARE @rowsPerPage INT = ISNULL(#{map.rowsPerPage},10), @pageNumber INT = ISNULL(#{map.pageNumber},1)
     	SELECT * FROM (
 			SELECT  *,
-				ROW_NUMBER() OVER (ORDER BY ${map.orderColumn} ${map.orderType}) AS rowNum,
+				--ROW_NUMBER() OVER (ORDER BY ${map.orderColumn} ${map.orderType}) AS rowNum,
 				ROW_NUMBER() OVER (ORDER BY ${map.orderColumn} ${map.orderType2}) AS rowNum2
 			FROM VI_ERP_MEMBER
 			WHERE    1=1

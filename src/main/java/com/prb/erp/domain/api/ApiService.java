@@ -278,7 +278,11 @@ public class ApiService extends BaseService {
 				member.setHomeAddress2(apiVo.getHomeAddress2());
 				member.setDeliveryZipcode(apiVo.getDeliveryZipcode());
 				member.setDeliveryAddress1(apiVo.getDeliveryAddress1());
-				member.setDeliveryAddress2(apiVo.getDeliveryAddress2());			
+				member.setDeliveryAddress2(apiVo.getDeliveryAddress2());
+				member.setBankAccountNm(apiVo.getBankAccountNm());
+				member.setBankAccountNo(apiVo.getBankAccountNo());
+				member.setBankCd(apiVo.getBankCd());
+				member.setWithDrawDay(apiVo.getWithDrawDay());
 				memberManageService.save(member); 
 				/*
 			    User user = new User();

@@ -189,7 +189,7 @@ public class MemberManage extends BaseJpaModel<MemberManage.MemberManageId> {
 	@Column(name = "WITH_DRAW_DAY", length = 2)
 	@ColumnPosition(29)
 	@Comment(value = "출금요청일")
-	private String withDrawDay;
+	private Integer withDrawDay;
 
 	@Transient
 	private MemberItem itemList;

@@ -8,7 +8,7 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
- 
+
 @Data
 @NoArgsConstructor
 public class ApiMemberManageSaveVO {
@@ -161,6 +161,6 @@ public class ApiMemberManageSaveVO {
 	@ApiModelProperty(value = "계좌번호", required = false)
 	private String bankAccountNo;
 
-	@ApiModelProperty(value = "출금요청일 1,5,10,15,20,25,30일", required = false, allowableValues = "1,5,10,15,20,25,30")
-	private int withDrawDay;
+	@ApiModelProperty(value = "출금요청일 5,10,15,20,25,30일", required = false, allowableValues = "5,10,15,20,25,30")
+	private Integer withDrawDay;
 }
