@@ -170,28 +170,6 @@ public class MemberManage extends BaseJpaModel<MemberManage.MemberManageId> {
 	@Comment(value = "if데이터유무")
 	private String ifYn;
 
-	//결제기능 추가 2019. 01. 11
-<<<<<<< HEAD
-	@Column(name = "BANK_CD", length = 20)
-	@ColumnPosition(26)
-	@Comment(value = "은행코드")
-	private String bankCd;
-
-	@Column(name = "BANK_ACCOUNT_NM", length=200)
-	@Comment(value = "예금주")
-	@ColumnPosition(27)
-	private String bankAccountNm;
-
-	@Column(name = "BANK_ACCOUNT_NO", length = 50)
-	@ColumnPosition(28)
-	@Comment(value = "계좌번호")
-	private String bankAccountNo;
-
-	@Column(name = "WITH_DRAW_DAY", length = 2)
-	@ColumnPosition(29)
-	@Comment(value = "출금요청일")
-	private Integer withDrawDay;
-
 	@Transient
 	private MemberItem itemList;
 
