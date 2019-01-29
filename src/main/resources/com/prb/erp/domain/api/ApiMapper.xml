@@ -517,10 +517,10 @@
 					 CASE WHEN C.REST_CD IS NULL THEN 'N' ELSE 'Y' END AS restCd,
 					 CASE WHEN D.TRANS_CD IS NULL THEN 'N' ELSE 'Y' END AS transCd,
 					 '2018-10-15' as lastBillDt,
-					 ISNULL(A.BANK_ACCOUNT_NM, '') bankAccountNm,
-					 ISNULL(A.BANK_ACCOUNT_NO, '') bankAccountNo,
-				 	 ISNULL(A.BANK_CD, '') bankCd,
-					 ISNULL(A.WITH_DRAW_DAY, 0) withDrawDay
+					 ISNULL(B.BANK_ACCOUNT_NM, '') bankAccountNm,
+					 ISNULL(B.BANK_ACCOUNT_NO, '') bankAccountNo,
+				 	 ISNULL(B.BANK_CD, '') bankCd,
+					 ISNULL(B.WITH_DRAW_DAY, 0) withDrawDay
 				FROM     TB_ERP_MEMBER000 A
 				LEFT OUTER JOIN TB_ERP_MEMBER100 B
 				ON       A.CUST_CD = B.CUST_CD
@@ -592,10 +592,10 @@
 		ISNULL(A.ORG_CD,'-') orgCd,
 		ISNULL((SELECT Z.ORG_NM FROM TB_ERP_AREA100 Z WHERE Z.ORG_CD = A.ORG_CD AND Z.ORG_CLASS='12'),'-') orgNm,
 		ISNULL(A.AREA_HP_NO,'-') areaHpNo,
-		ISNULL(A.BANK_ACCOUNT_NM, '') bankAccountNm,
-		ISNULL(A.BANK_ACCOUNT_NO, '') bankAccountNo,
-		ISNULL(A.BANK_CD, '') bankCd,
-		ISNULL(A.WITH_DRAW_DAY, 0) withDrawDay
+		ISNULL(B.BANK_ACCOUNT_NM, '') bankAccountNm,
+		ISNULL(B.BANK_ACCOUNT_NO, '') bankAccountNo,
+		ISNULL(B.BANK_CD, '') bankCd,
+		ISNULL(B.WITH_DRAW_DAY, 0) withDrawDay
 
 		FROM     TB_ERP_MEMBER000 A
 		LEFT OUTER JOIN TB_ERP_MEMBER100 B

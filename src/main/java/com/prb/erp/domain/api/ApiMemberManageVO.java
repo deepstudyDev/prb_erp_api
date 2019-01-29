@@ -149,4 +149,9 @@ public class ApiMemberManageVO {
     private String regUserNm;	
     private String regDt;
     private int rowNum;
+
+	private String bankAccountNm;
+	private String bankAccountNo;
+	private String bankCd;
+	private String withDrawDay;
 }
