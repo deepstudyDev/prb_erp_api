@@ -261,7 +261,8 @@ public class ApiService extends BaseService {
 				member.setAreaCd(apiVo.getAreaCd());
 				member.setOrgCd(apiVo.getOrgCd());
 				//주민번호 관련 추가 2019. 01. 29 안지호
-				member.setRepreNum( CommonUtils.getRepreNum(apiVo.getGd1Birthday(), apiVo.getGd1RelationCd()) );
+				//member.setRepreNum( CommonUtils.getRepreNum(apiVo.getGd1Birthday(), apiVo.getGd1RelationCd()) );
+				member.setRepreNum(apiVo.getRepreNum());
 				member.setAreaHpNo(apiVo.getAreaHpNo()); 
 				member.setGd1UserCd(apiVo.getCustCd());
 				member.setGd1Nm(apiVo.getGd1Nm());

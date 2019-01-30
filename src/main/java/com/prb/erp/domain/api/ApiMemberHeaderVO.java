@@ -16,7 +16,8 @@ public class ApiMemberHeaderVO {
 	private String orgCd;	
 	private String orgNm;	
 	private String areaHpNo;	
-	
+
+	private String repreNum;
 	private String gd1Nm;	
 	private String gd1RelationCd;	
 	private String gd1RelationCdNm;	

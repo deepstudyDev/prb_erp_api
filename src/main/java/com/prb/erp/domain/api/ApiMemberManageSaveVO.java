@@ -25,7 +25,9 @@ public class ApiMemberManageSaveVO {
     @NotEmpty(message = "보호자1_관계 입력하세요.")
 	private String gd1RelationCd;	    
     @ApiModelProperty(value="보호자1_생년월일", required = true)
-    private String gd1Birthday;	    
+    private String gd1Birthday;
+	@ApiModelProperty(value = "주민번호7자리", required = false)
+    private String repreNum;
     
     
     @ApiModelProperty(value="보호자2이름 (length = 100)", required = false)

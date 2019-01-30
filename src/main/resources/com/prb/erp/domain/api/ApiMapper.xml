@@ -465,6 +465,7 @@
     <!-- 계약내용 헤더 -->
     <select id="getMemberHeader" resultType="apiMemberHeaderVO" parameterType="hashMap" statementType="PREPARED">   
 	SELECT   A.CUST_CD custCd,
+					 ISNULL(A.REPRE_NUM, '') repreNum,
 			         ISNULL(A.GD1_NM,'-') gd1Nm,
 			         ISNULL(A.GD1_RELATION_CD,'-') gd1RelationCd,
 			         DBO.FN_BASECODE('GD_RELATION_CD',A.GD1_RELATION_CD,'') gd1RelationCdNm,
@@ -542,7 +543,9 @@
     </select>
 
 	<select id="getMemberHeaderAnyParam" resultType="apiMemberHeaderVO" parameterType="hashMap" statementType="PREPARED">
-		SELECT   A.CUST_CD custCd,
+		SELECT
+		A.CUST_CD custCd,
+		ISNULL(A.REPRE_NUM, '') repreNum,
 		ISNULL(A.GD1_NM,'-') gd1Nm,
 		ISNULL(A.GD1_RELATION_CD,'-') gd1RelationCd,
 		DBO.FN_BASECODE('GD_RELATION_CD',A.GD1_RELATION_CD,'') gd1RelationCdNm,

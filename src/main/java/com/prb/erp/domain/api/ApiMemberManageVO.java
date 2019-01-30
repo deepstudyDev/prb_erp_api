@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 public class ApiMemberManageVO {
 	private String custCd;	
 	private String childCd;
-	
+
+	private String repreNum;
 	private String gd1Nm;	
 	private String gd1RelationCd;	
 	private String gd1RelationCdNm;	
