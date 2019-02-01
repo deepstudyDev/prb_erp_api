@@ -147,7 +147,13 @@ public class UserService extends BaseService<User, String> {
 	        	//String generateNum = generateNumber(6) + "";
 	        	
 	    	    //String password = bCryptPasswordEncoder.encode(generateNum);
-	        	//user.setUserPs(password);
+	        	//user.setUserPs(password);SELECT ROW_NUMBER() OVER ( ORDER BY CREATE_DATE ) as rowNum,
+				//			   CREATE_DATE createDate,
+				//			   APK_FILE_NAME apkFileName,
+				//			   APK_VERSION apkVersion
+				//		FROM TB_ERP_APK_VERSION
+				//		ORDER BY rowNum DESC
+				//		OFFSET #{pageNumber} ROWS FETCH NEXT 10 ROWS ONLY
 	        	//user.setUserPs2(generateNum);
 	        }
     	    save(user);    	

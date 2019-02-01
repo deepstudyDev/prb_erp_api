@@ -10,6 +10,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import com.prb.erp.domain.apk.ApkVersionVO;
 import com.prb.erp.domain.kicc.KiccResultService;
 import com.prb.erp.domain.member.MemberManageVO;
 import com.prb.erp.domain.user.User;
@@ -1521,6 +1522,16 @@ public class ApiService extends BaseService {
     	apiResult.setResultCode(resultCode);
     	apiResult.setResultMsg(resultMsg);
     	return apiResult;
+	}
+
+	public ApiResultObjectVO getCurrentApkVersion() {
+		ApkVersionVO apkVersionVO = apiMapper.getCurrentApkVersion();
+		ApiResultObjectVO apiResultObjectVO = new ApiResultObjectVO();
+		apiResultObjectVO.setResult(apkVersionVO);
+		apiResultObjectVO.setResultCode(S);
+		apiResultObjectVO.setResultMsg(SUCCESS);
+		return apiResultObjectVO;
+
 	}
 
 }

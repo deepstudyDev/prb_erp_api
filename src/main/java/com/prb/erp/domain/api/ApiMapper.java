@@ -4,8 +4,9 @@ import java.util.List;
 
 import com.chequer.axboot.core.mybatis.MyBatisMapper;
 import com.chequer.axboot.core.parameter.RequestParams;
- 
- 
+import com.prb.erp.domain.apk.ApkVersionVO;
+
+
 public interface ApiMapper extends MyBatisMapper {
 	
 	List<ApiCommonCodeVO> getCommonCode(RequestParams<ApiCommonCodeVO> vo);
@@ -70,4 +71,10 @@ public interface ApiMapper extends MyBatisMapper {
 	
     List<ApiSendMasterVO> getSendList(RequestParams<ApiSendMasterVO> vo);
     int getSendListCount(RequestParams<ApiSendMasterVO> vo);
+
+    /**
+     * APk 최신버전
+     * @return
+     */
+    ApkVersionVO getCurrentApkVersion();
 }  

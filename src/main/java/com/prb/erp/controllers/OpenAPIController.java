@@ -871,7 +871,7 @@ public class OpenAPIController extends BaseController {
     }
 
 	//학무보, 자녀 로그인정보 저장
-	@RequestMapping(value="/api/ㅎv4/edu/saveUserLoginInfo", method = {RequestMethod.POST}, produces = APPLICATION_JSON)
+	@RequestMapping(value="/api/v4/edu/saveUserLoginInfo", method = {RequestMethod.POST}, produces = APPLICATION_JSON)
 	@ApiOperation("로그인 정보 저장(학부모, 학생)")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "custCd", value = "학부모 코드", dataType = "String", paramType = "query", required = true),
@@ -891,5 +891,11 @@ public class OpenAPIController extends BaseController {
 	@ApiOperation("kicc결제결과 저장")
 	public ApiResultCodeVO saveKiccPaymentResult(@ModelAttribute ApiKiccPaymentResultSaveVO vo) {
 		return apiService.saveKiccPaymentResult(vo);
+	}
+
+	@RequestMapping(value = "/api/v4/launcher/getCurrentApkVersion", method = RequestMethod.GET, produces = APPLICATION_JSON)
+	@ApiOperation("학습자앱 APK 최신버전 정보 가져오기")
+	public ApiResultObjectVO getCurrentApkVersion() {
+    	return apiService.getCurrentApkVersion();
 	}
 }
