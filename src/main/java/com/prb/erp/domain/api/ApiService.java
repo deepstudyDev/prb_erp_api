@@ -14,6 +14,7 @@ import com.prb.erp.domain.apk.ApkVersionVO;
 import com.prb.erp.domain.kicc.KiccResultService;
 import com.prb.erp.domain.member.MemberManageVO;
 import com.prb.erp.domain.user.User;
+import com.prb.erp.procedure.inter.FroebelInterfaceService;
 import com.prb.erp.utils.CommonUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
@@ -57,6 +58,7 @@ public class ApiService extends BaseService {
 	@Inject private TcherRestManageService tcherRestManageService;
 	@Inject private TcherAssignManageService tcherAssignManageService;
 	@Inject private MemberBrotherService memberBrotherService;
+	@Inject private FroebelInterfaceService froebelInterfaceService;
 
 	@Inject private SendMasterService sendMasterService;
 	@Inject private SendDetailService sendDetailService;
@@ -401,10 +403,16 @@ public class ApiService extends BaseService {
 						" Values ('" + member.getTmsgSeq() + "', 'FC001', 'DK001', 'FC101', '1', '1', CONVERT(VARCHAR, GETDATE(), 112), REPLACE(CONVERT(VARCHAR, GETDATE(), 8),':',''), '0')";
            
 				jdbcTemplate.update(qInsert);
-				
-				
-				
-	        	result.setKeyCd("custCd");
+
+
+
+
+
+				froebelInterfaceService.insertMemberManage(member, "I");
+				froebelInterfaceService.insertChildManage(memberChild, "I");
+
+
+				result.setKeyCd("custCd");
 	        	result.setKeyValue(apiVo.getCustCd());
 				result.setResultCode("S");
 				result.setResultMsg("SUCCESS");    	
