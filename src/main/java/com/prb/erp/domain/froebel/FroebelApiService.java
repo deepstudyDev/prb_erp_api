@@ -12,6 +12,8 @@ import com.prb.erp.utils.DateUtils;
 import com.prb.erp.utils.JsonUtils;
 import com.prb.erp.utils.SessionUtils;
 import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,8 @@ import javax.inject.Inject;
 
 @Service
 public class FroebelApiService extends BaseService {
+
+    protected static final Logger logger = LoggerFactory.getLogger(FroebelApiService.class);
 
     @Inject
     private GoodsManageMapper goodsManageMapper;
@@ -43,7 +47,7 @@ public class FroebelApiService extends BaseService {
 
         FroebelConstractVO froebelConstractVO = new FroebelConstractVO(
                 memberManage.getOrgCd(), memberChild.getCounselor1TcherCd(), DateUtils.getYYYYMMDDAtNow(),
-                DateUtils.getYYYYMMDDAtNow(), memberManage.getCustCd(), memberManage.getGd1Nm(),
+                DateUtils.splitDate(memberManage.getDeliveryRequestDay()), memberManage.getCustCd(), memberManage.getGd1Nm(),
                 memberManage.getRepreNum() + "000000", memberManage.getHomeZipcode(),
                 memberManage.getHomeAddress1(), memberManage.getDeliveryAddress2(), memberManage.getDeliveryZipcode(),
                 memberManage.getDeliveryAddress1(), memberManage.getDeliveryAddress2(), String.valueOf(memberItem.getTotalPrice()),
@@ -52,6 +56,7 @@ public class FroebelApiService extends BaseService {
                 memberItem.getContractPaymentMethod(), SessionUtils.getCurrentLoginUserCd(), memberItem.getGoodsCd(),
                 goodsName, String.valueOf(memberItem.getTotalPrice())
         );
+        logger.info("froebelConstractVO >>>>>>>>>>>>" + froebelConstractVO.toString());
         //계약서 연동 url 만들기
         String froebelContractApiUrl = froebelApiHost + "/BizAuto/ContractInterface.do";
         // post 파라미터 jsonString으로 만들기

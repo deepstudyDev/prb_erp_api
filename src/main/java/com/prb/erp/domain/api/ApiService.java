@@ -292,6 +292,7 @@ public class ApiService extends BaseService {
 				member.setDeliveryZipcode(apiVo.getDeliveryZipcode());
 				member.setDeliveryAddress1(apiVo.getDeliveryAddress1());
 				member.setDeliveryAddress2(apiVo.getDeliveryAddress2());
+				member.setDeliveryRequestDay(apiVo.getDeliveryRequestDay());
 //				member.setBankAccountNm(apiVo.getBankAccountNm());
 //				member.setBankAccountNo(apiVo.getBankAccountNo());
 //				member.setBankCd(apiVo.getBankCd());
@@ -415,7 +416,6 @@ public class ApiService extends BaseService {
 				String froebeCustCd = froebelApiService.saveFroebelContract(member, memberItem, memberChild);
 				if (!"".equals(froebeCustCd)) {
 					result.setFroebelCustCd(froebeCustCd);
-					//memberManageMapper.updateFroebelCustCd(froebeCustCd, apiVo.getCustCd());
 				}
 	        	result.setKeyCd("custCd");
 				//프뢰벨 학무보, 자녀 정보 프로시저 연동

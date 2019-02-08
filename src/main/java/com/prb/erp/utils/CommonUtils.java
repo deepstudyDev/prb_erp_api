@@ -28,7 +28,8 @@ public class CommonUtils {
 		String firstRepreNum1 = firstRepreNum[0].substring(2, 4);
 		//남성인지 여성인지 확인 후 1 또는 2 생성
 		if ("0".equals(gd1RelationCd) || "2".equals(gd1RelationCd)) gd1RelationCd = "1";
-		else gd1RelationCd = "2";
+		else if ("1".equals(gd1RelationCd) || "3".equals(gd1RelationCd)) gd1RelationCd = "2";
+		else gd1RelationCd = "0";
 
 		String repreNnm = firstRepreNum1 + firstRepreNum[1] + firstRepreNum[2] + gd1RelationCd;
 		return repreNnm;

@@ -4,6 +4,7 @@ import com.prb.erp.domain.froebel.*;
 import com.prb.erp.domain.member.MemberManage;
 import com.prb.erp.domain.member.child.MemberChild;
 import com.prb.erp.domain.tcher.TcherManage;
+import com.prb.erp.utils.CommonUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,11 +105,12 @@ public class FroebelInterfaceService extends FroebelDBSupport {
 
         CallableStatement cs = con.prepareCall("{call usp_InsSAM130T_HAPPY(?,?,?,?,?,?,?,?,?,?)}");
 
+        String childRepreNum = CommonUtils.getRepreNum(child.getChildrenContractDt(), "5");
         cs.setString (1, dmlFlag);
         cs.setString (2, child.getCustCd());
         cs.setString (3, child.getChildCd());
         cs.setString(4, child.getChildrenNm());
-        cs.setString(5,   FroebelInterfaceEnum.SOCICAL_SECRET_NUMBER.getProperty());//주민
+        cs.setString(5,   childRepreNum + "000000");//주민
         cs.setString(6, FroebelInterfaceEnum.DEFAULT_INSERT_ID.getProperty());
         cs.setString(7, FroebelInterfaceEnum.DEFAULT_INSERT_ID.getProperty());
 

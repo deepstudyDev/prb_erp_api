@@ -905,10 +905,11 @@ public class OpenAPIController extends BaseController {
 	@RequestMapping(value = "/api/v4/edu/getQaList",method = RequestMethod.GET, produces = APPLICATION_JSON)
 	@ApiOperation("도움말목록")
 	@ApiImplicitParams({
+			@ApiImplicitParam(name = "rowsPerPage", value = "한페이지당 검색건수", dataType = "int", paramType = "query", required = true),
+			@ApiImplicitParam(name = "pageNumber", value = "현재페이지 번호", dataType = "int", paramType = "query", required = true),
 			@ApiImplicitParam(name = "qaType", value = "도움말 종류", dataType = "String", paramType = "query", required = false),
-			@ApiImplicitParam(name = "qaTitle", value = "도움말 검색명", dataType = "String", paramType = "query", required = false),
-			@ApiImplicitParam(name = "rowsPerPage", value = "한페이지당 검색건수", dataType = "int", paramType = "query", required = false),
-			@ApiImplicitParam(name = "pageNumber", value = "현재페이지 번호", dataType = "int", paramType = "query", required = false)
+			@ApiImplicitParam(name = "qaTitle", value = "도움말 검색명", dataType = "String", paramType = "query", required = false)
+
 	})
 	public ApiResultObjectPagingVO getQaList(RequestParams requestParams) {
 		return apiService.getQaList(requestParams);

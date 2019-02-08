@@ -170,6 +170,16 @@ public class MemberManage extends BaseJpaModel<MemberManage.MemberManageId> {
 	@Comment(value = "if데이터유무")
 	private String ifYn;
 
+	@Column(name = "FROEBEL_CUST_CD", length = 20)
+	@ColumnPosition(26)
+	@Comment(value = "프뢰벨 계약코드 값")
+	private String froebelCustCd;
+
+	@Column(name = "DELIVERY_REQUEST_DAY")
+	@ColumnPosition(27)
+	@Comment(value = "배송요청일")
+	private String deliveryRequestDay;
+
 	@Transient
 	private MemberItem itemList;
 

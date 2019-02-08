@@ -165,4 +165,8 @@ public class ApiMemberManageSaveVO {
 
 	@ApiModelProperty(value = "출금요청일 5,10,15,20,25,30일", required = false, allowableValues = "5,10,15,20,25,30")
 	private Integer withDrawDay;
+
+	@ApiModelProperty(value="배송요청일(YYYY-MM-DD)", required = false)
+	@NotEmpty(message = "배송요청일을 입력하세요.(오늘 이후)")
+	private String deliveryRequestDay;
 }

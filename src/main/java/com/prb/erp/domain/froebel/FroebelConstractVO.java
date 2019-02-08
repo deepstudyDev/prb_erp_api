@@ -76,7 +76,7 @@ public class FroebelConstractVO {
     private String cmsAccNumb = "";  //계좌번호
     @JsonProperty(value = "CMS_PAY_DATE")
     private String cmsPayDate = "";  //cms결제일
-    @JsonProperty(value = "CMS_REGNUMB")
+    @JsonProperty(value = "CMS_REGNUM")
     private String cmsRegNum = "";   //계좌주인의 주민번호
     @JsonProperty(value = "CMS_MONEY")
     private String cmsMoney = "";    //cms 결제금액
