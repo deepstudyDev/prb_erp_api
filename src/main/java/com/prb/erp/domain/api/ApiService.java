@@ -16,6 +16,7 @@ import com.prb.erp.domain.kicc.KiccResultService;
 import com.prb.erp.domain.member.MemberManageMapper;
 import com.prb.erp.domain.member.MemberManageVO;
 import com.prb.erp.domain.user.User;
+import com.prb.erp.procedure.inter.FroebelInterfaceService;
 import com.prb.erp.utils.CommonUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
@@ -59,6 +60,7 @@ public class ApiService extends BaseService {
 	@Inject private TcherRestManageService tcherRestManageService;
 	@Inject private TcherAssignManageService tcherAssignManageService;
 	@Inject private MemberBrotherService memberBrotherService;
+	@Inject private FroebelInterfaceService froebelInterfaceService;
 
 	@Inject private SendMasterService sendMasterService;
 	@Inject private SendDetailService sendDetailService;
@@ -407,15 +409,19 @@ public class ApiService extends BaseService {
 						" Values ('" + member.getTmsgSeq() + "', 'FC001', 'DK001', 'FC101', '1', '1', CONVERT(VARCHAR, GETDATE(), 112), REPLACE(CONVERT(VARCHAR, GETDATE(), 8),':',''), '0')";
            
 				jdbcTemplate.update(qInsert);
+
 				//프뢰벨 결제 데이터 전송하기
 				String froebeCustCd = froebelApiService.saveFroebelContract(member, memberItem, memberChild);
 				if (!"".equals(froebeCustCd)) {
 					result.setFroebelCustCd(froebeCustCd);
 					//memberManageMapper.updateFroebelCustCd(froebeCustCd, apiVo.getCustCd());
 				}
-
-
 	        	result.setKeyCd("custCd");
+				//프뢰벨 학무보, 자녀 정보 프로시저 연동
+				froebelInterfaceService.insertMemberManage(member, "I");
+				froebelInterfaceService.insertChildManage(memberChild, "I");
+
+				result.setKeyCd("custCd");
 	        	result.setKeyValue(apiVo.getCustCd());
 				result.setResultCode("S");
 				result.setResultMsg("SUCCESS");    	
@@ -427,6 +433,12 @@ public class ApiService extends BaseService {
 		return result;
 	}
 
+	/**
+	 * 프뢰벨에서 전달받은 결제코드 값 업데이트하기
+	 * 작성자 : 안지호
+	 * @param froebelCustCd
+	 * @param custCd
+	 */
 	@Transactional
 	public void updateFroebelCustCode(String froebelCustCd, String custCd) {
 		memberManageMapper.updateFroebelCustCd(froebelCustCd, custCd);
