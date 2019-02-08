@@ -77,4 +77,9 @@ public interface ApiMapper extends MyBatisMapper {
      * @return
      */
     ApkVersionVO getCurrentApkVersion();
+
+    List<ApiQaManageVO> getQaList(RequestParams vo);
+    Integer getQaListCount(RequestParams vo);
+
+
 }  

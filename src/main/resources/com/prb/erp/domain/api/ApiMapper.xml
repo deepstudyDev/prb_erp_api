@@ -1625,9 +1625,45 @@
     </select>
 
 	<select id="getCurrentApkVersion" resultType="apkVersionVO">
-		SELECT APK_VERSION apkVersion,
-			   APK_FILE_PATH apkFilePath
+		SELECT
+			IDX idx,
+			APK_VERSION apkVersion,
+		    APK_FILE_PATH apkFilePath
 		FROM TB_ERP_APK_VERSION
 		WHERE IS_LOG = 0
+	</select>
+
+	<select id="getQaList" parameterType="hashMap" resultType="com.prb.erp.domain.api.ApiQaManageVO">
+		SELECT
+			ROW_NUMBER() OVER ( ORDER BY CREATE_DATE ASC) AS rowNum,
+			QA_ID qaId,
+			QA_TYPE qaType,
+			QA_TITLE qaTitle,
+			CONVERT(CHAR(10), CREATE_DATE, 23) createDate,
+			IS_VIEW isView,
+		FROM TB_ERP_QA
+		WHERE 1=1
+		AND IS_VIEW = 1
+		<if test="map.qaType != null and map.qaType != ''">
+			AND QA_TYPE = #{map.qaType}
+		</if>
+		<if test="map.qaTitle != null and map.qaTitle != ''">
+			AND QA_TITLE LIKE UPPER('%' + #{map.qaTitle} + '%')
+		</if>
+		ORDER BY rowNum DESC
+		OFFSET #{map.startNumber} ROWS FETCH NEXT #{map.rowsPerPage} ROWS ONLY
+	</select>
+
+	<select id="getQaListCount" parameterType="hashMap" resultType="Integer">
+		SELECT count(QA_ID) as cnt FROM TB_ERP_QA
+		WHERE 1=1
+		AND IS_VIEW = 1
+		<if test="map.qaType != null and map.qaType != ''">
+			AND QA_TYPE = #{map.qaType}
+		</if>
+		<if test="map.qaTitle != null and map.qaTitle != ''">
+			AND QA_TITLE LIKE UPPER('%' + #{map.qaTitle} + '%')
+		</if>
+
 	</select>
 </mapper>

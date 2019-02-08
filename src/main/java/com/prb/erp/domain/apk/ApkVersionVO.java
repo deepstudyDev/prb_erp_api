@@ -5,6 +5,10 @@ import lombok.Data;
 @Data
 public class ApkVersionVO {
 
+    private Integer idx;
+
+    private String packageName = "com.ideepstudy.stu.realease";
+
     private String apkVersion;
 
     private String apkFilePath;

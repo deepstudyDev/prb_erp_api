@@ -18,6 +18,7 @@ import com.prb.erp.domain.member.MemberManageVO;
 import com.prb.erp.domain.user.User;
 import com.prb.erp.procedure.inter.FroebelInterfaceService;
 import com.prb.erp.utils.CommonUtils;
+import com.prb.erp.utils.PagingSupport;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -1559,7 +1560,39 @@ public class ApiService extends BaseService {
 		apiResultObjectVO.setResultCode(S);
 		apiResultObjectVO.setResultMsg(SUCCESS);
 		return apiResultObjectVO;
-
 	}
+
+	public ApiResultObjectPagingVO getQaList(RequestParams vo) {
+        if (vo == null) return null;
+
+        int pageNumber = vo.getInt("pageNumber");
+        int startNumber = PagingSupport.getPagingStartNumber(pageNumber, vo.getInt("rowsPerPage"));
+
+        vo.put("startNumber", startNumber);
+        vo.put("rowsPerPage", Integer.valueOf(vo.getString("rowsPerPage")));
+        List<ApiQaManageVO>list = apiMapper.getQaList(vo);
+        int totalCount = apiMapper.getQaListCount(vo);
+
+        ApiResultObjectPagingVO result = new ApiResultObjectPagingVO();
+        result.setResult(list);
+        result.setPageNumber(pageNumber);
+        result.setTotalCnt(totalCount);
+
+        String resultCode;
+        String resultMsg;
+
+        if (list.size() > 0){
+            resultCode = S;
+            resultMsg = SUCCESS;
+        }else{
+            resultCode = F1;
+            resultMsg = "결과가 없습니다.";
+        }
+
+        result.setResultCode(resultCode);
+        result.setResultMsg(resultMsg);
+        return result;
+
+    }
 
 }

@@ -51,7 +51,7 @@ public class FroebelInterfaceService extends FroebelDBSupport {
 
         cs.setString (1, dmlFlag);
         cs.setString (2, member.getCustCd());
-        cs.setString (3, FroebelInterfaceEnum.SOCICAL_SECRET_NUMBER.getProperty());	//주민등록번호
+        cs.setString (3, member.getRepreNum());	//주민등록번호
         cs.setString(4, member.getGd1Nm());
         cs.setString(5, FroebelInterfaceEnum.SOCICAL_SECRET_NUMBER.getProperty());	//부주민등록번호
         cs.setString(6, member.getGd2Nm());
