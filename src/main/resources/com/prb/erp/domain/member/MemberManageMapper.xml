@@ -1190,4 +1190,8 @@
 	<select id="getMemberOrgCd" parameterType="String" resultType="String">
 		SELECT ORG_CD FROM TB_ERP_MEMBER000 WHERE CUST_CD = #{custCd}
 	</select>
+
+	<update id="updateFroebelCustCd">
+		UPDATE TB_ERP_MEMBER000 SET FROEBEL_CUST_CD = #{froebelCustCd} WHERE CUST_CD = #{custCd}
+	</update>
 </mapper>

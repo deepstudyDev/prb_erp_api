@@ -126,7 +126,9 @@ public class OpenAPIController extends BaseController {
     @ApiOperation("계약정보저장")
     public ApiResultCodeVO saveMember(@Valid @ModelAttribute ApiMemberManageSaveVO vo) throws Exception {
     	UserLogUtil.saveUserLog("OpenAPIController","saveMember","GET");
-    	return apiService.saveMember(vo);
+    	ApiResultCodeVO apiResultCodeVO = apiService.saveMember(vo);
+		apiService.updateFroebelCustCode(apiResultCodeVO.getFroebelCustCd(), apiResultCodeVO.getKeyValue());
+    	return apiResultCodeVO;
     }
 
     //계약정보조회

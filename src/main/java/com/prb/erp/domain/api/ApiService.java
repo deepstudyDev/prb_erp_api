@@ -11,7 +11,9 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import com.prb.erp.domain.apk.ApkVersionVO;
+import com.prb.erp.domain.froebel.FroebelApiService;
 import com.prb.erp.domain.kicc.KiccResultService;
+import com.prb.erp.domain.member.MemberManageMapper;
 import com.prb.erp.domain.member.MemberManageVO;
 import com.prb.erp.domain.user.User;
 import com.prb.erp.utils.CommonUtils;
@@ -63,6 +65,9 @@ public class ApiService extends BaseService {
 	@Inject private UserService userService;
 
 	@Inject private KiccResultService kiccResultService;
+	@Inject private FroebelApiService froebelApiService;
+
+	@Inject private MemberManageMapper memberManageMapper;
 
 
 	public List<ApiCommonCodeVO> getCommonCode(RequestParams<ApiCommonCodeVO> vo){
@@ -257,7 +262,8 @@ public class ApiService extends BaseService {
 					apiVo.setCustCd(apiVo.getCustCd());
 				}
 				member.setTmsgSeq(keyManagementService.getItemCode("TMSG","",12));
-				
+
+
 				member.setCustCd(apiVo.getCustCd());
 				member.setAreaCd(apiVo.getAreaCd());
 				member.setOrgCd(apiVo.getOrgCd());
@@ -401,9 +407,14 @@ public class ApiService extends BaseService {
 						" Values ('" + member.getTmsgSeq() + "', 'FC001', 'DK001', 'FC101', '1', '1', CONVERT(VARCHAR, GETDATE(), 112), REPLACE(CONVERT(VARCHAR, GETDATE(), 8),':',''), '0')";
            
 				jdbcTemplate.update(qInsert);
-				
-				
-				
+				//프뢰벨 결제 데이터 전송하기
+				String froebeCustCd = froebelApiService.saveFroebelContract(member, memberItem, memberChild);
+				if (!"".equals(froebeCustCd)) {
+					result.setFroebelCustCd(froebeCustCd);
+					//memberManageMapper.updateFroebelCustCd(froebeCustCd, apiVo.getCustCd());
+				}
+
+
 	        	result.setKeyCd("custCd");
 	        	result.setKeyValue(apiVo.getCustCd());
 				result.setResultCode("S");
@@ -416,7 +427,12 @@ public class ApiService extends BaseService {
 		return result;
 	}
 
-    
+	@Transactional
+	public void updateFroebelCustCode(String froebelCustCd, String custCd) {
+		memberManageMapper.updateFroebelCustCd(froebelCustCd, custCd);
+	}
+
+
     //인수인계요청
     @Transactional
     public ApiResultCodeVO transRequest(ApiTcherTransRequestVO apiVo) {

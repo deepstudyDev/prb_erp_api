@@ -226,4 +226,8 @@
 		  			]]>
 			</if> 
     </select>
+
+	<select id="getGoodsName" parameterType="String" resultType="String">
+		SELECT GOODS_NM FROM TB_ERP_GOODS000 WHERE GOODS_CD = #{goodsCd}
+	</select>
 </mapper>

@@ -10,4 +10,5 @@ public class ApiResultCodeVO {
 	String keyValue;	
 	String resultCode;
 	String resultMsg;
+	String froebelCustCd;
 }

@@ -1628,6 +1628,6 @@
 		SELECT APK_VERSION apkVersion,
 			   APK_FILE_PATH apkFilePath
 		FROM TB_ERP_APK_VERSION
-		WHERE IS_LOG = 1
+		WHERE IS_LOG = 0
 	</select>
 </mapper>

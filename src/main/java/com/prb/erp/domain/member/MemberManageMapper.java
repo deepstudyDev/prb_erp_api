@@ -17,4 +17,5 @@ public interface MemberManageMapper extends MyBatisMapper {
     MemberManageVO getMemberChildren(RequestParams<MemberManageVO> vo);
     MemberManageVO getMemberChildrenChildCd(@Param("childCd") String childCd);
     String getMemberOrgCd(@Param("custCd") String custCd);
+    void updateFroebelCustCd(@Param("froebelCustCd") String froebelCustCd, @Param("custCd") String custCd);
 }  
