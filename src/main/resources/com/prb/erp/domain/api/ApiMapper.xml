@@ -1635,20 +1635,20 @@
 
 	<select id="getQaList" parameterType="hashMap" resultType="com.prb.erp.domain.api.ApiQaManageVO">
 		SELECT
-			ROW_NUMBER() OVER ( ORDER BY CREATE_DATE ASC) AS rowNum,
-			QA_ID qaId,
-			QA_TYPE qaType,
-			QA_TITLE qaTitle,
-			CONVERT(CHAR(10), CREATE_DATE, 23) createDate,
-			IS_VIEW isView,
-		FROM TB_ERP_QA
-		WHERE 1=1
-		AND IS_VIEW = 1
+			ROW_NUMBER() OVER ( ORDER BY A.CREATE_DATE ASC) AS rowNum,
+			A.QA_ID,
+			A.QA_TYPE ,
+			A.QA_TITLE ,
+			B.QA_REP_CONTENTS ,
+			CONVERT(CHAR(10), A.CREATE_DATE, 23)
+		FROM TB_ERP_QA A INNER JOIN TB_ERP_QA_REP B
+		ON A.QA_ID = B.QA_ID
+		WHERE IS_VIEW = 1
 		<if test="map.qaType != null and map.qaType != ''">
-			AND QA_TYPE = #{map.qaType}
+			AND A.QA_TYPE = #{map.qaType}
 		</if>
 		<if test="map.qaTitle != null and map.qaTitle != ''">
-			AND QA_TITLE LIKE UPPER('%' + #{map.qaTitle} + '%')
+			AND A.QA_TITLE LIKE UPPER('%' + #{map.qaTitle} + '%')
 		</if>
 		ORDER BY rowNum DESC
 		OFFSET #{map.startNumber} ROWS FETCH NEXT #{map.rowsPerPage} ROWS ONLY
