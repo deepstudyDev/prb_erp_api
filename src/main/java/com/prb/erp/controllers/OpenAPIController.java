@@ -902,7 +902,7 @@ public class OpenAPIController extends BaseController {
     	return apiService.getCurrentApkVersion();
 	}
 
-	@RequestMapping(value = "/api/v4/edu/getQaList",method = RequestMethod.GET, produces = APPLICATION_JSON)
+	@RequestMapping(value = "/api/v4/launcher/getQaList",method = RequestMethod.GET, produces = APPLICATION_JSON)
 	@ApiOperation("도움말목록")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "rowsPerPage", value = "한페이지당 검색건수", dataType = "int", paramType = "query", required = true),
