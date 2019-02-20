@@ -1194,4 +1194,13 @@
 	<update id="updateFroebelCustCd">
 		UPDATE TB_ERP_MEMBER000 SET FROEBEL_CUST_CD = #{froebelCustCd} WHERE CUST_CD = #{custCd}
 	</update>
+
+	<select id="getUserCdCountByLoginId" resultType="Integer" parameterType="String">
+		SELECT count(*) as cnt FROM TB_ERP_USER000 WHERE USER_CD = #{loginId}
+	</select>
+
+	<select id="getForbiddenWordList" resultType="String">
+		SELECT WORD FROM TB_ERP_FORBIDDEN_WORD WHERE IS_USE = 1
+	</select>
+
 </mapper>

@@ -155,4 +155,7 @@ public class ApiMemberManageVO {
 	private String bankAccountNo;
 	private String bankCd;
 	private String withDrawDay;
+
+	private String custLoginId;
+	private String childLoginId;
 }

@@ -1625,23 +1625,21 @@
     </select>
 
 	<select id="getCurrentApkVersion" resultType="apkVersionVO">
-		SELECT
-			IDX idx,
-			APK_VERSION apkVersion,
-		    APK_FILE_PATH apkFilePath
+		SELECT IDX, APK_VERSION, APK_FILE_PATH
 		FROM TB_ERP_APK_VERSION
 		WHERE IS_LOG = 0
 	</select>
 
-	<select id="getQaList" parameterType="hashMap" resultType="com.prb.erp.domain.api.ApiQaManageVO">
+	<select id="getQaList" parameterType="hashMap" resultType="apiQaManageVO">
 		SELECT
 			ROW_NUMBER() OVER ( ORDER BY A.CREATE_DATE ASC) AS rowNum,
 			A.QA_ID,
-			A.QA_TYPE ,
-			A.QA_TITLE ,
-			B.QA_REP_CONTENTS ,
+			A.QA_TYPE,
+			A.QA_TITLE,
+			B.QA_REP_CONTENTS,
 			CONVERT(CHAR(10), A.CREATE_DATE, 23)
-		FROM TB_ERP_QA A INNER JOIN TB_ERP_QA_REP B
+		FROM TB_ERP_QA A
+		INNER JOIN TB_ERP_QA_REP B
 		ON A.QA_ID = B.QA_ID
 		WHERE IS_VIEW = 1
 		<if test="map.qaType != null and map.qaType != ''">

@@ -1478,54 +1478,82 @@ public class ApiService extends BaseService {
      */
     @Transactional
 	public ApiResultCodeVO saveUserLoginInfo(RequestParams<Object> requestParams) throws Exception {
+		ApiResultCodeVO apiResult = new ApiResultCodeVO();
+
 		String resultCode="";
 		String resultMsg="";
-        //학부모 정보 조회
+        //학부모 로그인 가입 정보
 		String custCd = requestParams.getString("custCd" , "");
 		String parentLoginId = requestParams.getString("parentLoginId" , "");
 		String parentPassword = requestParams.getString("parentPassword" , "");
-		MemberManageVO memberManageVO = memberManageService.getMemberByCustCd(custCd);
-
-		//자녀 정보 조회
+		//자녀 로그인 가입 정보
 		String childCd = requestParams.getString("childCd" , "");
 		String childLoginId = requestParams.getString("childLoginId" , "");
 		String childPassword = requestParams.getString("childPassword" , "");
+
+		//학부모 정보 조회
+		MemberManageVO memberManageVO = memberManageService.getMemberByCustCd(custCd);
+		//자녀 정보 조회
 		MemberManageVO childManageVO = memberManageService.getMemberChildrenChildCd(childCd);
+		//금칙어 조회
+		List<String>forbiddenWordCntList = memberManageMapper.getForbiddenWordList();
 
 		if (memberManageVO != null) {
-			User user = new User();
-			user.setUserCd(parentLoginId);
-			user.setUserPs(bCryptPasswordEncoder.encode(parentPassword));
-			user.setUserPs2(parentPassword);
-			user.setDecisionYn(N);
-			user.setUserNm(memberManageVO.getGd1Nm());
-			user.setHpNo(memberManageVO.getHpNo());
-			user.setTelNo(memberManageVO.getTelNo());
-			user.setCustCd(custCd);
-            //학부모 로그인 정보 저장
-			userService.saveMember(user, NEW);
+			//학부모 회원가입ID 유효성, 중복 체크
+			int parentCnt = memberManageMapper.getUserCdCountByLoginId(parentLoginId);
+			boolean isParentForbiddenWord = com.prb.erp.utils.StringUtils.containsStrList(forbiddenWordCntList, parentLoginId);
+			if (parentCnt > 0 || isParentForbiddenWord) {
+				resultCode = PARENT_REG_FAIL;
+				resultMsg = "사용할 수 없는 학부모 아이디입니다.";
+
+				apiResult.setResultCode(resultCode);
+				apiResult.setResultMsg(resultMsg);
+				return apiResult;
+			}
+		}
+		if (childManageVO != null) {
+			//자녀 회원가입ID 유효성, 중복 체크
+			int childCnt = memberManageMapper.getUserCdCountByLoginId(childLoginId);
+			boolean isChildForbiddenWord = com.prb.erp.utils.StringUtils.containsStrList(forbiddenWordCntList, childLoginId);
+			if (childCnt > 0 || isChildForbiddenWord) {
+				resultCode = CHILD_REG_FAIL;
+				resultMsg = "사용할 수 없는 자녀 아이디입니다.";
+
+				apiResult.setResultCode(resultCode);
+				apiResult.setResultMsg(resultMsg);
+				return apiResult;
+			}
 		}
 
-		if (childManageVO != null) {
-			User childUser = new User();
-			childUser.setUserCd(childLoginId);
-			childUser.setUserPs(bCryptPasswordEncoder.encode(childPassword));
-			childUser.setUserPs2(childPassword);
-			childUser.setDecisionYn(N);
-			childUser.setUserNm(childManageVO.getChildrenNm());
-			childUser.setHpNo(childManageVO.getChildrenHpNo());
-			childUser.setCustCd(custCd);
-            //자녀 로그인 정보 저장
-			userService.saveChildren(childUser, NEW);
-		}
+		User user = new User();
+		user.setUserCd(parentLoginId);
+		user.setUserPs(bCryptPasswordEncoder.encode(parentPassword));
+		user.setUserPs2(parentPassword);
+		user.setDecisionYn(N);
+		user.setUserNm(memberManageVO.getGd1Nm());
+		user.setHpNo(memberManageVO.getHpNo());
+		user.setTelNo(memberManageVO.getTelNo());
+		user.setCustCd(custCd);
+		//학부모 로그인 정보 저장
+		userService.saveMember(user, NEW);
+
+		User childUser = new User();
+		childUser.setUserCd(childLoginId);
+		childUser.setUserPs(bCryptPasswordEncoder.encode(childPassword));
+		childUser.setUserPs2(childPassword);
+		childUser.setDecisionYn(N);
+		childUser.setUserNm(childManageVO.getChildrenNm());
+		childUser.setHpNo(childManageVO.getChildrenHpNo());
+		childUser.setCustCd(custCd);
+		//자녀 로그인 정보 저장
+		userService.saveChildren(childUser, NEW);
 
 		resultCode = S;
 		resultMsg = SUCCESS;
-
-		ApiResultCodeVO apiResult = new ApiResultCodeVO();
 		apiResult.setResultCode(resultCode);
 		apiResult.setResultMsg(resultMsg);
-		return  apiResult;
+
+		return apiResult;
 	}
 
 	/**

@@ -896,13 +896,13 @@ public class OpenAPIController extends BaseController {
 	}
 
 	//학습자앱 최신정보 가져오기
-	@RequestMapping(value = "/api/v4/launcher/getCurrentApkVersion", method = RequestMethod.GET, produces = APPLICATION_JSON)
+	@RequestMapping(value = "/api/v4/edu/getCurrentApkVersion", method = {RequestMethod.POST}, produces = APPLICATION_JSON)
 	@ApiOperation("학습자앱 APK 최신버전 정보 가져오기")
 	public ApiResultObjectVO getCurrentApkVersion() {
     	return apiService.getCurrentApkVersion();
 	}
 
-	@RequestMapping(value = "/api/v4/launcher/getQaList",method = RequestMethod.GET, produces = APPLICATION_JSON)
+	@RequestMapping(value = "/api/v4/edu/getQaList", method = {RequestMethod.POST}, produces = APPLICATION_JSON)
 	@ApiOperation("도움말목록")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "rowsPerPage", value = "한페이지당 검색건수", dataType = "int", paramType = "query", required = true),
