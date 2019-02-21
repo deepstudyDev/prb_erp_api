@@ -5,6 +5,7 @@ import java.util.List;
 import com.chequer.axboot.core.mybatis.MyBatisMapper;
 import com.chequer.axboot.core.parameter.RequestParams;
 import com.prb.erp.domain.apk.ApkVersionVO;
+import org.apache.ibatis.annotations.Param;
 
 
 public interface ApiMapper extends MyBatisMapper {
@@ -80,6 +81,8 @@ public interface ApiMapper extends MyBatisMapper {
 
     List<ApiQaManageVO> getQaList(RequestParams vo);
     Integer getQaListCount(RequestParams vo);
+
+    int getUserCountBlockedLogin(@Param("custCd") String custCd);
 
 
 }  

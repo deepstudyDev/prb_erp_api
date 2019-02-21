@@ -70,24 +70,36 @@ public class OpenAPIController extends BaseController {
     	String resultMsg;
 
     	ApiResultObjectVO apiResult = new ApiResultObjectVO();
+
     	ApiUserVO result = apiService.getUserInfo(vo);
+		//서비스 가능한 상태인지 확인 2019.02.21 안지호
+		boolean isService = apiService.checkIsService(result);
+		if (!isService) {
+			resultCode = "F2";
+			resultMsg = "서비스이용이 중지된 회원입니다.";
+
+			//apiResult.setResult(result);
+			apiResult.setResultCode(resultCode);
+			apiResult.setResultMsg(resultMsg);
+			return apiResult;
+		}
 
     	if (null != result){
-    		resultCode = "S";
-    		resultMsg = "SUCCESS";
+			resultCode = "S";
+			resultMsg = "SUCCESS";
 
-    		//교사일경우 / 최초로그인 / 퇴사유무
-    		if ((result.getUserType().equals("12") || result.getUserType().equals("14"))){
+			//교사일경우 / 최초로그인 / 퇴사유무
+			if ((result.getUserType().equals("12") || result.getUserType().equals("14"))){
 
-    			if(StringUtils.isEmpty(result.getLastLoginDate())){
-            		resultCode = "F3";
-            		resultMsg = "최초 로그인 하는 교사입니다. 패스워드 변경 후 진행 하세요.";
-    			}
-        		if (result.getUserStatus().equals("20")){
-            		resultCode = "F2";
-            		resultMsg = "접근할수 없는 사용자입니다.("+result.getUserStatusNm()+")";
-        		}
-    		}
+				if(StringUtils.isEmpty(result.getLastLoginDate())){
+					resultCode = "F3";
+					resultMsg = "최초 로그인 하는 교사입니다. 패스워드 변경 후 진행 하세요.";
+				}
+				if (result.getUserStatus().equals("20")){
+					resultCode = "F2";
+					resultMsg = "접근할수 없는 사용자입니다.("+result.getUserStatusNm()+")";
+				}
+			}
     	}else{
     		resultCode = "F1";
     		resultMsg = "사용자 정보가 없습니다.";

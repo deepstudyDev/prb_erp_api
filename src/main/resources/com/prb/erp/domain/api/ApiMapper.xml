@@ -1662,6 +1662,12 @@
 		<if test="map.qaTitle != null and map.qaTitle != ''">
 			AND QA_TITLE LIKE UPPER('%' + #{map.qaTitle} + '%')
 		</if>
+	</select>
 
+	<select id="getUserCountBlockedLogin" resultType="int">
+		SELECT count(CUST_CD) cnt
+		FROM TB_ERP_MEMBER000
+		WHERE CUST_CD = #{custCd}
+		AND SERVICE_YN = '0'
 	</select>
 </mapper>

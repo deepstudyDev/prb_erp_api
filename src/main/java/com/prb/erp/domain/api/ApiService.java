@@ -84,6 +84,14 @@ public class ApiService extends BaseService {
     	return apiMapper.getUserInfo(requestParams);
     }
 
+    public boolean checkIsService(ApiUserVO apiUserVO) {
+		int userCnt = apiMapper.getUserCountBlockedLogin(apiUserVO.getCustCd());
+		if (userCnt == 1) {
+			return false;
+		}
+		return true;
+	}
+
     //상품정보
     public ApiResultObjectPagingVO getGoodsManageList(RequestParams<ApiGoodsManageVO> vo) {
     	String goodsCd = vo.getString("goodsCd","");
