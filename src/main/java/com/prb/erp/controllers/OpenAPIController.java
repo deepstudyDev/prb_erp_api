@@ -72,16 +72,20 @@ public class OpenAPIController extends BaseController {
     	ApiResultObjectVO apiResult = new ApiResultObjectVO();
 
     	ApiUserVO result = apiService.getUserInfo(vo);
-		//서비스 가능한 상태인지 확인 2019.02.21 안지호
-		boolean isService = apiService.checkIsService(result);
-		if (!isService) {
-			resultCode = "F2";
-			resultMsg = "서비스이용이 중지된 회원입니다.";
 
-			//apiResult.setResult(result);
-			apiResult.setResultCode(resultCode);
-			apiResult.setResultMsg(resultMsg);
-			return apiResult;
+		//학부모, 자녀 로그인시 서비스 가능한 상태인지 확인 - 2019.02.21 안지호
+		String userType = vo.getString("userType" , "");
+		if ("30".equals(userType) || "40".equals(userType)) {
+			boolean isService = apiService.checkIsService(result);
+			if (!isService) {
+				resultCode = "F2";
+				resultMsg = "서비스이용이 중지된 회원입니다.";
+
+				//apiResult.setResult(result);
+				apiResult.setResultCode(resultCode);
+				apiResult.setResultMsg(resultMsg);
+				return apiResult;
+			}
 		}
 
     	if (null != result){
