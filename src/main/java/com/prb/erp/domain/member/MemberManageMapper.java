@@ -20,4 +20,5 @@ public interface MemberManageMapper extends MyBatisMapper {
     void updateFroebelCustCd(@Param("froebelCustCd") String froebelCustCd, @Param("custCd") String custCd);
     int getUserCdCountByLoginId(@Param("loginId") String loginId);
     List<String>getForbiddenWordList();
+    void updateServiceYn(@Param("custCd")String custCd);
 }  

@@ -1547,6 +1547,10 @@ public class ApiService extends BaseService {
 		childUser.setCustCd(custCd);
 		//자녀 로그인 정보 저장
 		userService.saveChildren(childUser, NEW);
+		//자녀 코드 USER000 업데이트
+		userService.updateUserChildCd(custCd, childCd);
+		//MEMBER000 서비스 가능(로그인 가능)하도록 변경
+		memberManageService.updateServiceYn(custCd);
 
 		resultCode = S;
 		resultMsg = SUCCESS;

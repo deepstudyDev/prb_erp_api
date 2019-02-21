@@ -330,4 +330,8 @@
 					AND A.USER_CD = #{map.userCd}
 			</if>   
     </select>
+
+	<update id="updateUserChildCd">
+		UPDATE TB_ERP_USER000 SET CHILD_CD = #{childCd} WHERE CUST_CD = #{custCd}
+	</update>
 </mapper>

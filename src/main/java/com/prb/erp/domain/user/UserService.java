@@ -276,4 +276,9 @@ public class UserService extends BaseService<User, String> {
     public void setLoginDate(String userCd) {    	
     	update(qUser).set(qUser.lastLoginDate, Instant.now(Clock.systemUTC())).where(qUser.userCd.eq(userCd)).execute();
     }
+
+    public void updateUserChildCd(String custCd, String childCd) {
+    	if ("".equals(custCd)) return;
+    	userMapper.updateUserChildCd(custCd, childCd);
+	}
 }

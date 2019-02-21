@@ -1203,4 +1203,8 @@
 		SELECT WORD FROM TB_ERP_FORBIDDEN_WORD WHERE IS_USE = 1
 	</select>
 
+	<update id="updateServiceYn" parameterType="String">
+		UPDATE TB_ERP_MEMBER000 SET SERVICE_YN = 1 WHERE CUST_CD = #{custCd}
+	</update>
+
 </mapper>

@@ -198,6 +198,11 @@ public class MemberManageService extends BaseService<MemberManage, MemberManage.
     public void deleteIfData() throws Exception {
         delete(qMemberManage).where(qMemberManage.ifYn.eq("Y")).execute();
     }
+
+    public void updateServiceYn(String custCd) {
+		if ("".equals(custCd)) return;
+		memberManageMapper.updateServiceYn(custCd);
+	}
 }
 
 
