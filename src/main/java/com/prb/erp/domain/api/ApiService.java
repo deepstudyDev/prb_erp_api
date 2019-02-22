@@ -78,9 +78,9 @@ public class ApiService extends BaseService {
     }
 
     public ApiUserVO getUserInfo(RequestParams requestParams) {
-        String userPs = requestParams.getString("userPs" , "");        
+        String userPs = requestParams.getString("userPs" , "");
 	    String password = bCryptPasswordEncoder.encode(userPs);
-	    requestParams.put("userPs" , password);	   
+	    requestParams.put("userPs" , password);
     	return apiMapper.getUserInfo(requestParams);
     }
 
@@ -96,48 +96,48 @@ public class ApiService extends BaseService {
     public ApiResultObjectPagingVO getGoodsManageList(RequestParams<ApiGoodsManageVO> vo) {
     	String goodsCd = vo.getString("goodsCd","");
     	int pageNumber = 1;
-    	
+
     	if(goodsCd.equals("")){
     		pageNumber = vo.getInt("pageNumber",1);
-    	}    	
-    	
+    	}
+
     	vo.put("pageNumber" ,pageNumber);
-    	
+
     	ApiResultObjectPagingVO result = new ApiResultObjectPagingVO();
     	List<ApiGoodsManageVO> list = apiMapper.getGoodsManageList(vo);
-    	result.setResult(list);    
-    	
-    	//현재페이지    	
-    	result.setPageNumber(pageNumber);         	  
-    	int totalCnt = apiMapper.getGoodsManageListCount(vo);    	
-    	result.setTotalCnt(totalCnt);    	
-    	
+    	result.setResult(list);
+
+    	//현재페이지
+    	result.setPageNumber(pageNumber);
+    	int totalCnt = apiMapper.getGoodsManageListCount(vo);
+    	result.setTotalCnt(totalCnt);
+
     	String resultCode;
     	String resultMsg;
-    	
+
     	if (list.size() > 0){
     		resultCode = "S";
     		resultMsg = "SUCCESS";
     	}else{
     		resultCode = "F1";
     		resultMsg = "결과가 없습니다.";
-    	}    	
-    	
+    	}
+
     	result.setResultCode(resultCode);
-    	result.setResultMsg(resultMsg);   	
+    	result.setResultMsg(resultMsg);
     	return result;
     }
 
-    
+
     //계약 상세 (자녀별)
     public List<ApiMemberDetailVO> getMemberDetail(RequestParams<ApiMemberDetailVO> vo) {
-    	List<ApiMemberDetailVO> details = apiMapper.getMemberDetail(vo);    	
+    	List<ApiMemberDetailVO> details = apiMapper.getMemberDetail(vo);
     	return details;
     }
-    
+
     //계약 상세 (header)
     public ApiMemberHeaderVO getMemberHeader(RequestParams<Object> vo) {
-    	ApiMemberHeaderVO header = apiMapper.getMemberHeader(vo);    	
+    	ApiMemberHeaderVO header = apiMapper.getMemberHeader(vo);
     	return header;
     }
 
@@ -157,19 +157,19 @@ public class ApiService extends BaseService {
 
     //계약 상세 (child)
     public List<ApiMemberChildVO> getMemberChilds(RequestParams<Object> vo) {
-    	List<ApiMemberChildVO> child = apiMapper.getMemberChilds(vo);    	
+    	List<ApiMemberChildVO> child = apiMapper.getMemberChilds(vo);
     	return child;
     }
 
     //계약 상세 (child-형제정보)
     public List<ApiBrotherVO> getMemberBrothers(RequestParams<Object> vo) {
-    	List<ApiBrotherVO> child = apiMapper.getMemberBrothers(vo);    	
+    	List<ApiBrotherVO> child = apiMapper.getMemberBrothers(vo);
     	return child;
     }
-    
+
     //계약 상세 (child)
     public ApiMemberChildVO getMemberChild(RequestParams<Object> vo) {
-    	ApiMemberChildVO child = apiMapper.getMemberChild(vo);    	
+    	ApiMemberChildVO child = apiMapper.getMemberChild(vo);
     	return child;
     }
 
@@ -188,28 +188,28 @@ public class ApiService extends BaseService {
 	}
     //계약 상세 (child-요약)
     public List<ApiMemberChildVO> getContractInfoDetail(RequestParams<Object> vo) {
-    	List<ApiMemberChildVO> child = apiMapper.getContractInfoDetail(vo);    	
+    	List<ApiMemberChildVO> child = apiMapper.getContractInfoDetail(vo);
     	return child;
-    }    
-    
-    
+    }
+
+
     //회원::계약정보
     public ApiResultObjectPagingVO getMemberList(RequestParams<ApiMemberManageVO> vo) {
     	String custCd = vo.getString("custCd","");
     	String orderColumn = vo.getString("orderColumn","");
     	String orderType = vo.getString("orderType","");
     	String orderType2 = "";
-    	
+
     	int pageNumber = 1;
-    	
+
     	if(custCd.equals("")){
     		pageNumber = vo.getInt("pageNumber",1);
-    	}    	
-    	
+    	}
+
     	if(orderColumn.equals("")){
     		orderColumn = "UPDATED_AT";
     	}
-    	
+
     	if(orderType.equals("")){
     		orderType = "asc";
     	}
@@ -220,25 +220,25 @@ public class ApiService extends BaseService {
     		orderType2 = "asc";
     	}
 
-    	vo.put("orderColumn" ,orderColumn);  
-    	vo.put("orderType" ,orderType);  
-    	vo.put("orderType2" ,orderType2);  
-    	
-    	
-    	vo.put("pageNumber" ,pageNumber);  
-    	
+    	vo.put("orderColumn" ,orderColumn);
+    	vo.put("orderType" ,orderType);
+    	vo.put("orderType2" ,orderType2);
+
+
+    	vo.put("pageNumber" ,pageNumber);
+
     	ApiResultObjectPagingVO result = new ApiResultObjectPagingVO();
     	List<ApiMemberManageVO> list = apiMapper.getMemberList(vo);
-    	result.setResult(list);   
-    	
-    	//현재페이지    	
-    	result.setPageNumber(pageNumber);         	  
-    	int totalCnt = apiMapper.getMemberListCount(vo);    	
-    	result.setTotalCnt(totalCnt);    	
-    	
+    	result.setResult(list);
+
+    	//현재페이지
+    	result.setPageNumber(pageNumber);
+    	int totalCnt = apiMapper.getMemberListCount(vo);
+    	result.setTotalCnt(totalCnt);
+
     	String resultCode;
     	String resultMsg;
-    	
+
     	if (list.size() > 0){
     		resultCode = "S";
     		resultMsg = "SUCCESS";
@@ -246,9 +246,9 @@ public class ApiService extends BaseService {
     		resultCode = "F1";
     		resultMsg = "결과가 없습니다.";
     	}
-    	
+
     	result.setResultCode(resultCode);
-    	result.setResultMsg(resultMsg);   	
+    	result.setResultMsg(resultMsg);
 
     	result.setTodayMemberCount(apiMapper.getTodayMemberCount(vo) + "");
     	result.setTotalMemberCount(apiMapper.getTotalMemberCount(vo) + "");
@@ -263,7 +263,7 @@ public class ApiService extends BaseService {
 		MemberChild memberChild = new MemberChild();
 
 		ApiResultCodeVO result = new ApiResultCodeVO();
-		
+
 		try{
 			if(null!=apiVo){
 				if(StringUtils.isEmpty(apiVo.getCustCd())){
@@ -281,10 +281,10 @@ public class ApiService extends BaseService {
 				//주민번호 관련 추가 2019. 01. 29 안지호
 				//member.setRepreNum( CommonUtils.getRepreNum(apiVo.getGd1Birthday(), apiVo.getGd1RelationCd()) );
 				member.setRepreNum(apiVo.getRepreNum());
-				member.setAreaHpNo(apiVo.getAreaHpNo()); 
+				member.setAreaHpNo(apiVo.getAreaHpNo());
 				member.setGd1UserCd(apiVo.getCustCd());
 				member.setGd1Nm(apiVo.getGd1Nm());
-				member.setGd1RelationCd(apiVo.getGd1RelationCd());				
+				member.setGd1RelationCd(apiVo.getGd1RelationCd());
 				member.setGd1Birthday(apiVo.getGd1Birthday());
 				member.setGd1RelationCd(apiVo.getGd1RelationCd());
 				member.setGd2Nm(apiVo.getGd2Nm());
@@ -293,7 +293,7 @@ public class ApiService extends BaseService {
 				member.setGd1RelationCd(apiVo.getGd1RelationCd());
 				member.setTelNo(apiVo.getTelNo());
 				member.setHpNo(apiVo.getHpNo());
-				member.setEmail(apiVo.getEmail());				
+				member.setEmail(apiVo.getEmail());
 				member.setHomeZipcode(apiVo.getHomeZipcode());
 				member.setHomeAddress1(apiVo.getHomeAddress1());
 				member.setHomeAddress2(apiVo.getHomeAddress2());
@@ -305,7 +305,7 @@ public class ApiService extends BaseService {
 //				member.setBankAccountNo(apiVo.getBankAccountNo());
 //				member.setBankCd(apiVo.getBankCd());
 //				member.setWithDrawDay(apiVo.getWithDrawDay());
-				memberManageService.save(member); 
+				memberManageService.save(member);
 				/*
 			    User user = new User();
 	    		//자녀권한 셋팅
@@ -316,10 +316,10 @@ public class ApiService extends BaseService {
 				user.setZipcode(member.getHomeZipcode());
 				user.setAddress1(member.getHomeAddress1());
 				user.setAddress2(member.getHomeAddress2());
-				
-				user.setAreaCd(apiVo.getAreaCd());			
+
+				user.setAreaCd(apiVo.getAreaCd());
 				user.setOrgCd(apiVo.getOrgCd());
-				user.setDecisionYn("N");						
+				user.setDecisionYn("N");
 				userService.saveMember(user , "NEW");	*/
 
 				memberItem.setCustCd(apiVo.getCustCd());
@@ -330,7 +330,7 @@ public class ApiService extends BaseService {
 				memberItem.setAgreementCd(apiVo.getAgreementCd());
 				memberItem.setTotalPrice(apiVo.getTotalPrice());
 				memberItem.setMonthPrice(apiVo.getMonthPrice());
-				memberItem.setContractPrice(apiVo.getContractPrice());		
+				memberItem.setContractPrice(apiVo.getContractPrice());
 				memberItem.setPaymentPrice(apiVo.getPaymentPrice());
 				memberItem.setContractPaymentWay(apiVo.getContractPaymentWay());
 				memberItem.setContractPaymentMethod(apiVo.getContractPaymentMethod());
@@ -341,27 +341,27 @@ public class ApiService extends BaseService {
 				memberItem.setBankAccountNo(apiVo.getBankAccountNo());
 				memberItem.setWithDrawDay(apiVo.getWithDrawDay());
 				memberItemService.saveDetail(memberItem);
-				
+
 
 				memberChild.setCustCd(apiVo.getCustCd());
-				
+
 				if(StringUtils.isEmpty(apiVo.getChildCd())){
 					apiVo.setChildCd(keyManagementService.getItemCode("CHILDREN","C",5));
 					//교육중
 		        	if(apiVo.getOnlineServiceYn().equals("Y"))
 		        		memberChild.setOnlineServiceStatus("10");
-		        	
+
 		        	//최초 교사 미배정
 		        	if(apiVo.getVisitServiceYn().equals("Y")){
-		        		memberChild.setVisitServiceStatus("50");	        		
+		        		memberChild.setVisitServiceStatus("50");
 		        		//교육시작종료일 설정 필요
 		                // 날짜 더하기
 			    		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			            Calendar cal = Calendar.getInstance();
 			            String startDt = sdf.format(cal.getTime());
-			            
-			            memberChild.setVisitStartDt(startDt);		            
-		                cal.add(Calendar.MONTH, 18);//18개월무료	                
+
+			            memberChild.setVisitStartDt(startDt);
+		                cal.add(Calendar.MONTH, 18);//18개월무료
 			            String endDt = sdf.format(cal.getTime());
 			            memberChild.setVisitEndDt(endDt);
 		        	}
@@ -374,14 +374,14 @@ public class ApiService extends BaseService {
 				memberChild.setChildrenUserCd(apiVo.getChildCd());
 	    						//기본계약
 				memberChild.setContractType("1");
-				
-				
+
+
 	    		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-	            Calendar cal = Calendar.getInstance();		            
+	            Calendar cal = Calendar.getInstance();
 	            String childrenContractDt = sdf.format(cal.getTime());
-	            
+
 	            memberChild.setChildrenContractDt(childrenContractDt);
-	           
+
 				memberChild.setChildrenNm(apiVo.getChildrenNm());
 				memberChild.setChildrenSex(apiVo.getChildrenSex());
 				memberChild.setChildrenBirthday(apiVo.getChildrenBirthday());
@@ -399,7 +399,7 @@ public class ApiService extends BaseService {
 
 
 				memberChild.setVisitNumberCd(apiVo.getVisitNumberCd());
-				memberChild.setVisitTimeCd(apiVo.getVisitTimeCd());			
+				memberChild.setVisitTimeCd(apiVo.getVisitTimeCd());
 
 				//2018-12-19
 //				memberChild.setVisitNumberCd(apiVo.getVisitTimeCd());
@@ -412,12 +412,12 @@ public class ApiService extends BaseService {
 
 				//memberChildService.saveDetail(memberChild,member);
 				memberChildService.save(memberChild);
-				
+
 				//queue insert
 				String qInsert =
 						" Insert into TMSG_QUEUE (TMSG_SEQ, SEND_ORG_CD, RECV_ORG_CD, TMSG_KNCD, TMSG_SECTION, TMSG_TYPE, REQ_YMD, REQ_TIME, STATUS) " +
 						" Values ('" + member.getTmsgSeq() + "', 'FC001', 'DK001', 'FC101', '1', '1', CONVERT(VARCHAR, GETDATE(), 112), REPLACE(CONVERT(VARCHAR, GETDATE(), 8),':',''), '0')";
-           
+
 				jdbcTemplate.update(qInsert);
 
 				//프뢰벨 결제 데이터 전송하기
@@ -433,12 +433,12 @@ public class ApiService extends BaseService {
 				result.setKeyCd("custCd");
 	        	result.setKeyValue(apiVo.getCustCd());
 				result.setResultCode("S");
-				result.setResultMsg("SUCCESS");    	
-			}				
-		}catch(Exception e){	
+				result.setResultMsg("SUCCESS");
+			}
+		}catch(Exception e){
 			result.setResultCode("F1");
-			result.setResultCode(e.getMessage());    
-    	}  
+			result.setResultCode(e.getMessage());
+    	}
 		return result;
 	}
 
@@ -457,19 +457,19 @@ public class ApiService extends BaseService {
     //인수인계요청
     @Transactional
     public ApiResultCodeVO transRequest(ApiTcherTransRequestVO apiVo) {
-    	ApiResultCodeVO result = new ApiResultCodeVO();    	
+    	ApiResultCodeVO result = new ApiResultCodeVO();
     	try{
         	TcherTransManage trans = new TcherTransManage();
 
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	        Calendar cal = Calendar.getInstance();
-	        String transRequestDt = sdf.format(cal.getTime());		    
-        	
+	        String transRequestDt = sdf.format(cal.getTime());
+
         	trans.setCustCd(apiVo.getCustCd());
-	        trans.setChildCd(apiVo.getChildCd());    	        
+	        trans.setChildCd(apiVo.getChildCd());
 	        trans.setTransRequestUserCd(apiVo.getTransRequestUserCd());
 	        trans.setTransPrevUserCd(apiVo.getTransPrevUserCd());
-	        
+
 	        trans.setTransHopeDt(apiVo.getTransHopeDt());
 	        trans.setTransReasonCd(apiVo.getTransReasonCd());
 	        trans.setMoveDt(apiVo.getMoveDt());
@@ -478,103 +478,103 @@ public class ApiService extends BaseService {
 	        trans.setAddress2(apiVo.getAddress2());
 	        trans.setTransRemark(apiVo.getTransRemark());
 	        trans.setRequestStartDt(apiVo.getRequestStartDt());	//첫 수업 요청일 추가 2019. 01. 04 안지호
-    		
+
 	        trans.setTransRequestDt(transRequestDt);
 	        trans.setTransCd(keyManagementService.getCommonCode("TCHER_TRANS","T",4));
-			
+
 	        trans.setApprovalYn("N"); //미승인,요청상태
 	        trans.setConfirmYn("N"); //인수인계미확정
-			
-	        tcherTransManageService.save(trans);   
-	        
+
+	        tcherTransManageService.save(trans);
+
         	update(qMemberChild).set(qMemberChild.visitServiceStatus , "40")
-        	.where(qMemberChild.custCd.eq(trans.getCustCd()).and(qMemberChild.childCd.eq(trans.getChildCd()))).execute();	     
-	        
+        	.where(qMemberChild.custCd.eq(trans.getCustCd()).and(qMemberChild.childCd.eq(trans.getChildCd()))).execute();
+
         	result.setKeyCd("transCd");
         	result.setKeyValue(trans.getTransCd());
 			result.setResultCode("S");
-			result.setResultMsg("SUCCESS");    	
-			
-    	}catch(Exception e){	
+			result.setResultMsg("SUCCESS");
+
+    	}catch(Exception e){
 			result.setResultCode("F1");
-			result.setResultCode(e.getMessage());    
-    	}   	
+			result.setResultCode(e.getMessage());
+    	}
     	return result;
 	}
-    
 
-    
+
+
     //인수인계확정
     @Transactional
-    public ApiResultCodeVO transSave(ApiTcherTransSaveVO apiVo) {    	
+    public ApiResultCodeVO transSave(ApiTcherTransSaveVO apiVo) {
     	TcherTransManage trans = tcherTransManageService.getOne(apiVo.getTransCd());
-    	ApiResultCodeVO result = new ApiResultCodeVO();   	
+    	ApiResultCodeVO result = new ApiResultCodeVO();
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Calendar cal = Calendar.getInstance();
-        String approvalDt = sdf.format(cal.getTime());		
-    	
+        String approvalDt = sdf.format(cal.getTime());
+
     	if(null!=trans){
-        	try{        	
+        	try{
     	        trans.setRequestStartDt(apiVo.getRequestStartDt());
     	        trans.setRequestStartHour(apiVo.getRequestStartHour());
     	        trans.setRequestStartTime(apiVo.getRequestStartTime());
     	        trans.setTransRemark(apiVo.getTransRemark());
     	        trans.setApprovalUserCd(apiVo.getApprovalUserCd());
-    	        
+
     	        trans.setApprovalDt(approvalDt);
     	        trans.setApprovalYn("Y"); //승인
     	        trans.setConfirmYn("Y"); //인수인계확정
-    			
-    	        tcherTransManageService.save(trans);   
+
+    	        tcherTransManageService.save(trans);
 
 	        	update(qMemberChild).set(qMemberChild.visitServiceStatus , "10")
 	        	.where(qMemberChild.custCd.eq(trans.getCustCd())
 	        			.and(qMemberChild.childCd.eq(trans.getChildCd()))).execute();
-	        	
+
 	        	//배정 테이블 insert
 	            TcherAssignManage assign = new TcherAssignManage();
 	            assign.setCustCd(trans.getCustCd());
 	            assign.setChildCd(trans.getChildCd());
-	            assign.setAssignRequestUserCd(apiVo.getApprovalUserCd());     
-	            
+	            assign.setAssignRequestUserCd(apiVo.getApprovalUserCd());
+
 	            assign.setAssignRemark(trans.getTransRemark());
-	            assign.setAssignUserCd(trans.getTransUserCd());        
-	            assign.setAssignType("20");        
-	            
+	            assign.setAssignUserCd(trans.getTransUserCd());
+	            assign.setAssignType("20");
+
 	            tcherAssignManageService.saveAssign(assign);
-        	 
+
             	result.setKeyCd("transCd");
             	result.setKeyValue(trans.getTransCd());
     			result.setResultCode("S");
-    			result.setResultMsg("SUCCESS");    	
-    			
-        	}catch(Exception e){	
+    			result.setResultMsg("SUCCESS");
+
+        	}catch(Exception e){
     			result.setResultCode("F1");
-    			result.setResultCode(e.getMessage());    
-        	}   	
+    			result.setResultCode(e.getMessage());
+        	}
     	}else{
 
 			result.setResultCode("F2");
-			result.setResultCode("존재하지 않는 인수인계코드 입니다.");    
+			result.setResultCode("존재하지 않는 인수인계코드 입니다.");
     	}
     	return result;
 	}
-    
+
 
     //학습휴식신청
     @Transactional
     public ApiResultCodeVO restRequest(ApiTcherRestRequestVO apiVo) {
-    	ApiResultCodeVO result = new ApiResultCodeVO();    	
+    	ApiResultCodeVO result = new ApiResultCodeVO();
     	try{
         	TcherRestManage rest = new TcherRestManage();
-        	
+
         	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	        Calendar cal = Calendar.getInstance();
-	        String restRequestDt = sdf.format(cal.getTime());	
+	        String restRequestDt = sdf.format(cal.getTime());
 
 	        rest.setCustCd(apiVo.getCustCd());
-        	rest.setChildCd(apiVo.getChildCd());    	   
+        	rest.setChildCd(apiVo.getChildCd());
 	        rest.setRestRequestUserCd(apiVo.getRestRequestUserCd());
 	        rest.setRequestYear(apiVo.getRequestYear());
 	        rest.setRequestMonth(apiVo.getRequestMonth());
@@ -584,22 +584,22 @@ public class ApiService extends BaseService {
 	    	rest.setRestCd(keyManagementService.getCommonCode("TCHER_REST","T",4));
 	    	rest.setApprovalYn("N"); //미승인,요청상태
 	    	rest.setConfirmYn("N"); //인수인계미확정
-			
-        	tcherRestManageService.save(rest);   
-        	
+
+        	tcherRestManageService.save(rest);
+
     		update(qMemberChild).set(qMemberChild.visitServiceStatus , "80")
     		.where(qMemberChild.custCd.eq(rest.getCustCd()).and(qMemberChild.childCd.eq(rest.getChildCd()))).execute();
-        	
-        	
+
+
         	result.setKeyCd("restCd");
         	result.setKeyValue(rest.getRestCd());
 			result.setResultCode("S");
-			result.setResultMsg("SUCCESS");    	
-			
-    	}catch(Exception e){	
+			result.setResultMsg("SUCCESS");
+
+    	}catch(Exception e){
 			result.setResultCode("F1");
-			result.setResultCode(e.getMessage());    
-    	}   	
+			result.setResultCode(e.getMessage());
+    	}
     	return result;
 	}
 
@@ -607,114 +607,114 @@ public class ApiService extends BaseService {
     @Transactional
     public ApiResultCodeVO restSave(ApiTcherRestSaveVO apiVo) {
     	TcherRestManage rest = tcherRestManageService.getOne(apiVo.getRestCd());
-    	ApiResultCodeVO result = new ApiResultCodeVO();    	
+    	ApiResultCodeVO result = new ApiResultCodeVO();
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Calendar cal = Calendar.getInstance();
-        String approvalDt = sdf.format(cal.getTime());		
-        
+        String approvalDt = sdf.format(cal.getTime());
+
     	if(null!=rest){
     		try{
-    			
+
             	rest.setRequestYear(apiVo.getRequestYear());
             	rest.setRequestMonth(apiVo.getRequestMonth());
             	rest.setRestReasonCd(apiVo.getRestReasonCd());
             	rest.setRestRemark(apiVo.getRestRemark());
             	rest.setApprovalUserCd(apiVo.getApprovalUserCd());
-            	
-    			
+
+
             	rest.setApprovalDt(approvalDt);
             	rest.setApprovalYn("Y"); //승인
             	rest.setConfirmYn("Y"); //인수인계확정
-    			
-            	tcherRestManageService.save(rest);   
-        	 
+
+            	tcherRestManageService.save(rest);
+
         		update(qMemberChild).set(qMemberChild.visitServiceStatus , "70")
         		.where(qMemberChild.custCd.eq(rest.getCustCd()).and(qMemberChild.childCd.eq(rest.getChildCd()))).execute();
-            
-            	
+
+
             	result.setKeyCd("restCd");
             	result.setKeyValue(rest.getRestCd());
     			result.setResultCode("S");
-    			result.setResultMsg("SUCCESS");    	
-    			
-        	}catch(Exception e){	
+    			result.setResultMsg("SUCCESS");
+
+        	}catch(Exception e){
     			result.setResultCode("F1");
-    			result.setResultCode(e.getMessage());    
-        	}   	
-    		
+    			result.setResultCode(e.getMessage());
+        	}
+
     	}else{
 			result.setResultCode("F2");
-			result.setResultCode("존재하지 않는 학습휴식코드 입니다.");  
+			result.setResultCode("존재하지 않는 학습휴식코드 입니다.");
     	}
     	return result;
 	}
-    
+
 
     //학습휴식신청(취소)
     @Transactional
     public ApiResultCodeVO restCancel(ApiTcherRestSaveVO apiVo) {
     	TcherRestManage rest = tcherRestManageService.getOne(apiVo.getRestCd());
-    	ApiResultCodeVO result = new ApiResultCodeVO();    	
+    	ApiResultCodeVO result = new ApiResultCodeVO();
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Calendar cal = Calendar.getInstance();
-        String approvalDt = sdf.format(cal.getTime());		
-        
+        String approvalDt = sdf.format(cal.getTime());
+
     	if(null!=rest){
     		try{
-    			
+
             	rest.setRequestYear(apiVo.getRequestYear());
             	rest.setRequestMonth(apiVo.getRequestMonth());
             	rest.setRestReasonCd(apiVo.getRestReasonCd());
             	rest.setRestRemark(apiVo.getRestRemark());
             	rest.setApprovalUserCd(apiVo.getApprovalUserCd());
-            	
-    			
+
+
             	rest.setApprovalDt(approvalDt);
             	rest.setApprovalYn("N"); //승인
             	rest.setConfirmYn("N"); //인수인계확정
-            	tcherRestManageService.save(rest);   
-        	 
+            	tcherRestManageService.save(rest);
+
         		update(qMemberChild).set(qMemberChild.visitServiceStatus , "10")
         		.where(qMemberChild.custCd.eq(rest.getCustCd()).and(qMemberChild.childCd.eq(rest.getChildCd()))).execute();
-            
-            	
+
+
             	result.setKeyCd("restCd");
             	result.setKeyValue(rest.getRestCd());
     			result.setResultCode("S");
-    			result.setResultMsg("SUCCESS");    	
-    			
-        	}catch(Exception e){	
+    			result.setResultMsg("SUCCESS");
+
+        	}catch(Exception e){
     			result.setResultCode("F1");
-    			result.setResultCode(e.getMessage());    
-        	}   	
-    		
+    			result.setResultCode(e.getMessage());
+        	}
+
     	}else{
 			result.setResultCode("F2");
-			result.setResultCode("존재하지 않는 학습휴식코드 입니다.");  
+			result.setResultCode("존재하지 않는 학습휴식코드 입니다.");
     	}
     	return result;
 	}
-    
+
     //교사배정
     @Transactional
     public ApiResultCodeVO assignSave(ApiTcherAssignSaveVO apiVo) {
-    	ApiResultCodeVO result = new ApiResultCodeVO();   
+    	ApiResultCodeVO result = new ApiResultCodeVO();
 		try{
 			//기존 배정목록  N 처리
 			tcherAssignManageService.updatePreAssign(apiVo.getCustCd(), apiVo.getChildCd());
-			
+
         	TcherAssignManage assign = new TcherAssignManage();
         	assign.setAssignCd(keyManagementService.getCommonCode("TCHER_ASSIGN","TS",4));
-        	
+
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	        Calendar cal = Calendar.getInstance();
-	        
-	        String approvalDt = sdf.format(cal.getTime());		
-	        
+
+	        String approvalDt = sdf.format(cal.getTime());
+
         	assign.setCustCd(apiVo.getCustCd());
-        	assign.setChildCd(apiVo.getChildCd());    	     
+        	assign.setChildCd(apiVo.getChildCd());
         	assign.setAssignRequestUserCd(apiVo.getAssignRequestUserCd());
         	assign.setAssignRemark(apiVo.getAssignRemark());
         	assign.setAssignUserCd(apiVo.getAssignUserCd());
@@ -726,83 +726,83 @@ public class ApiService extends BaseService {
         	assign.setConfirmYn("Y"); //인수인계확정
         	assign.setLastYn("Y"); //승인
         	assign.setAssignType("10"); //배정구분 10 일반
-        	
-        	tcherAssignManageService.save(assign);   
-    	 
-        	if(isNotEmpty(assign.getAssignUserCd())){ 
+
+        	tcherAssignManageService.save(assign);
+
+        	if(isNotEmpty(assign.getAssignUserCd())){
     	    	memberChildService.updateVisitorTcherCd(assign.getCustCd(),assign.getChildCd(),assign.getAssignUserCd());
     	    }
-        	
+
         	result.setKeyCd("assignCd");
         	result.setKeyValue(assign.getAssignCd());
 			result.setResultCode("S");
-			result.setResultMsg("SUCCESS");    	
-			
-    	}catch(Exception e){	
+			result.setResultMsg("SUCCESS");
+
+    	}catch(Exception e){
 			result.setResultCode("F1");
-			result.setResultCode(e.getMessage());    
-    	}  
-    	
+			result.setResultCode(e.getMessage());
+    	}
+
     	return result;
 	}
-    
+
     /*
      * 아이디/비밀번호찾기
      */
 
     public ApiUserVO findUser(RequestParams requestParams) {
-        String userPs = requestParams.getString("userPs" , "");      
+        String userPs = requestParams.getString("userPs" , "");
         if(isNotEmpty(userPs)){
     	    String password = bCryptPasswordEncoder.encode(userPs);
     	    requestParams.put("userPs" , password);
-        } 
+        }
     	return apiMapper.findUser(requestParams);
     }
-    
+
 
     //비밀번호수정
     @Transactional
     public ApiResultCodeVO changePs(RequestParams requestParams) throws Exception {
-        String userCd = requestParams.getString("userCd" , "");      
-        String userNm = requestParams.getString("userNm" , "");     
-        String userPs = requestParams.getString("userPs" , "");     
+        String userCd = requestParams.getString("userCd" , "");
+        String userNm = requestParams.getString("userNm" , "");
+        String userPs = requestParams.getString("userPs" , "");
 
-        requestParams.put("userPs" , "");    
+        requestParams.put("userPs" , "");
         ApiUserVO user =  apiMapper.findUser(requestParams);
         String resultCode="";
-    	String resultMsg=""; 
-    	
-    	
+    	String resultMsg="";
+
+
     	if (null != user){
-    	    String password = bCryptPasswordEncoder.encode(userPs);  
-    	    
+    	    String password = bCryptPasswordEncoder.encode(userPs);
+
             update(qUser)
             .set(qUser.userPs , password).set(qUser.userPs2 , userPs)
             .set(qUser.lastLoginDate, Instant.now(Clock.systemUTC()))
-            .where(qUser.userCd.eq(userCd).and(qUser.userNm.eq(userNm))).execute();   
-            
+            .where(qUser.userCd.eq(userCd).and(qUser.userNm.eq(userNm))).execute();
+
         	resultCode="S";
-        	resultMsg="SUCCESS"; 	
+        	resultMsg="SUCCESS";
     	}else{
         	resultCode="F1";
         	resultMsg="사용자가 없습니다.";
     	}
-    	
-    	
-    	ApiResultCodeVO apiResult = new ApiResultCodeVO();  
+
+
+    	ApiResultCodeVO apiResult = new ApiResultCodeVO();
     	apiResult.setResultCode(resultCode);
-    	apiResult.setResultMsg(resultMsg);    	
-    	
+    	apiResult.setResultMsg(resultMsg);
+
     	return apiResult;
-    	
+
     }
-    
+
 
     @Transactional
-    public ApiResultCodeVO saveSend(ApiSmsMasterVO master){      	
-		ApiResultCodeVO result = new ApiResultCodeVO(); 
-    	try{ 
-        	if (null!=master) {  
+    public ApiResultCodeVO saveSend(ApiSmsMasterVO master){
+		ApiResultCodeVO result = new ApiResultCodeVO();
+    	try{
+        	if (null!=master) {
         		String reserveTime = "";
         		//즉시발송 - 현재시간
         		if(master.getSendType().equals("10")){
@@ -811,28 +811,28 @@ public class ApiService extends BaseService {
     	            String strToday = sdf.format(c1.getTime());
     	            master.setSendDt(strToday);
         		}else{
-        			
-        			
+
+
         			try{
             			String oldstring = master.getSendDt();
             			Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(oldstring);
-            			
+
             			Calendar cal = Calendar.getInstance();
             			cal.setTime(date);
             			cal.add(Calendar.HOUR_OF_DAY, -9);
 
             			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             			reserveTime = format.format(cal.getTime());
-            			
+
         			}catch(Exception e){
-        				
+
         			}
         		}
-    	            
+
         		String successYn = "Y";
-        		String sendCode = "";    		        		
+        		String sendCode = "";
     			sendCode = keyManagementService.getItemCode("SMS","SMS",5);
-    			
+
     			SmsSendUtils.sendMsg(master.getSenderNo(), master.getHpNo(), master.getSendMessage(),reserveTime);
 
         		Long seq = new Long(1);
@@ -852,12 +852,12 @@ public class ApiService extends BaseService {
     			m.setSendMessage(master.getSendMessage());
     			m.setSenderUserCd(master.getSenderUserCd());
     			m.setSenderNo(master.getSenderNo());
-    			m.setTotalByte(master.getTotalByte());	
+    			m.setTotalByte(master.getTotalByte());
             	sendMasterService.save(m);
 
     			result.setResultCode("S");
-    			result.setResultMsg("SUCCESS");    		
-        	}        	
+    			result.setResultMsg("SUCCESS");
+        	}
     	}catch(Exception e){
 			result.setResultCode("F1");
 			result.setResultMsg(e.getMessage());
@@ -867,13 +867,13 @@ public class ApiService extends BaseService {
 
     //sms 전송 조회
     public ApiResultObjectPagingVO getSendList(RequestParams<ApiSendMasterVO> vo) {
-    	int pageNumber = vo.getInt("pageNumber",1);    	
+    	int pageNumber = vo.getInt("pageNumber",1);
 
 
     	String orderColumn = vo.getString("orderColumn","");
     	String orderType = vo.getString("orderType","");
     	String orderType2 = "";
-    	
+
     	if(orderColumn.equals("")){
     		orderColumn = "A.UPDATED_AT";
     	} else if (orderColumn.equals("hpNo")) {
@@ -889,7 +889,7 @@ public class ApiService extends BaseService {
 		} else if (orderColumn.equals("successYn")) {
 			orderColumn = "B.SUCCESS_YN";
 		}
-    	
+
     	if(orderType.equals("")){
     		orderType = "asc";
     	}
@@ -900,36 +900,36 @@ public class ApiService extends BaseService {
     		orderType2 = "asc";
     	}
 
-    	vo.put("orderColumn" ,orderColumn);  
-    	vo.put("orderType" ,orderType);  
-    	vo.put("orderType2" ,orderType2);      	
+    	vo.put("orderColumn" ,orderColumn);
+    	vo.put("orderType" ,orderType);
+    	vo.put("orderType2" ,orderType2);
     	vo.put("pageNumber" ,pageNumber);
-    	
+
     	ApiResultObjectPagingVO result = new ApiResultObjectPagingVO();
     	List<ApiSendMasterVO> list = apiMapper.getSendList(vo);
-    	result.setResult(list);   
-    	
-    	//현재페이지    	
-    	result.setPageNumber(pageNumber);         	  
-    	int totalCnt = apiMapper.getSendListCount(vo);    	
-    	result.setTotalCnt(totalCnt);    	
-    	
+    	result.setResult(list);
+
+    	//현재페이지
+    	result.setPageNumber(pageNumber);
+    	int totalCnt = apiMapper.getSendListCount(vo);
+    	result.setTotalCnt(totalCnt);
+
     	String resultCode;
     	String resultMsg;
-    	
+
     	if (list.size() > 0){
     		resultCode = "S";
     		resultMsg = "SUCCESS";
     	}else{
     		resultCode = "F1";
     		resultMsg = "결과가 없습니다.";
-    	}    	
-    	
+    	}
+
     	result.setResultCode(resultCode);
-    	result.setResultMsg(resultMsg);   	
+    	result.setResultMsg(resultMsg);
     	return result;
     }
-    
+
     /*
      * 교사별 학생정보
      */
@@ -937,13 +937,13 @@ public class ApiService extends BaseService {
 
     //인수인계목록
     public List<ApiTcherTransManageResponseVO> getTransMemberList(RequestParams vo) {
-    	List<ApiTcherTransManageResponseVO> details = apiMapper.getTransMemberList(vo);    	
+    	List<ApiTcherTransManageResponseVO> details = apiMapper.getTransMemberList(vo);
     	return details;
     }
 
     //인수인계상세
     public ApiTcherTransManageResponseVO getTransMemberDetail(RequestParams vo) {
-    	ApiTcherTransManageResponseVO detail = apiMapper.getTransMemberDetail(vo);    	
+    	ApiTcherTransManageResponseVO detail = apiMapper.getTransMemberDetail(vo);
     	return detail;
     }
 
@@ -952,11 +952,11 @@ public class ApiService extends BaseService {
     	String orderColumn = vo.getString("orderColumn","");
     	String orderType = vo.getString("orderType","");
     	String orderType2 = "";
-    	
+
     	if(orderColumn.equals("")){
     		orderColumn = "D.UPDATED_AT";
     	}
-    	
+
     	if(orderType.equals("")){
     		orderType = "asc";
     	}
@@ -967,64 +967,64 @@ public class ApiService extends BaseService {
     		orderType2 = "asc";
     	}
 
-    	vo.put("orderColumn" ,orderColumn);  
-    	vo.put("orderType" ,orderType);  
-    	vo.put("orderType2" ,orderType2);  
-    	
-    	List<ApiTcherAssignManageResponseVO> details = apiMapper.getAssignList(vo);    	
+    	vo.put("orderColumn" ,orderColumn);
+    	vo.put("orderType" ,orderType);
+    	vo.put("orderType2" ,orderType2);
+
+    	List<ApiTcherAssignManageResponseVO> details = apiMapper.getAssignList(vo);
     	return details;
     }
- 
-    
+
+
     //휴식목록
     public List<ApiTcherRestResponseVO> getRestList(RequestParams vo) {
-    	List<ApiTcherRestResponseVO> details = apiMapper.getRestList(vo);    	
+    	List<ApiTcherRestResponseVO> details = apiMapper.getRestList(vo);
     	return details;
     }
-    
+
     //교사목록
     public List<ApiTcherManageVO> getTcherList(RequestParams vo) {
-    	List<ApiTcherManageVO> details = apiMapper.getTcherList(vo);    	
+    	List<ApiTcherManageVO> details = apiMapper.getTcherList(vo);
     	return details;
     }
-    
+
     //공지조회
     public ApiResultObjectPagingVO getNoticeList(RequestParams vo) {
 
     	String goodsCd = vo.getString("goodsCd","");
     	int pageNumber = 1;
-    	
+
     	if(goodsCd.equals("")){
     		pageNumber = vo.getInt("pageNumber",1);
-    	}    	
-    	
+    	}
+
     	vo.put("pageNumber" ,pageNumber);
 
     	ApiResultObjectPagingVO result = new ApiResultObjectPagingVO();
     	List<ApiNoticeManageVO> list = apiMapper.getNoticeList(vo);
 
     	result.setResult(list);
-    	
+
     	//현재페이지
-    	result.setPageNumber(pageNumber);         	  
-    	int totalCnt = apiMapper.getNoticeListCount(vo);    	
-    	result.setTotalCnt(totalCnt);    	
-    	
+    	result.setPageNumber(pageNumber);
+    	int totalCnt = apiMapper.getNoticeListCount(vo);
+    	result.setTotalCnt(totalCnt);
+
     	String resultCode;
     	String resultMsg;
-    	
+
     	if (list.size() > 0){
     		resultCode = "S";
     		resultMsg = "SUCCESS";
     	}else{
     		resultCode = "F1";
     		resultMsg = "결과가 없습니다.";
-    	}    	
-    	
+    	}
+
     	result.setResultCode(resultCode);
-    	result.setResultMsg(resultMsg);   	
+    	result.setResultMsg(resultMsg);
     	return result;
-    	
+
     }
 
 	//공지조회(전체 + 방문,상담)
@@ -1073,47 +1073,47 @@ public class ApiService extends BaseService {
 
     //오늘의알림
     public List<ApiTodayArmVO> getTodayArm(RequestParams vo) {
-    	List<ApiTodayArmVO> details = apiMapper.getTodayArm(vo);    	
+    	List<ApiTodayArmVO> details = apiMapper.getTodayArm(vo);
     	return details;
     }
-    
+
     //자녀사진정보저장
     @Transactional
     public ApiResultObjectVO childImageSave(RequestParams<Object> requestParams) throws Exception {
-        String custCd = requestParams.getString("custCd" , "");      
-        String childCd = requestParams.getString("childCd" , "");     
-        String childImgUrl = requestParams.getString("childImgUrl" , "");     
-        String childImgRegDt = requestParams.getString("childImgRegDt" , "");     
-        String childImgBy = requestParams.getString("childImgBy" , "");     
+        String custCd = requestParams.getString("custCd" , "");
+        String childCd = requestParams.getString("childCd" , "");
+        String childImgUrl = requestParams.getString("childImgUrl" , "");
+        String childImgRegDt = requestParams.getString("childImgRegDt" , "");
+        String childImgBy = requestParams.getString("childImgBy" , "");
 
-        
+
         RequestParams<Object> params = new RequestParams<>(Object.class);
-        params.put("custCd" , custCd);            
-        params.put("childCd" , childCd);            
+        params.put("custCd" , custCd);
+        params.put("childCd" , childCd);
         ApiMemberChildVO child =  apiMapper.getMemberChild(params);
-        
+
         String resultCode="";
-    	String resultMsg="";     	
-    	
+    	String resultMsg="";
+
     	if (null != child){
-    		
+
     		update(qMemberChild)
     		.set(qMemberChild.childImgUrl , childImgUrl)
     		.set(qMemberChild.childImgRegDt , childImgRegDt)
     		.set(qMemberChild.childImgBy , childImgBy)
-            .where(qMemberChild.custCd.eq(custCd).and(qMemberChild.childCd.eq(childCd))).execute();   
-    		
+            .where(qMemberChild.custCd.eq(custCd).and(qMemberChild.childCd.eq(childCd))).execute();
+
         	resultCode="S";
-        	resultMsg="SUCCESS"; 	
+        	resultMsg="SUCCESS";
     	}else{
         	resultCode="F1";
         	resultMsg="사용자가 없습니다.";
     	}
-    	
-    	ApiResultObjectVO apiResult = new ApiResultObjectVO();  
+
+    	ApiResultObjectVO apiResult = new ApiResultObjectVO();
     	apiResult.setResultCode(resultCode);
-    	apiResult.setResultMsg(resultMsg);    	    	
-    	return apiResult;    	
+    	apiResult.setResultMsg(resultMsg);
+    	return apiResult;
     }
 
   //형제추가
@@ -1121,25 +1121,25 @@ public class ApiService extends BaseService {
     public ApiResultObjectVO elctrnCtrtcBrotherInsert(ApiBrotherRequestVO vo) throws Exception {
 
         String resultCode="";
-    	String resultMsg="";     	
-    	
+    	String resultMsg="";
+
     	String custCd = vo.getCustCd();
-    	String childCd = vo.getChildCd(); 
-    	String brothers = vo.getBrothers();     	
-    	
-    	RequestParams<Object> params = new RequestParams<>(Object.class);        
-        params.put("custCd" , custCd);            
-        params.put("childCd" , childCd);            
+    	String childCd = vo.getChildCd();
+    	String brothers = vo.getBrothers();
+
+    	RequestParams<Object> params = new RequestParams<>(Object.class);
+        params.put("custCd" , custCd);
+        params.put("childCd" , childCd);
         ApiMemberChildVO child =  apiMapper.getMemberChild(params);
-    	
+
         if (null != child){
-        	
+
         	delete(qMemberBrother)
             .where(qMemberBrother.custCd.eq(custCd)
            		 .and(qMemberBrother.childCd.eq(childCd))).execute();
-        	
+
         	String[] bArray = null;
-        	
+
         	if(isNotEmpty(brothers)){
         		bArray = brothers.split("[;]");
 
@@ -1160,7 +1160,7 @@ public class ApiService extends BaseService {
 			         		memberBrotherService.save(d);
 
 			            	resultCode="S";
-			            	resultMsg="SUCCESS"; 	
+			            	resultMsg="SUCCESS";
 	                	}else{
 	                    	resultCode="F2";
 	                    	resultMsg="값이 불충분합니다.";
@@ -1175,109 +1175,109 @@ public class ApiService extends BaseService {
         	resultCode="F1";
         	resultMsg="사용자가 없습니다.";
         }
-        
-    	ApiResultObjectVO apiResult = new ApiResultObjectVO();  
+
+    	ApiResultObjectVO apiResult = new ApiResultObjectVO();
     	apiResult.setResultCode(resultCode);
-    	apiResult.setResultMsg(resultMsg);    	    	
-    	return apiResult;    	
+    	apiResult.setResultMsg(resultMsg);
+    	return apiResult;
     }
-    
+
     //형제수정
     @Transactional
     public ApiResultObjectVO elctrnCtrtcBrotherUpdate(RequestParams<Object> requestParams) throws Exception {
-        String custCd = requestParams.getString("custCd" , "");      
-        String childCd = requestParams.getString("childCd" , "");     
+        String custCd = requestParams.getString("custCd" , "");
+        String childCd = requestParams.getString("childCd" , "");
 
-        String brotherCd = requestParams.getString("brotherCd" , "");    
-        String brotherNm = requestParams.getString("brotherNm" , "");     
-        String brotherSex = requestParams.getString("brotherSex" , "");     
-        String brotherBirthday = requestParams.getString("brotherBirthday" , "");     
-        String brotherGradeCd = requestParams.getString("brotherGradeCd" , "");     
-        
+        String brotherCd = requestParams.getString("brotherCd" , "");
+        String brotherNm = requestParams.getString("brotherNm" , "");
+        String brotherSex = requestParams.getString("brotherSex" , "");
+        String brotherBirthday = requestParams.getString("brotherBirthday" , "");
+        String brotherGradeCd = requestParams.getString("brotherGradeCd" , "");
+
         RequestParams<Object> params = new RequestParams<>(Object.class);
-        params.put("custCd" , custCd);            
-        params.put("childCd" , childCd);            
+        params.put("custCd" , custCd);
+        params.put("childCd" , childCd);
         ApiMemberChildVO child =  apiMapper.getMemberChild(params);
-        
+
         String resultCode="";
-    	String resultMsg="";     	
-    	
+    	String resultMsg="";
+
     	if (null != child){
     		 update(qMemberBrother)
-    		 .set(qMemberBrother.brotherNm , brotherNm)    		 
-    		 .set(qMemberBrother.brotherSex , brotherSex)    		 
-    		 .set(qMemberBrother.brotherBirthday , brotherBirthday)    		 
-    		 .set(qMemberBrother.brotherGradeCd , brotherGradeCd)    
+    		 .set(qMemberBrother.brotherNm , brotherNm)
+    		 .set(qMemberBrother.brotherSex , brotherSex)
+    		 .set(qMemberBrother.brotherBirthday , brotherBirthday)
+    		 .set(qMemberBrother.brotherGradeCd , brotherGradeCd)
 
              .where(qMemberBrother.custCd.eq(custCd)
             		 .and(qMemberBrother.childCd.eq(childCd))
-            		 .and(qMemberBrother.brotherCd.eq(brotherCd))).execute();   
-    		 
-    		
+            		 .and(qMemberBrother.brotherCd.eq(brotherCd))).execute();
+
+
         	resultCode="S";
-        	resultMsg="SUCCESS"; 	
+        	resultMsg="SUCCESS";
     	}else{
         	resultCode="F1";
         	resultMsg="사용자가 없습니다.";
     	}
-    	
-    	ApiResultObjectVO apiResult = new ApiResultObjectVO();  
+
+    	ApiResultObjectVO apiResult = new ApiResultObjectVO();
     	apiResult.setResultCode(resultCode);
-    	apiResult.setResultMsg(resultMsg);    	    	
-    	return apiResult;    	
+    	apiResult.setResultMsg(resultMsg);
+    	return apiResult;
     }
-    
+
     //상담교사 - 회원정보변경 수정
     @Transactional
     public ApiResultObjectVO elctrnCtrtcUpdate(RequestParams<Object> requestParams) throws Exception {
-	    
-        String custCd = requestParams.getString("custCd" , "");      
-        String childCd = requestParams.getString("childCd" , "");     
-        String childImgUrl = requestParams.getString("childImgUrl" , "");     
-        String childrenNm = requestParams.getString("childrenNm" , "");     
-        String childrenSex = requestParams.getString("childrenSex" , "");     
 
-        String childrenBirthday = requestParams.getString("childrenBirthday" , "");     
-        String childrenHpNo = requestParams.getString("childrenHpNo" , "");     
-        String childrenSchoolNm = requestParams.getString("childrenSchoolNm" , "");     
-        String childrenGradeCd = requestParams.getString("childrenGradeCd" , "");    
+        String custCd = requestParams.getString("custCd" , "");
+        String childCd = requestParams.getString("childCd" , "");
+        String childImgUrl = requestParams.getString("childImgUrl" , "");
+        String childrenNm = requestParams.getString("childrenNm" , "");
+        String childrenSex = requestParams.getString("childrenSex" , "");
 
-        String gd1Nm = requestParams.getString("gd1Nm" , "");     
-        String gd1RelationCd = requestParams.getString("gd1RelationCd" , "");     
-        String hpNo = requestParams.getString("hpNo" , "");     
-        String gd2Nm = requestParams.getString("gd2Nm" , "");     
-        String gd2RelationCd = requestParams.getString("gd2RelationCd" , "");     
-        
+        String childrenBirthday = requestParams.getString("childrenBirthday" , "");
+        String childrenHpNo = requestParams.getString("childrenHpNo" , "");
+        String childrenSchoolNm = requestParams.getString("childrenSchoolNm" , "");
+        String childrenGradeCd = requestParams.getString("childrenGradeCd" , "");
 
-        String telNo = requestParams.getString("telNo" , "");     
-        String email = requestParams.getString("email" , "");     
-        String homeZipcode = requestParams.getString("homeZipcode" , "");     
-        String homeAddress1 = requestParams.getString("homeAddress1" , "");     
-        String homeAddress2 = requestParams.getString("homeAddress2" , "");     
+        String gd1Nm = requestParams.getString("gd1Nm" , "");
+        String gd1RelationCd = requestParams.getString("gd1RelationCd" , "");
+        String hpNo = requestParams.getString("hpNo" , "");
+        String gd2Nm = requestParams.getString("gd2Nm" , "");
+        String gd2RelationCd = requestParams.getString("gd2RelationCd" , "");
 
-        
+
+        String telNo = requestParams.getString("telNo" , "");
+        String email = requestParams.getString("email" , "");
+        String homeZipcode = requestParams.getString("homeZipcode" , "");
+        String homeAddress1 = requestParams.getString("homeAddress1" , "");
+        String homeAddress2 = requestParams.getString("homeAddress2" , "");
+
+
         RequestParams<Object> params = new RequestParams<>(Object.class);
-        params.put("custCd" , custCd);            
-        params.put("childCd" , childCd);            
+        params.put("custCd" , custCd);
+        params.put("childCd" , childCd);
         ApiMemberChildVO child =  apiMapper.getMemberChild(params);
-        
-        String resultCode="";
-    	String resultMsg="";     	
-    	
-    	if (null != child){
-    		
-    		 update(qMemberManage)
-    		 .set(qMemberManage.gd1Nm , gd1Nm)    		 
-    		 .set(qMemberManage.gd1RelationCd , gd1RelationCd)    		 
-    		 .set(qMemberManage.hpNo , hpNo)    		 
-    		 .set(qMemberManage.gd2Nm , gd2Nm)    		 
-    		 .set(qMemberManage.gd2RelationCd , gd2RelationCd)   
 
-    		 .set(qMemberManage.telNo , telNo)   
-    		 .set(qMemberManage.email , email)   
-    		 .set(qMemberManage.homeZipcode , homeZipcode)   
-    		 .set(qMemberManage.homeAddress1 , homeAddress1)   
-    		 .set(qMemberManage.homeAddress2 , homeAddress2)   
+        String resultCode="";
+    	String resultMsg="";
+
+    	if (null != child){
+
+    		 update(qMemberManage)
+    		 .set(qMemberManage.gd1Nm , gd1Nm)
+    		 .set(qMemberManage.gd1RelationCd , gd1RelationCd)
+    		 .set(qMemberManage.hpNo , hpNo)
+    		 .set(qMemberManage.gd2Nm , gd2Nm)
+    		 .set(qMemberManage.gd2RelationCd , gd2RelationCd)
+
+    		 .set(qMemberManage.telNo , telNo)
+    		 .set(qMemberManage.email , email)
+    		 .set(qMemberManage.homeZipcode , homeZipcode)
+    		 .set(qMemberManage.homeAddress1 , homeAddress1)
+    		 .set(qMemberManage.homeAddress2 , homeAddress2)
     		 .where(qMemberManage.custCd.eq(custCd)).execute();
 
     		 update(qMemberChild)
@@ -1289,47 +1289,47 @@ public class ApiService extends BaseService {
      		.set(qMemberChild.childrenHpNo , childrenHpNo)
      		.set(qMemberChild.childrenSchoolNm , childrenSchoolNm)
      		.set(qMemberChild.childrenGradeCd , childrenGradeCd)
-             .where(qMemberChild.custCd.eq(custCd).and(qMemberChild.childCd.eq(childCd))).execute();   
-    		 
-    		 
+             .where(qMemberChild.custCd.eq(custCd).and(qMemberChild.childCd.eq(childCd))).execute();
+
+
     		 update(qUser)
     		 .set(qUser.userNm , childrenNm)
-    		 .set(qUser.hpNo , childrenHpNo)    		 
+    		 .set(qUser.hpNo , childrenHpNo)
     		 .where(qUser.userCd.eq(child.getChildrenUserCd())).execute();
-    		 
-    		
+
+
         	resultCode="S";
-        	resultMsg="SUCCESS"; 	
+        	resultMsg="SUCCESS";
     	}else{
         	resultCode="F1";
         	resultMsg="사용자가 없습니다.";
     	}
-    	
-    	ApiResultObjectVO apiResult = new ApiResultObjectVO();  
+
+    	ApiResultObjectVO apiResult = new ApiResultObjectVO();
     	apiResult.setResultCode(resultCode);
-    	apiResult.setResultMsg(resultMsg);    	    	
-    	return apiResult;    	
+    	apiResult.setResultMsg(resultMsg);
+    	return apiResult;
     }
-    
+
     //방문교육일 등록
-    public void saveVisitDt(RequestParams vo){    	
+    public void saveVisitDt(RequestParams vo){
     	String childCd = vo.getString("childCd" ,"");
     	String startDt = vo.getString("startDt" ,"");
     	String endDt = vo.getString("endDt" ,"");
-    	
+
     	 update(qMemberChild)
 		 .set(qMemberChild.visitStartDt , startDt)
 		 .set(qMemberChild.visitEndDt , endDt)
 		 .where(qMemberChild.childCd.eq(childCd)).execute();
 
     }
-    
+
     //개인정보수정 (학습자)
     @Transactional
-    public ApiMemberModCustVO modCust(ApiMemberModCustVO requestVO){    	
-    	if(isNotEmpty(requestVO.getGd1UserCd())){    		
+    public ApiMemberModCustVO modCust(ApiMemberModCustVO requestVO){
+    	if(isNotEmpty(requestVO.getGd1UserCd())){
     		 update(qMemberManage)
-    		 .set(qMemberManage.gd1Nm , requestVO.getGd1Nm())    		 
+    		 .set(qMemberManage.gd1Nm , requestVO.getGd1Nm())
     		 .set(qMemberManage.gd1RelationCd , requestVO.getGd1RelationCd())
     		 .set(qMemberManage.hpNo , requestVO.getHpNo())
     		 .set(qMemberManage.homeZipcode , requestVO.getHomeZipcode())
@@ -1345,12 +1345,12 @@ public class ApiService extends BaseService {
     		 .set(qUser.address1 , requestVO.getHomeAddress1())
     		 .set(qUser.address2 , requestVO.getHomeAddress2())
     		 .set(qUser.userNm , requestVO.getGd1Nm())
-    		 .set(qUser.hpNo , requestVO.getHpNo())    		 
+    		 .set(qUser.hpNo , requestVO.getHpNo())
     		 .where(qUser.userCd.eq(requestVO.getGd1UserCd())).execute();
-    		 
-    	}    	
+
+    	}
     	if(isNotEmpty(requestVO.getChildrenUserCd())){
-    		
+
     		 update(qMemberChild)
     		 .set(qMemberChild.childrenNm , requestVO.getChildrenNm())
     		 .set(qMemberChild.childrenHpNo , requestVO.getChildrenHpNo())
@@ -1361,27 +1361,27 @@ public class ApiService extends BaseService {
     		 .set(qUser.userNm , requestVO.getChildrenNm())
     		 .set(qUser.hpNo , requestVO.getChildrenHpNo())
     		 .where(qUser.userCd.eq(requestVO.getChildrenUserCd())).execute();
-    		 
-    	}        
+
+    	}
     	return requestVO;
     }
-    
+
     //개인정보수정 (방문앱)
     @Transactional
-    public ApiMemberModifyCustVO modifyCust(ApiMemberModifyCustVO requestVO){    	
+    public ApiMemberModifyCustVO modifyCust(ApiMemberModifyCustVO requestVO){
     	if(isNotEmpty(requestVO.getGd1UserCd())){
-    		
-    	    
-    	    
+
+
+
     		 update(qMemberManage)
-    		 .set(qMemberManage.gd1Nm , requestVO.getGd1Nm())    		 
+    		 .set(qMemberManage.gd1Nm , requestVO.getGd1Nm())
     		 .set(qMemberManage.gd1RelationCd , requestVO.getGd1RelationCd())
-    		 .set(qMemberManage.gd1Birthday , requestVO.getGd1Birthday())    		 
-    		 .set(qMemberManage.gd2Nm , requestVO.getGd2Nm())    		 
+    		 .set(qMemberManage.gd1Birthday , requestVO.getGd1Birthday())
+    		 .set(qMemberManage.gd2Nm , requestVO.getGd2Nm())
     		 .set(qMemberManage.gd2RelationCd , requestVO.getGd2RelationCd())
-    		 .set(qMemberManage.gd2Birthday , requestVO.getGd2Birthday())    		    
-    		 .set(qMemberManage.hpNo , requestVO.getHpNo())	    
-    		 .set(qMemberManage.telNo , requestVO.getTelNo())	    
+    		 .set(qMemberManage.gd2Birthday , requestVO.getGd2Birthday())
+    		 .set(qMemberManage.hpNo , requestVO.getHpNo())
+    		 .set(qMemberManage.telNo , requestVO.getTelNo())
     		 .set(qMemberManage.email , requestVO.getEmail())
     		 .set(qMemberManage.homeZipcode , requestVO.getHomeZipcode())
     		 .set(qMemberManage.homeAddress1 , requestVO.getHomeAddress1())
@@ -1399,11 +1399,11 @@ public class ApiService extends BaseService {
     		 .set(qUser.hpNo , requestVO.getHpNo())
 			 .set(qUser.telNo, requestVO.getTelNo())
     		 .where(qUser.userCd.eq(requestVO.getGd1UserCd())).execute();
-    		 
-    		 
-    	}    	
+
+
+    	}
     	if(isNotEmpty(requestVO.getChildrenUserCd())){
-    	    
+
     		 update(qMemberChild)
     		 .set(qMemberChild.childrenNm , requestVO.getChildrenNm())
     		 .set(qMemberChild.childrenHpNo , requestVO.getChildrenHpNo())
@@ -1411,69 +1411,69 @@ public class ApiService extends BaseService {
     		 .set(qMemberChild.childrenGradeCd , requestVO.getChildrenGradeCd())
     		 .set(qMemberChild.childrenSchoolNm , requestVO.getChildrenSchoolNm())
     		 .where(qMemberChild.childrenUserCd.eq(requestVO.getChildrenUserCd())).execute();
-    		 
+
 
     		 update(qUser)
     		 .set(qUser.userNm , requestVO.getChildrenNm())
     		 .set(qUser.hpNo , requestVO.getChildrenHpNo())
 			 .set(qUser.telNo, requestVO.getTelNo())
     		 .where(qUser.userCd.eq(requestVO.getChildrenUserCd())).execute();
-    		 
-    	}        
+
+    	}
     	return requestVO;
     }
-    
+
 
     //비밀번호수정
     @Transactional
     public ApiResultCodeVO tcherInfoChange(RequestParams<Object> requestParams) throws Exception {
-    	
-        String tcherCd = requestParams.getString("tcherCd" , "");      
-        String tcherBirthday = requestParams.getString("tcherBirthday" , "");     
-        String tcherZipcode = requestParams.getString("tcherZipcode" , "");     
-        String tcherAddress1 = requestParams.getString("tcherAddress1" , "");     
-        String tcherAddress2 = requestParams.getString("tcherAddress2" , "");     
-        String userPs = requestParams.getString("userPs" , "");             
+
+        String tcherCd = requestParams.getString("tcherCd" , "");
+        String tcherBirthday = requestParams.getString("tcherBirthday" , "");
+        String tcherZipcode = requestParams.getString("tcherZipcode" , "");
+        String tcherAddress1 = requestParams.getString("tcherAddress1" , "");
+        String tcherAddress2 = requestParams.getString("tcherAddress2" , "");
+        String userPs = requestParams.getString("userPs" , "");
 
         RequestParams<ApiUserVO> params = new RequestParams<>(ApiUserVO.class);
-        params.put("userCd" , tcherCd);            
+        params.put("userCd" , tcherCd);
         ApiUserVO user =  apiMapper.findUser(params);
-        
+
         String resultCode="";
-    	String resultMsg="";     	
-    	
+    	String resultMsg="";
+
     	if (null != user){
-    		
+
     		update(qTcherManage)
     		.set(qTcherManage.tcherBirthday , tcherBirthday)
     		.set(qTcherManage.tcherZipcode , tcherZipcode)
     		.set(qTcherManage.tcherAddress1 , tcherAddress1)
     		.set(qTcherManage.tcherAddress2 , tcherAddress2)
-            .where(qTcherManage.tcherCd.eq(tcherCd)).execute();   
-    		
-    	    String password = bCryptPasswordEncoder.encode(userPs);     
-    	    
+            .where(qTcherManage.tcherCd.eq(tcherCd)).execute();
+
+    	    String password = bCryptPasswordEncoder.encode(userPs);
+
             update(qUser)
             .set(qUser.birthday , tcherBirthday)
             .set(qUser.zipcode , tcherZipcode)
             .set(qUser.address1 , tcherAddress1)
-            .set(qUser.address2 , tcherAddress2)            
+            .set(qUser.address2 , tcherAddress2)
             .set(qUser.userPs , password)
             .set(qUser.userPs2 , userPs)
             .set(qUser.lastLoginDate, Instant.now(Clock.systemUTC()))
-            .where(qUser.userCd.eq(tcherCd)).execute();   
-            
+            .where(qUser.userCd.eq(tcherCd)).execute();
+
         	resultCode="S";
-        	resultMsg="SUCCESS"; 	
+        	resultMsg="SUCCESS";
     	}else{
         	resultCode="F1";
         	resultMsg="사용자가 없습니다.";
     	}
-    	
-    	ApiResultCodeVO apiResult = new ApiResultCodeVO();  
+
+    	ApiResultCodeVO apiResult = new ApiResultCodeVO();
     	apiResult.setResultCode(resultCode);
-    	apiResult.setResultMsg(resultMsg);    	    	
-    	return apiResult;    	
+    	apiResult.setResultMsg(resultMsg);
+    	return apiResult;
     }
 
     /**
@@ -1555,8 +1555,6 @@ public class ApiService extends BaseService {
 		childUser.setCustCd(custCd);
 		//자녀 로그인 정보 저장
 		userService.saveChildren(childUser, NEW);
-		//자녀 코드 USER000 업데이트
-		userService.updateUserChildCd(custCd, childCd);
 		//MEMBER000 서비스 가능(로그인 가능)하도록 변경
 		memberManageService.updateServiceYn(custCd);
 

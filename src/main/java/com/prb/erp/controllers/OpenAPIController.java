@@ -901,6 +901,12 @@ public class OpenAPIController extends BaseController {
 	})
 	public ApiResultCodeVO saveUserLoginInfo(RequestParams<Object> vo) throws Exception {
 		ApiResultCodeVO apiResult = apiService.saveUserLoginInfo(vo);
+		//자녀 코드 USER000 업데이트
+		String custCd = vo.getString("custCd" , "");
+		String childCd = vo.getString("childCd" , "");
+		if ("S".equals(apiResult.getResultCode())) {
+			userService.updateUserChildCd(custCd, childCd);
+		}
 		return apiResult;
 	}
 
