@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 
 import com.prb.erp.domain.api.*;
+import com.prb.erp.domain.member.MemberManageService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 public class OpenAPIController extends BaseController {
 	@Inject private ApiService apiService;
 	@Inject private UserService userService;
+	@Inject private MemberManageService memberManageService;
 
 
     //공통코드
@@ -906,6 +908,7 @@ public class OpenAPIController extends BaseController {
 		String childCd = vo.getString("childCd" , "");
 		if ("S".equals(apiResult.getResultCode())) {
 			userService.updateUserChildCd(custCd, childCd);
+			memberManageService.updateGd1UserCd(custCd, childCd);
 		}
 		return apiResult;
 	}
