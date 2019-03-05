@@ -1633,4 +1633,50 @@ public class ApiService extends BaseService {
 
     }
 
+    public ApiResultObjectPagingVO getPaymentList(RequestParams vo) {
+		String tcherCd = vo.getString("tcherCd","");
+
+		int pageNumber = 1;
+		if("".equals(tcherCd)){
+			pageNumber = vo.getInt("pageNumber",1);
+		}
+		vo.put("pageNumber" ,pageNumber);
+
+		ApiResultObjectPagingVO result = new ApiResultObjectPagingVO();
+		List<ApiMemberManageVO> list = apiMapper.getPaymentList(vo);
+		result.setResult(list);
+
+		//현재페이지
+		result.setPageNumber(pageNumber);
+		int totalCnt = apiMapper.getPaymentListCount(vo);
+		result.setTotalCnt(totalCnt);
+
+		String resultCode;
+		String resultMsg;
+
+		if (list.size() > 0){
+			resultCode = "S";
+			resultMsg = "SUCCESS";
+		}else{
+			resultCode = "F1";
+			resultMsg = "결과가 없습니다.";
+		}
+
+		result.setResultCode(resultCode);
+		result.setResultMsg(resultMsg);
+
+		return result;
+	}
+
+	public ApiResultObjectVO getPaymentInfo(RequestParams vo) {
+		ApiPaymentInfoVO paymentInfoVO = apiMapper.getPaymentInfo(vo);
+
+		ApiResultObjectVO result = new ApiResultObjectVO();
+		result.setResult(paymentInfoVO);
+		result.setResultCode("S");
+		result.setResultMsg("SUCCESS");
+
+		return result;
+	}
+
 }

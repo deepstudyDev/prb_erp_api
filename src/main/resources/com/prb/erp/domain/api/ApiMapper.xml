@@ -2,11 +2,11 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-   
-<mapper namespace="com.prb.erp.domain.api.ApiMapper"> 
-    
+
+<mapper namespace="com.prb.erp.domain.api.ApiMapper">
+
     <!-- 로그인한 사용자 단건 가져오기 -->
-    <select id="getUserInfo" resultType="apiUserVO" parameterType="hashMap" statementType="PREPARED">   
+    <select id="getUserInfo" resultType="apiUserVO" parameterType="hashMap" statementType="PREPARED">
 		SELECT   A.USER_TYPE userType,
 	         DBO.FN_BASECODE('USER_TYPE',A.USER_TYPE,'') userTypeNm,
 	         A.DECISION_YN decisionYn,
@@ -37,7 +37,7 @@
 	         FROM    TB_ERP_TCHER000 Z
 	         WHERE   Z.TCHER_CD    = A.USER_CD
 	         AND     Z.TCHER_TYPE = A.USER_TYPE
-	         ),'-') workCdNm,	         
+	         ),'-') workCdNm,
 	         ISNULL(A.RANK_CD,'-') rankCd,
 	         DBO.FN_BASECODE('RANK_CD', A.RANK_CD,'') rankCdNm,
 	         ISNULL(A.TEL_NO,'-') telNo,
@@ -62,27 +62,27 @@
 			 A.LAST_LOGIN_DATE lastLoginDate
 	FROM     TB_ERP_USER000 A
 	WHERE    1=1
-			
+
 			<!-- 아이디 -->
-			<if test="map.userCd != null and map.userCd != ''">  
+			<if test="map.userCd != null and map.userCd != ''">
 					AND A.USER_CD = #{map.userCd}
-			</if>    
+			</if>
 			<!-- 패스워드 -->
-			<if test="map.userPs != null and map.userPs != ''">  
+			<if test="map.userPs != null and map.userPs != ''">
 					AND A.USER_PS = #{map.userPs}
-			</if>    
+			</if>
 			<!-- TYPE -->
-			<if test="map.userType != null and map.userType != ''">  
+			<if test="map.userType != null and map.userType != ''">
 					AND A.USER_TYPE = #{map.userType}
-			</if>    
+			</if>
     </select>
-    
+
     <!-- 상품조회 -->
-    <select id="getGoodsManageList" resultType="apiGoodsManageVO" parameterType="hashMap" statementType="PREPARED">   
+    <select id="getGoodsManageList" resultType="apiGoodsManageVO" parameterType="hashMap" statementType="PREPARED">
     	DECLARE @rowsPerPage INT = ISNULL(#{map.rowsPerPage},10), @pageNumber INT = ISNULL(#{map.pageNumber},1)
 	    	SELECT * FROM (
 				SELECT   A.GOODS_CD goodsCd,
-		         A.GOODS_NM goodsNm, 
+		         A.GOODS_NM goodsNm,
 			     A.SALES_TYPE salesType,
 			     DBO.FN_BASECODE('SALES_TYPE',A.SALES_TYPE,'') salesTypeNm,
 		         A.AGREEMENT_CD agreementCd,
@@ -138,13 +138,13 @@
 		         A.VISIT_SERVICE_PRICE visitServicePrice,
 		         A.ETC_SERVICE_COST_PRICE etcServiceCostPrice,
 		         A.ETC_SERVICE_PRICE etcServicePrice,
-		         
+
 		         A.VISIT_NUMBER_CD visitNumberCd,
 		         DBO.FN_BASECODE('VISIT_NUMBER_CD',A.VISIT_NUMBER_CD,'') visitNumberCdNm,
-		         
+
 		         A.VISIT_TIME_CD visitTimeCd,
 		         DBO.FN_BASECODE('VISIT_TIME_CD',A.VISIT_TIME_CD,'') visitTimeCdNm,
-		         
+
 		         B.USER_CD regUserCd,
 		         B.USER_NM regUserNm,
 		         CONVERT(CHAR(10), A.UPDATED_AT, 23) regDt,
@@ -155,77 +155,77 @@
 		         ON       A.UPDATED_BY = B.USER_CD
 		WHERE    1 = 1
 
-			
-			
-			<!-- 상품코드 -->				
-			<if test="map.goodsCd != null and map.goodsCd != ''">  
+
+
+			<!-- 상품코드 -->
+			<if test="map.goodsCd != null and map.goodsCd != ''">
 					AND A.GOODS_CD = #{map.goodsCd}
-			</if>      
-			<!-- 판매여부 -->				 
-			<if test="map.salesYn != null and map.salesYn != ''">  
+			</if>
+			<!-- 판매여부 -->
+			<if test="map.salesYn != null and map.salesYn != ''">
 					AND A.SALES_YN = #{map.salesYn}
-			</if>       
-			<!-- 상품분류 -->			
-			<if test="map.goodsClass != null and map.goodsClass != ''">  
+			</if>
+			<!-- 상품분류 -->
+			<if test="map.goodsClass != null and map.goodsClass != ''">
 					AND A.GOODS_CLASS = #{map.goodsClass}
-			</if>       			
-			<!-- 상품명 -->			
-			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '10'.toString() and map.searchText != null and map.searchText != ''">  
-					<![CDATA[  
+			</if>
+			<!-- 상품명 -->
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '10'.toString() and map.searchText != null and map.searchText != ''">
+					<![CDATA[
 		      			AND   A.GOODS_NM LIKE UPPER('%'+#{map.searchText}+'%')
 		  			]]>
-			</if>    
-			<!-- 상품코드 -->			
-			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '20'.toString() and map.searchText != null and map.searchText != ''">  
-					<![CDATA[  
+			</if>
+			<!-- 상품코드 -->
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '20'.toString() and map.searchText != null and map.searchText != ''">
+					<![CDATA[
 		      			AND   A.GOODS_CD LIKE UPPER('%'+#{map.searchText}+'%')
 		  			]]>
-			</if>       
-			
+			</if>
+
 			) AS SOD
-	   
+
 		WHERE SOD.rowNum2 BETWEEN ((@pageNumber-1)*@rowsPerPage)+1
 		AND @rowsPerPage*(@pageNumber)
     </select>
-    
+
     <!-- 상품조회 count -->
-    <select id="getGoodsManageListCount" resultType="java.lang.Integer" parameterType="hashMap" statementType="PREPARED">   
+    <select id="getGoodsManageListCount" resultType="java.lang.Integer" parameterType="hashMap" statementType="PREPARED">
 		SELECT 	   COUNT(1)
 			FROM   TB_ERP_GOODS000 A
 			       INNER JOIN TB_ERP_USER000 B
 			       ON     A.UPDATED_BY = B.USER_CD
 			WHERE 1=1
-			
-			
-			<!-- 상품코드 -->				
-			<if test="map.goodsCd != null and map.goodsCd != ''">  
+
+
+			<!-- 상품코드 -->
+			<if test="map.goodsCd != null and map.goodsCd != ''">
 					AND A.GOODS_CD = #{map.goodsCd}
-			</if>      
-			<!-- 판매여부 -->				 
-			<if test="map.salesYn != null and map.salesYn != ''">  
+			</if>
+			<!-- 판매여부 -->
+			<if test="map.salesYn != null and map.salesYn != ''">
 					AND A.SALES_YN = #{map.salesYn}
-			</if>       
-			<!-- 상품분류 -->			
-			<if test="map.goodsClass != null and map.goodsClass != ''">  
+			</if>
+			<!-- 상품분류 -->
+			<if test="map.goodsClass != null and map.goodsClass != ''">
 					AND A.GOODS_CLASS = #{map.goodsClass}
-			</if>       
-			
-			<!-- 상품명 -->			
-			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '10'.toString() and map.searchText != null and map.searchText != ''">  
-					<![CDATA[  
+			</if>
+
+			<!-- 상품명 -->
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '10'.toString() and map.searchText != null and map.searchText != ''">
+					<![CDATA[
 		      			AND   A.GOODS_NM LIKE UPPER('%'+#{map.searchText}+'%')
 		  			]]>
-			</if>    
-			<!-- 상품코드 -->			
-			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '20'.toString() and map.searchText != null and map.searchText != ''">  
-					<![CDATA[  
+			</if>
+			<!-- 상품코드 -->
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '20'.toString() and map.searchText != null and map.searchText != ''">
+					<![CDATA[
 		      			AND   A.GOODS_CD LIKE UPPER('%'+#{map.searchText}+'%')
 		  			]]>
-			</if>    
+			</if>
     </select>
-    
+
     <!-- 계약리스트조회 -->
-    <select id="getMemberList" resultType="apiMemberManageVO" parameterType="hashMap" statementType="PREPARED">   
+    <select id="getMemberList" resultType="apiMemberManageVO" parameterType="hashMap" statementType="PREPARED">
     	DECLARE @rowsPerPage INT = ISNULL(#{map.rowsPerPage},10), @pageNumber INT = ISNULL(#{map.pageNumber},1)
     	SELECT * FROM (
 			SELECT  *,
@@ -233,237 +233,237 @@
 				ROW_NUMBER() OVER (ORDER BY ${map.orderColumn} ${map.orderType2}) AS rowNum2
 			FROM VI_ERP_MEMBER
 			WHERE    1=1
-			
-			<!-- 회원계약코드 -->				
-			<if test="map.custCd != null and map.custCd != ''">  
+
+			<!-- 회원계약코드 -->
+			<if test="map.custCd != null and map.custCd != ''">
 					AND custCd = #{map.custCd}
-			</if>     
-						
-			<!-- 계약자명 -->						
-			<if test="map.gd1Nm != null and map.gd1Nm != ''">  
-					<![CDATA[  
+			</if>
+
+			<!-- 계약자명 -->
+			<if test="map.gd1Nm != null and map.gd1Nm != ''">
+					<![CDATA[
 		      			AND   gd1Nm LIKE UPPER('%'+#{map.gd1Nm}+'%')
 		  			]]>
-			</if>       	   
-			
-			<!-- 지국 -->				 
-			<if test="map.areaCd != null and map.areaCd != ''">  
+			</if>
+
+			<!-- 지국 -->
+			<if test="map.areaCd != null and map.areaCd != ''">
 					AND map.areaCd = #{map.areaCd}
-			</if>        
-			<!-- 센터 -->				 
-			<if test="map.orgCd != null and map.orgCd != ''">  
+			</if>
+			<!-- 센터 -->
+			<if test="map.orgCd != null and map.orgCd != ''">
 					AND orgCd LIKE #{map.orgCd}+'%'
-			</if>     
-			
-			<!-- 상품 -->				
-			<if test="map.goodsCd != null and map.goodsCd != ''">  
+			</if>
+
+			<!-- 상품 -->
+			<if test="map.goodsCd != null and map.goodsCd != ''">
 					AND goodsCd = #{map.goodsCd}
-			</if>   
-			
-			<!-- 온라인서비스상태 -->				 
-			<if test="map.onlineServiceStatus != null and map.onlineServiceStatus != ''">  
+			</if>
+
+			<!-- 온라인서비스상태 -->
+			<if test="map.onlineServiceStatus != null and map.onlineServiceStatus != ''">
 					AND onlineServiceStatus = #{map.onlineServiceStatus}
-			</if>    
-			
-			<!-- 방문서비스상태 -->				 
-			<if test="map.visitServiceStatus != null and map.visitServiceStatus != ''">  
+			</if>
+
+			<!-- 방문서비스상태 -->
+			<if test="map.visitServiceStatus != null and map.visitServiceStatus != ''">
 					AND visitServiceStatus = #{map.visitServiceStatus}
-			</if> 
-			
-			<!-- 계약자 -->						
-			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '10'.toString() and map.searchText != null and map.searchText != ''">  
-					<![CDATA[  
+			</if>
+
+			<!-- 계약자 -->
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '10'.toString() and map.searchText != null and map.searchText != ''">
+					<![CDATA[
 		      			AND   gd1Nm LIKE UPPER('%'+#{map.searchText}+'%')
 		  			]]>
-			</if>       	    
-			<!-- 휴대전화번호 -->    	
-			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '20'.toString() and map.searchText != null and map.searchText != ''">  
-					<![CDATA[  
+			</if>
+			<!-- 휴대전화번호 -->
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '20'.toString() and map.searchText != null and map.searchText != ''">
+					<![CDATA[
 		      			AND REPLACE(hpNo,'-','')  LIKE UPPER('%'+#{map.searchText}+'%')
 		  			]]>
-			</if>			
-			
-			<!-- 교사 -->				 
-			<if test="map.tcherCd != null and map.tcherCd != ''">  
-					<![CDATA[  
+			</if>
+
+			<!-- 교사 -->
+			<if test="map.tcherCd != null and map.tcherCd != ''">
+					<![CDATA[
 						AND (counselor1TcherCd = #{map.tcherCd} OR counselor2TcherCd = #{map.tcherCd} OR DBO.FN_VISIT_TCHERCD(custCd ,childCd) = #{map.tcherCd})
 		  			]]>
-			</if>	 			
-			
-			<!-- 추가계약 -->		
-			<if test="map.contractType != null and map.contractType != ''">  
-					<![CDATA[  
+			</if>
+
+			<!-- 추가계약 -->
+			<if test="map.contractType != null and map.contractType != ''">
+					<![CDATA[
 						AND contractType =  #{map.contractType}
 		  			]]>
 			</if>
 			<!-- 자녀성별 -->
-			<if test="map.childrenSex != null and map.childrenSex != ''">  
-					<![CDATA[  
+			<if test="map.childrenSex != null and map.childrenSex != ''">
+					<![CDATA[
 						AND childrenSex =  #{map.childrenSex}
 		  			]]>
 			</if>
-			<!-- 학년 -->			
-			<if test="map.childrenGradeCd != null and map.childrenGradeCd != ''">  
-					<![CDATA[  
+			<!-- 학년 -->
+			<if test="map.childrenGradeCd != null and map.childrenGradeCd != ''">
+					<![CDATA[
 						AND childrenGradeCd =  #{map.childrenGradeCd}
 		  			]]>
 			</if>
 			<!-- 방문횟수 -->
-			<if test="map.visitNumberCd != null and map.visitNumberCd != ''">  
-					<![CDATA[  
+			<if test="map.visitNumberCd != null and map.visitNumberCd != ''">
+					<![CDATA[
 						AND visitNumberCd =  #{map.visitNumberCd}
 		  			]]>
 			</if>
-			
-			
-			<!--등록일 시작 -->				 
-			<if test="map.fromDate != null and map.fromDate != ''">  
-					<![CDATA[  
+
+
+			<!--등록일 시작 -->
+			<if test="map.fromDate != null and map.fromDate != ''">
+					<![CDATA[
 						AND regDt >= #{map.fromDate}
 		  			]]>
-			</if>    
-			
-			<!--등록일 종료 -->				 
-			<if test="map.toDate != null and map.toDate != ''">  
-					<![CDATA[  
+			</if>
+
+			<!--등록일 종료 -->
+			<if test="map.toDate != null and map.toDate != ''">
+					<![CDATA[
 						AND regDt <= #{map.toDate}
 		  			]]>
-			</if>    
-			
+			</if>
+
 			) AS SOD
-	   
+
 		WHERE SOD.rowNum2 BETWEEN ((@pageNumber-1)*@rowsPerPage)+1
 		AND @rowsPerPage*(@pageNumber)
     </select>
     <!-- 계약리스트 카운트 -->
-    <select id="getMemberListCount" resultType="java.lang.Integer" parameterType="hashMap" statementType="PREPARED">   
+    <select id="getMemberListCount" resultType="java.lang.Integer" parameterType="hashMap" statementType="PREPARED">
 			SELECT  COUNT(1)
 			FROM     VI_ERP_MEMBER
 			WHERE    1=1
-			
-			<!-- 회원계약코드 -->				
-			<if test="map.custCd != null and map.custCd != ''">  
+
+			<!-- 회원계약코드 -->
+			<if test="map.custCd != null and map.custCd != ''">
 					AND custCd = #{map.custCd}
-			</if>     
-						
-			<!-- 계약자명 -->						
-			<if test="map.gd1Nm != null and map.gd1Nm != ''">  
-					<![CDATA[  
+			</if>
+
+			<!-- 계약자명 -->
+			<if test="map.gd1Nm != null and map.gd1Nm != ''">
+					<![CDATA[
 		      			AND   gd1Nm LIKE UPPER('%'+#{map.gd1Nm}+'%')
 		  			]]>
-			</if>       	   
-			
-			<!-- 지국 -->				 
-			<if test="map.areaCd != null and map.areaCd != ''">  
+			</if>
+
+			<!-- 지국 -->
+			<if test="map.areaCd != null and map.areaCd != ''">
 					AND map.areaCd = #{map.areaCd}
-			</if>        
-			<!-- 센터 -->				 
-			<if test="map.orgCd != null and map.orgCd != ''">  
+			</if>
+			<!-- 센터 -->
+			<if test="map.orgCd != null and map.orgCd != ''">
 					AND orgCd LIKE #{map.orgCd}+'%'
-			</if>     
-			
-			<!-- 상품 -->				
-			<if test="map.goodsCd != null and map.goodsCd != ''">  
+			</if>
+
+			<!-- 상품 -->
+			<if test="map.goodsCd != null and map.goodsCd != ''">
 					AND goodsCd = #{map.goodsCd}
-			</if>   
-			
-			<!-- 온라인서비스상태 -->				 
-			<if test="map.onlineServiceStatus != null and map.onlineServiceStatus != ''">  
+			</if>
+
+			<!-- 온라인서비스상태 -->
+			<if test="map.onlineServiceStatus != null and map.onlineServiceStatus != ''">
 					AND onlineServiceStatus = #{map.onlineServiceStatus}
-			</if>    
-			
-			<!-- 방문서비스상태 -->				 
-			<if test="map.visitServiceStatus != null and map.visitServiceStatus != ''">  
+			</if>
+
+			<!-- 방문서비스상태 -->
+			<if test="map.visitServiceStatus != null and map.visitServiceStatus != ''">
 					AND visitServiceStatus = #{map.visitServiceStatus}
-			</if> 
-			
-			<!-- 계약자 -->						
-			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '10'.toString() and map.searchText != null and map.searchText != ''">  
-					<![CDATA[  
+			</if>
+
+			<!-- 계약자 -->
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '10'.toString() and map.searchText != null and map.searchText != ''">
+					<![CDATA[
 		      			AND   gd1Nm LIKE UPPER('%'+#{map.searchText}+'%')
 		  			]]>
-			</if>       	    
-			<!-- 휴대전화번호 -->    	
-			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '20'.toString() and map.searchText != null and map.searchText != ''">  
-					<![CDATA[  
+			</if>
+			<!-- 휴대전화번호 -->
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '20'.toString() and map.searchText != null and map.searchText != ''">
+					<![CDATA[
 		      			AND REPLACE(hpNo,'-','')  LIKE UPPER('%'+#{map.searchText}+'%')
 		  			]]>
-			</if>			
-			
-			<!-- 교사 -->				 
-			<if test="map.tcherCd != null and map.tcherCd != ''">  
-					<![CDATA[  
+			</if>
+
+			<!-- 교사 -->
+			<if test="map.tcherCd != null and map.tcherCd != ''">
+					<![CDATA[
 						AND (counselor1TcherCd = #{map.tcherCd} OR counselor2TcherCd = #{map.tcherCd} OR DBO.FN_VISIT_TCHERCD(custCd ,childCd) = #{map.tcherCd})
 		  			]]>
-			</if>	 			
-			
-			<!-- 추가계약 -->		
-			<if test="map.contractType != null and map.contractType != ''">  
-					<![CDATA[  
+			</if>
+
+			<!-- 추가계약 -->
+			<if test="map.contractType != null and map.contractType != ''">
+					<![CDATA[
 						AND contractType =  #{map.contractType}
 		  			]]>
 			</if>
 			<!-- 자녀성별 -->
-			<if test="map.childrenSex != null and map.childrenSex != ''">  
-					<![CDATA[  
+			<if test="map.childrenSex != null and map.childrenSex != ''">
+					<![CDATA[
 						AND childrenSex =  #{map.childrenSex}
 		  			]]>
 			</if>
-			<!-- 학년 -->			
-			<if test="map.childrenGradeCd != null and map.childrenGradeCd != ''">  
-					<![CDATA[  
+			<!-- 학년 -->
+			<if test="map.childrenGradeCd != null and map.childrenGradeCd != ''">
+					<![CDATA[
 						AND childrenGradeCd =  #{map.childrenGradeCd}
 		  			]]>
 			</if>
 			<!-- 방문횟수 -->
-			<if test="map.visitNumberCd != null and map.visitNumberCd != ''">  
-					<![CDATA[  
+			<if test="map.visitNumberCd != null and map.visitNumberCd != ''">
+					<![CDATA[
 						AND visitNumberCd =  #{map.visitNumberCd}
 		  			]]>
 			</if>
-			
-			
-			<!--등록일 시작 -->				 
-			<if test="map.fromDate != null and map.fromDate != ''">  
-					<![CDATA[  
+
+
+			<!--등록일 시작 -->
+			<if test="map.fromDate != null and map.fromDate != ''">
+					<![CDATA[
 						AND regDt >= #{map.fromDate}
 		  			]]>
-			</if>    
-			
-			<!--등록일 종료 -->				 
-			<if test="map.toDate != null and map.toDate != ''">  
-					<![CDATA[  
+			</if>
+
+			<!--등록일 종료 -->
+			<if test="map.toDate != null and map.toDate != ''">
+					<![CDATA[
 						AND regDt <= #{map.toDate}
 		  			]]>
-			</if>    
+			</if>
     </select>
-    
+
     <!-- 자녀별 계약내용 전체 -->
-    <select id="getMemberDetail" resultType="apiMemberDetailVO" parameterType="hashMap" statementType="PREPARED">   
+    <select id="getMemberDetail" resultType="apiMemberDetailVO" parameterType="hashMap" statementType="PREPARED">
 			SELECT   *
 			FROM     VI_ERP_MEMBER
 			WHERE    1=1
-        
-			<!-- 회원계약코드 -->				
-			<if test="map.custCd != null and map.custCd != ''">  
+
+			<!-- 회원계약코드 -->
+			<if test="map.custCd != null and map.custCd != ''">
 					AND custCd = #{map.custCd}
-			</if>      
-			
-			<!-- 자녀코드 -->				
-			<if test="map.childCd != null and map.childCd != ''">  
+			</if>
+
+			<!-- 자녀코드 -->
+			<if test="map.childCd != null and map.childCd != ''">
 					AND childCd = #{map.childCd}
-			</if>      
-			
-			<!-- 교사 -->				 
-			<if test="map.tcherCd != null and map.tcherCd != ''">  
-				<![CDATA[  
+			</if>
+
+			<!-- 교사 -->
+			<if test="map.tcherCd != null and map.tcherCd != ''">
+				<![CDATA[
 					AND (counselor1TcherCd = #{map.tcherCd} OR counselor2TcherCd = #{map.tcherCd} OR DBO.FN_VISIT_TCHERCD(custCd , childCd) = #{map.tcherCd})
 	  			]]>
 			</if>
     </select>
-    
+
     <!-- 계약내용 헤더 -->
-    <select id="getMemberHeader" resultType="apiMemberHeaderVO" parameterType="hashMap" statementType="PREPARED">   
+    <select id="getMemberHeader" resultType="apiMemberHeaderVO" parameterType="hashMap" statementType="PREPARED">
 	SELECT   A.CUST_CD custCd,
 					 ISNULL(A.REPRE_NUM, '') repreNum,
 			         ISNULL(A.GD1_NM,'-') gd1Nm,
@@ -487,7 +487,7 @@
 			         ISNULL(A.DELIVERY_ADDRESS2,'-') deliveryAddress2,
 			         ISNULL(B.SALES_TYPE,'-') salesType,
 			         DBO.FN_BASECODE('SALES_TYPE',B.SALES_TYPE,'') salesTypeNm,
-			         		         
+
 			         ISNULL(B.CONTRACT_DT,'-') contractDt,
 			         ISNULL(B.GOODS_CD,'-') goodsCd,
          			(SELECT Z.GOODS_NM FROM TB_ERP_GOODS000 Z WHERE Z.GOODS_CD = B.GOODS_CD) goodsNm,
@@ -497,19 +497,19 @@
 			         B.TOTAL_PRICE totalPrice,
 			         B.MONTH_PRICE monthPrice,
 			         B.CONTRACT_PRICE contractPrice,
-			         
+
 			         ISNULL(B.CONTRACT_PAYMENT_WAY,'-') contractPaymentWay,
-			         DBO.FN_BASECODE('PAYMENT_WAY',B.CONTRACT_PAYMENT_WAY,'') contractPaymentWayNm,			         
+			         DBO.FN_BASECODE('PAYMENT_WAY',B.CONTRACT_PAYMENT_WAY,'') contractPaymentWayNm,
 			         ISNULL(B.CONTRACT_PAYMENT_METHOD,'-') contractPaymentMethod,
-			         DBO.FN_BASECODE('PAYMENT_METHOD',B.CONTRACT_PAYMENT_METHOD,'') contractPaymentMethodNm,			         
+			         DBO.FN_BASECODE('PAYMENT_METHOD',B.CONTRACT_PAYMENT_METHOD,'') contractPaymentMethodNm,
 			         B.PAYMENT_PRICE paymentPrice,
 			         ISNULL(B.PAYMENT_WAY,'-') paymentWay,
-			         DBO.FN_BASECODE('PAYMENT_WAY',B.PAYMENT_WAY,'') paymentWayNm,			         
+			         DBO.FN_BASECODE('PAYMENT_WAY',B.PAYMENT_WAY,'') paymentWayNm,
 			         ISNULL(B.PAYMENT_METHOD,'-') paymentMethod,
-			         DBO.FN_BASECODE('PAYMENT_METHOD',B.PAYMENT_METHOD,'') paymentMethodNm,			   
+			         DBO.FN_BASECODE('PAYMENT_METHOD',B.PAYMENT_METHOD,'') paymentMethodNm,
 			         ISNULL(B.PAYMENT_YN,'-') paymentYn,
-			         DBO.FN_BASECODE('PAYMENT_YN',B.PAYMENT_YN,'') paymentYnNm,			         
-			         
+			         DBO.FN_BASECODE('PAYMENT_YN',B.PAYMENT_YN,'') paymentYnNm,
+
 			         ISNULL(A.AREA_CD,'-') areaCd,
 			         ISNULL((SELECT Z.AREA_NM FROM TB_ERP_AREA000 Z WHERE Z.AREA_CD = A.AREA_CD),'-') areaNm,
 			         ISNULL(A.ORG_CD,'-') orgCd,
@@ -521,7 +521,9 @@
 					 ISNULL(B.BANK_ACCOUNT_NM, '') bankAccountNm,
 					 ISNULL(B.BANK_ACCOUNT_NO, '') bankAccountNo,
 				 	 ISNULL(B.BANK_CD, '') bankCd,
-					 ISNULL(B.WITH_DRAW_DAY, 0) withDrawDay
+					 ISNULL(B.WITH_DRAW_DAY, 0) withDrawDay,
+					 ISNULL((SELECT USER_CD FROM TB_ERP_USER000 WHERE USER_TYPE = 30 AND A.CUST_CD = CUST_CD), '') custLoginId,
+					 ISNULL((SELECT USER_CD FROM TB_ERP_USER000 WHERE USER_TYPE = 40 AND A.CUST_CD = CUST_CD), '') childLoginId
 				FROM     TB_ERP_MEMBER000 A
 				LEFT OUTER JOIN TB_ERP_MEMBER100 B
 				ON       A.CUST_CD = B.CUST_CD
@@ -530,16 +532,16 @@
 				LEFT OUTER JOIN TB_ERP_TCHER200 D
 				ON A.CUST_CD = D.CUST_CD
 				WHERE    1=1
-        
-			<!-- 회원계약코드 -->				
-			<if test="map.custCd != null and map.custCd != ''">  
+
+			<!-- 회원계약코드 -->
+			<if test="map.custCd != null and map.custCd != ''">
 					AND A.CUST_CD = #{map.custCd}
-			</if>      
-			
-			<!-- 부모 아이디 -->				
-			<if test="map.gd1UserCd != null and map.gd1UserCd != ''">  
+			</if>
+
+			<!-- 부모 아이디 -->
+			<if test="map.gd1UserCd != null and map.gd1UserCd != ''">
 					AND A.GD1_USER_CD = #{map.gd1UserCd}
-			</if>      
+			</if>
     </select>
 
 	<select id="getMemberHeaderAnyParam" resultType="apiMemberHeaderVO" parameterType="hashMap" statementType="PREPARED">
@@ -623,45 +625,45 @@
 			AND C.CHILDREN_GRADE_CD = #{map.childrenGradeCd}
 		</if>
 	</select>
-	
+
 	<!-- 계약내용 자녀 여러건 -->
-    <select id="getMemberChilds" resultType="apiMemberChildVO" parameterType="hashMap" statementType="PREPARED">   
+    <select id="getMemberChilds" resultType="apiMemberChildVO" parameterType="hashMap" statementType="PREPARED">
 			SELECT  *
 			FROM     VI_ERP_MEMBER
 			WHERE    1=1
-        
-			<!-- 회원계약코드 -->				
-			<if test="map.custCd != null and map.custCd != ''">  
+
+			<!-- 회원계약코드 -->
+			<if test="map.custCd != null and map.custCd != ''">
 					AND custCd = #{map.custCd}
-			</if>      
-			
-			<!-- 자녀코드 -->				
-			<if test="map.childCd != null and map.childCd != ''">  
+			</if>
+
+			<!-- 자녀코드 -->
+			<if test="map.childCd != null and map.childCd != ''">
 					AND childCd = #{map.childCd}
-			</if>  
-			    
-			<!-- 자녀ID -->				
-			<if test="map.childUserCd != null and map.childUserCd != ''">  
+			</if>
+
+			<!-- 자녀ID -->
+			<if test="map.childUserCd != null and map.childUserCd != ''">
 					AND childUserCd = #{map.childUserCd}
-			</if>      
+			</if>
     </select>
-    
+
     <!-- 계약내용 자녀 한건 -->
-    <select id="getMemberChild" resultType="apiMemberChildVO" parameterType="hashMap" statementType="PREPARED">   
+    <select id="getMemberChild" resultType="apiMemberChildVO" parameterType="hashMap" statementType="PREPARED">
 			SELECT  *
 			FROM     VI_ERP_MEMBER
 			WHERE    1=1
-        
-			<!-- 회원계약코드 -->				
-			<if test="map.custCd != null and map.custCd != ''">  
+
+			<!-- 회원계약코드 -->
+			<if test="map.custCd != null and map.custCd != ''">
 					AND custCd = #{map.custCd}
-			</if>      
-			
-			<!-- 자녀코드 -->				
-			<if test="map.childCd != null and map.childCd != ''">  
+			</if>
+
+			<!-- 자녀코드 -->
+			<if test="map.childCd != null and map.childCd != ''">
 					AND childCd = #{map.childCd}
-			</if>      
-						
+			</if>
+
     </select>
 
 	<!-- 계약내용 자녀 한건 (핀노드 추가 요청건) -->
@@ -688,14 +690,14 @@
 		</if>
 
 	</select>
-    
-	
+
+
 	<!-- 계약내용 자녀 여러건 요약정보 -->
-    <select id="getContractInfoDetail" resultType="apiMemberChildVO" parameterType="hashMap" statementType="PREPARED">   
+    <select id="getContractInfoDetail" resultType="apiMemberChildVO" parameterType="hashMap" statementType="PREPARED">
 			SELECT   C.CUST_CD custCd,
 			         ISNULL(C.CHILD_CD,'-') childCd,
 		         	 ISNULL(C.CHILDREN_USER_CD,'-') childrenUserCd,
-			         ISNULL(C.CHILDREN_NM,'-') childrenNm,			         
+			         ISNULL(C.CHILDREN_NM,'-') childrenNm,
 			         ISNULL(C.CHILDREN_GRADE_CD,'-') childrenGradeCd,
 			         DBO.FN_BASECODE('GRADE_CD',C.CHILDREN_GRADE_CD,'') childrenGradeCdNm,
 			         ISNULL(C.CONTRACT_TYPE,'-') contractType,
@@ -706,18 +708,18 @@
 		         LEFT OUTER JOIN TB_ERP_MEMBER200 C
 		         ON       A.CUST_CD = C.CUST_CD
 			WHERE    1=1
-			
-			<!-- 부모 아이디 -->				
-			<if test="map.gd1UserCd != null and map.gd1UserCd != ''">  
+
+			<!-- 부모 아이디 -->
+			<if test="map.gd1UserCd != null and map.gd1UserCd != ''">
 					AND A.GD1_USER_CD = #{map.gd1UserCd}
-			</if>      
-			<if test="map.contractType != null and map.contractType != ''">  
+			</if>
+			<if test="map.contractType != null and map.contractType != ''">
 					AND C.CONTRACT_TYPE = #{map.contractType}
-			</if>   
+			</if>
     </select>
-    
+
 	<!-- 자녀 형제정보 -->
-    <select id="getMemberBrothers" resultType="apiBrotherVO" parameterType="hashMap" statementType="PREPARED">   
+    <select id="getMemberBrothers" resultType="apiBrotherVO" parameterType="hashMap" statementType="PREPARED">
 			SELECT  CUST_CD custCd,
 					CHILD_CD childCd,
 					BROTHER_CD brotherCd,
@@ -729,85 +731,85 @@
 				    DBO.FN_BASECODE('GRADE_CD',BROTHER_GRADE_CD,'') brotherGradeCdNm
 			FROM     TB_ERP_MEMBER300
 			WHERE    1=1
-        
-			<!-- 회원계약코드 -->				
-			<if test="map.custCd != null and map.custCd != ''">  
+
+			<!-- 회원계약코드 -->
+			<if test="map.custCd != null and map.custCd != ''">
 					AND CUST_CD = #{map.custCd}
-			</if>      
-			
-			<!-- 자녀코드 -->				
-			<if test="map.childCd != null and map.childCd != ''">  
+			</if>
+
+			<!-- 자녀코드 -->
+			<if test="map.childCd != null and map.childCd != ''">
 					AND CHILD_CD = #{map.childCd}
-			</if>  
-			
-			<!-- 형제코드 -->				
-			<if test="map.brotherCd != null and map.brotherCd != ''">  
+			</if>
+
+			<!-- 형제코드 -->
+			<if test="map.brotherCd != null and map.brotherCd != ''">
 					AND BROTHER_CD = #{map.brotherCd}
-			</if>  
-			    
-			<!-- 자녀ID -->				
-			<if test="map.childUserCd != null and map.childUserCd != ''">  
+			</if>
+
+			<!-- 자녀ID -->
+			<if test="map.childUserCd != null and map.childUserCd != ''">
 					AND childUserCd = #{map.childUserCd}
-			</if>      
+			</if>
     </select>
-    
+
     <!-- 교사별 금일 계약건수 -->
-	<select id="getTodayMemberCount" resultType="java.lang.Integer" parameterType="hashMap" statementType="PREPARED">   
+	<select id="getTodayMemberCount" resultType="java.lang.Integer" parameterType="hashMap" statementType="PREPARED">
 			SELECT  COUNT(1)
 			FROM  VI_ERP_MEMBER
 			WHERE 1=1
 			<!-- 오늘 -->
 			AND contractDt = CONVERT(CHAR(10),GETDATE(), 23)
-			<!-- 교사 -->				 
-			<if test="map.tcherCd != null and map.tcherCd != ''">  
-					<![CDATA[  
+			<!-- 교사 -->
+			<if test="map.tcherCd != null and map.tcherCd != ''">
+					<![CDATA[
 						AND (counselor1TcherCd = #{map.tcherCd} OR counselor2TcherCd = #{map.tcherCd} OR DBO.FN_VISIT_TCHERCD(custCd , childCd) = #{map.tcherCd})
 		  			]]>
 			</if>
     </select>
-	
+
 	<!-- 교사별 전체 계약건수 -->
-	<select id="getTotalMemberCount" resultType="java.lang.Integer" parameterType="hashMap" statementType="PREPARED">   
+	<select id="getTotalMemberCount" resultType="java.lang.Integer" parameterType="hashMap" statementType="PREPARED">
 			SELECT  COUNT(1)
 			FROM  VI_ERP_MEMBER
 			WHERE 1=1
-			<!-- 교사 -->				 
-			<if test="map.tcherCd != null and map.tcherCd != ''">  
-					<![CDATA[  
+			<!-- 교사 -->
+			<if test="map.tcherCd != null and map.tcherCd != ''">
+					<![CDATA[
 						AND (counselor1TcherCd = #{map.tcherCd} OR counselor2TcherCd = #{map.tcherCd} OR DBO.FN_VISIT_TCHERCD(custCd , childCd) = #{map.tcherCd})
 		  			]]>
 			</if>
     </select>
-   
+
     <!-- 아이디 / 비밀번호 찾기 -->
-    <select id="findUser" resultType="apiUserVO" parameterType="hashMap" statementType="PREPARED">   
+    <select id="findUser" resultType="apiUserVO" parameterType="hashMap" statementType="PREPARED">
 			SELECT   A.USER_CD userCd,
 			         A.USER_NM userNm,
 			         A.HP_NO hpNo
 			FROM     TB_ERP_USER000 A
 			WHERE    1 = 1
-			
+
 			<!-- 아이디 -->
-			<if test="map.userCd != null and map.userCd != ''">  
+			<if test="map.userCd != null and map.userCd != ''">
 					AND A.USER_CD = #{map.userCd}
-			</if>    
-			
+			</if>
+
 			<!-- 사용자명 -->
-			<if test="map.userNm != null and map.userNm != ''">  
+			<if test="map.userNm != null and map.userNm != ''">
 					AND A.USER_NM = #{map.userNm}
-			</if>    
+			</if>
 			<!-- 패스워드 -->
-			<if test="map.hpNo != null and map.hpNo != ''">  
+			<if test="map.hpNo != null and map.hpNo != ''">
 		    		AND REPLACE(A.HP_NO,'-','')  = REPLACE(UPPER(#{map.hpNo}),'-','')
-			</if>    
+			</if>
 			<!-- 패스워드 -->
-			<if test="map.userPs != null and map.userPs != ''">  
+			<if test="map.userPs != null and map.userPs != ''">
 					AND A.USER_PS = #{map.userPs}
-			</if>    
+			</if>
     </select>
-    
+
      <!-- 상품조회 -->
-    <select id="getSendList" resultType="apiSendMasterVO" parameterType="hashMap" statementType="PREPARED">   
+    <select id="getSendList" resultType="apiSendMasterVO" parameterType="hashMap" statementType="PREPARED">
     	DECLARE @RowsPerPage INT = 10, @PageNumber INT = #{map.pageNumber}
     	SELECT * FROM (
 			SELECT   A.SEND_CODE sendCode,
@@ -820,12 +822,12 @@
 			         case when A.SEND_DT > getdate()  AND A.SEND_TYPE = '20' then 'Y' else 'N' end deleteYn,
 			         A.SEND_MESSAGE sendMessage,
 			         D.ORG_CD orgCd,
-			         (SELECT Z.ORG_NM FROM TB_ERP_AREA100 Z WHERE Z.ORG_CD = D.ORG_CD AND Z.ORG_CLASS = D.ORG_CLASS) orgNm,   
+			         (SELECT Z.ORG_NM FROM TB_ERP_AREA100 Z WHERE Z.ORG_CD = D.ORG_CD AND Z.ORG_CLASS = D.ORG_CLASS) orgNm,
 			         A.SENDER_USER_CD sendUserCd,
 			         D.USER_NM sendUserNm,
 			         A.SENDER_NO senderNo,
 			         E.USER_TYPE userType,
-				     DBO.FN_BASECODE('USER_TYPE',E.USER_TYPE,'') userTypeNm, 
+				     DBO.FN_BASECODE('USER_TYPE',E.USER_TYPE,'') userTypeNm,
 			         B.USER_CD userCd,
 			         E.USER_NM userNm,
 			         B.HP_NO hpNo,
@@ -833,22 +835,22 @@
 				     DBO.FN_BASECODE('SMS_RESULT',B.SUCCESS_YN,'') successYnNm,
 			         C.USER_CD regUserCd,
 			         C.USER_NM regUserNm,
-			         CONVERT(CHAR(10), A.UPDATED_AT, 23) regDt,			         
+			         CONVERT(CHAR(10), A.UPDATED_AT, 23) regDt,
 					 ROW_NUMBER() OVER (ORDER BY ${map.orderColumn} ${map.orderType}) AS rowNum,
-					 ROW_NUMBER() OVER (ORDER BY ${map.orderColumn} ${map.orderType2}) AS rowNum2	
+					 ROW_NUMBER() OVER (ORDER BY ${map.orderColumn} ${map.orderType2}) AS rowNum2
 			FROM     TB_ERP_SMS000 A
 			         INNER JOIN TB_ERP_SMS100 B
 			         ON       A.SEND_CODE = B.SEND_CODE
 			         INNER JOIN TB_ERP_USER000 C
-			         ON       A.UPDATED_BY = C.USER_CD			 
+			         ON       A.UPDATED_BY = C.USER_CD
 			         LEFT OUTER JOIN TB_ERP_USER000 D
-			         ON       A.SENDER_USER_CD = D.USER_CD	 
+			         ON       A.SENDER_USER_CD = D.USER_CD
 			         LEFT OUTER JOIN TB_ERP_USER000 E
 			         ON       B.USER_CD = E.USER_CD
 			WHERE    1 = 1
-			
+
 			<!-- 보낸사람 -->
-			<if test="map.senderUserCd != null and map.senderUserCd != ''">  
+			<if test="map.senderUserCd != null and map.senderUserCd != ''">
 					AND A.SENDER_USER_CD = #{map.senderUserCd}
 			</if>
 			<!-- 발송 검색일 -->
@@ -862,13 +864,13 @@
 				AND B.SUCCESS_YN = #{map.successYn}
 			</if>
 			) AS SOD
-	   
+
 		WHERE SOD.rowNum2 BETWEEN ((@pageNumber-1)*@rowsPerPage)+1
 		AND @rowsPerPage*(@pageNumber)
     </select>
-    
+
     <!-- 문자조회 -->
-    <select id="getSendListCount" resultType="java.lang.Integer" parameterType="hashMap" statementType="PREPARED">   
+    <select id="getSendListCount" resultType="java.lang.Integer" parameterType="hashMap" statementType="PREPARED">
 			SELECT   COUNT(1)
 			FROM     TB_ERP_SMS000 A
 			         INNER JOIN TB_ERP_SMS100 B
@@ -876,9 +878,9 @@
 			         LEFT OUTER JOIN TB_ERP_USER000 C
 			         ON       A.SENDER_USER_CD = C.USER_CD
 			WHERE    1 = 1
-			
+
 			<!-- 보낸사람 -->
-			<if test="map.senderUserCd != null and map.senderUserCd != ''">  
+			<if test="map.senderUserCd != null and map.senderUserCd != ''">
 					AND A.SENDER_USER_CD = #{map.senderUserCd}
 			</if>
 			<!-- 발송 검색일 -->
@@ -888,35 +890,35 @@
 			]]>
 			</if>
     </select>
-    
+
     <!-- 인수인계목록 -->
-    <select id="getTransMemberList" resultType="apiTcherTransManageResponseVO" parameterType="hashMap" statementType="PREPARED">   
-		SELECT   
+    <select id="getTransMemberList" resultType="apiTcherTransManageResponseVO" parameterType="hashMap" statementType="PREPARED">
+		SELECT
 					 ISNULL(F.TRANS_CD,'-') transCd,
 			         ISNULL(F.TRANS_REQUEST_DT,'-') transRequestDt,
 			         ISNULL(F.TRANS_REQUEST_USER_CD,'-') transRequestUserCd,
 			         ISNULL((SELECT Z.USER_NM FROM TB_ERP_USER000 Z WHERE Z.USER_CD = F.TRANS_REQUEST_USER_CD),'-') transRequestUserNm,
 			         ISNULL(F.TRANS_PREV_USER_CD,'-') transPrevUserCd,
 			         ISNULL((SELECT Z.USER_NM FROM TB_ERP_USER000 Z WHERE Z.USER_CD = F.TRANS_PREV_USER_CD),'-') transPrevUserNm,
-			         ISNULL(F.TRANS_USER_CD,'-') transUserCd,			         
+			         ISNULL(F.TRANS_USER_CD,'-') transUserCd,
 			         ISNULL((SELECT Z.USER_NM FROM TB_ERP_USER000 Z WHERE Z.USER_CD = F.TRANS_USER_CD),'-') transUserNm,
 			         ISNULL(F.TRANS_HOPE_DT,'-') transHopeDt,
-			         ISNULL(F.TRANS_REASON_CD,'-') transReasonCd,			         
+			         ISNULL(F.TRANS_REASON_CD,'-') transReasonCd,
 			         ISNULL(F.REQUEST_START_DT,'-') requestStartDt,
 			         ISNULL(F.REQUEST_START_HOUR,'-') requestStartHour,
-			         ISNULL(F.REQUEST_START_TIME,'-') requestStartTime,			         
+			         ISNULL(F.REQUEST_START_TIME,'-') requestStartTime,
 			         ISNULL(F.MOVE_DT,'-') moveDt,
 			         ISNULL(F.ZIPCODE,'-') zipcode,
 			         ISNULL(F.ADDRESS1,'-') address1,
 			         ISNULL(F.ADDRESS2,'-') address2,
-			         ISNULL(F.TRANS_REMARK,'-')  transRemark,			         
+			         ISNULL(F.TRANS_REMARK,'-')  transRemark,
 			         ISNULL(F.APPROVAL_DT,'-') approvalDt,
 			         ISNULL(F.APPROVAL_USER_CD,'-') approvalUserCd,
 			         ISNULL(F.APPROVAL_YN,'-') approvalYn,
 			         ISNULL(F.CONFIRM_YN,'-') confirmYn,
 			         DBO.FN_BASECODE('APPROVAL_YN',F.APPROVAL_YN,'') approvalYnNm,
-			         
-			         
+
+
 					 ISNULL(A.CUST_CD,'-') custCd,
 			         ISNULL(C.CHILD_CD,'-') childCd,
 			         ISNULL(A.GD1_NM,'-') gd1Nm,
@@ -939,11 +941,11 @@
 			         ISNULL(A.DELIVERY_ADDRESS1,'-') deliveryAddress1,
 			         ISNULL(A.DELIVERY_ADDRESS2,'-') deliveryAddress2,
 		         	 ISNULL(C.MEMBER_STATUS,'-') memberStatus,
-		         	 DBO.FN_BASECODE('MEMBER_STATUS',C.MEMBER_STATUS,'') memberStatusNm,		         	 
+		         	 DBO.FN_BASECODE('MEMBER_STATUS',C.MEMBER_STATUS,'') memberStatusNm,
 		         	 ISNULL((SELECT Z.APPROVAL_DT FROM TB_ERP_MEMBER050 Z WHERE Z.CUST_CD = C.CUST_CD AND Z.CHILD_CD = C.CHILD_CD AND Z.APPROVAL_YN = 'Y'),'-') cancelDt,
 			         ISNULL(B.SALES_TYPE,'-') salesType,
 			         DBO.FN_BASECODE('SALES_TYPE',B.SALES_TYPE,'') salesTypeNm,
-			         		         
+
 			         ISNULL(B.CONTRACT_DT,'-') contractDt,
 			         ISNULL(B.GOODS_CD,'-') goodsCd,
          			(SELECT Z.GOODS_NM FROM TB_ERP_GOODS000 Z WHERE Z.GOODS_CD = B.GOODS_CD) goodsNm,
@@ -953,20 +955,20 @@
 			         B.TOTAL_PRICE totalPrice,
 			         B.MONTH_PRICE monthPrice,
 			         B.CONTRACT_PRICE contractPrice,
-			         
+
 			         ISNULL(B.CONTRACT_PAYMENT_WAY,'-') contractPaymentWay,
-			         DBO.FN_BASECODE('PAYMENT_WAY',B.CONTRACT_PAYMENT_WAY,'') contractPaymentWayNm,			         
+			         DBO.FN_BASECODE('PAYMENT_WAY',B.CONTRACT_PAYMENT_WAY,'') contractPaymentWayNm,
 			         ISNULL(B.CONTRACT_PAYMENT_METHOD,'-') contractPaymentMethod,
-			         DBO.FN_BASECODE('PAYMENT_METHOD',B.CONTRACT_PAYMENT_METHOD,'') contractPaymentMethodNm,			         
+			         DBO.FN_BASECODE('PAYMENT_METHOD',B.CONTRACT_PAYMENT_METHOD,'') contractPaymentMethodNm,
 			         B.PAYMENT_PRICE paymentPrice,
 			         ISNULL(B.PAYMENT_WAY,'-') paymentWay,
-			         DBO.FN_BASECODE('PAYMENT_WAY',B.PAYMENT_WAY,'') paymentWayNm,			         
+			         DBO.FN_BASECODE('PAYMENT_WAY',B.PAYMENT_WAY,'') paymentWayNm,
 			         ISNULL(B.PAYMENT_METHOD,'-') paymentMethod,
-			         DBO.FN_BASECODE('PAYMENT_METHOD',B.PAYMENT_METHOD,'') paymentMethodNm,			   
+			         DBO.FN_BASECODE('PAYMENT_METHOD',B.PAYMENT_METHOD,'') paymentMethodNm,
 			         ISNULL(B.PAYMENT_YN,'-') paymentYn,
 			         DBO.FN_BASECODE('PAYMENT_YN',B.PAYMENT_YN,'') paymentYnNm,
-			         
-			         
+
+
 			         ISNULL(C.CHILDREN_CONTRACT_DT,'-') childrenContractDt,
 			         ISNULL(C.CONTRACT_TYPE,'-') contractType,
 			         DBO.FN_BASECODE('CONTRACT_TYPE',C.CONTRACT_TYPE,'') contractTypeNm,
@@ -979,7 +981,7 @@
 			         ISNULL(C.CHILDREN_SCHOOL_NM,'-') childrenSchoolNm,
 			         ISNULL(C.CHILDREN_GRADE_CD,'-') childrenGradeCd,
 			         DBO.FN_BASECODE('GRADE_CD',C.CHILDREN_GRADE_CD,'') childrenGradeCdNm,
-			         
+
 			         ISNULL(C.ONLINE_SERVICE_STATUS,'-') onlineServiceStatus,
 			         DBO.FN_BASECODE('ONLINE_SERVICE_STATUS',C.ONLINE_SERVICE_STATUS,'') onlineServiceStatusNm,
 			         ISNULL(C.ONLINE_SERVICE_YN,'-') onlineServiceYn,
@@ -988,29 +990,29 @@
 			         ISNULL(C.VISIT_SERVICE_STATUS,'-') visitServiceStatus,
 			         DBO.FN_BASECODE('VISIT_SERVICE_STATUS',C.VISIT_SERVICE_STATUS,'') visitServiceStatusNm,
 			         ISNULL(C.VISIT_SERVICE_YN,'-') visitServiceYn,
-			         DBO.FN_BASECODE('SERVICE_USE_YN',C.VISIT_SERVICE_YN,'') visitServiceYnNm,		
-			         	         
+			         DBO.FN_BASECODE('SERVICE_USE_YN',C.VISIT_SERVICE_YN,'') visitServiceYnNm,
+
 			         ISNULL(C.VISIT_TIME_CD,'-') visitTimeCd,
 			         DBO.FN_BASECODE('VISIT_TIME_CD',C.VISIT_TIME_CD,'') visitTimeCdNm,
-			         
+
 			         ISNULL(C.VISIT_NUMBER_CD,'-') visitNumberCd,
 			         DBO.FN_BASECODE('VISIT_NUMBER_CD',C.VISIT_NUMBER_CD,'') visitNumberCdNm,
-			         
-			         
+
+
 			         ISNULL(C.ONLINE_PAYMENT_WAY,'-') onlinePaymentWay,
 			         DBO.FN_BASECODE('PAYMENT_WAY',C.ONLINE_PAYMENT_WAY,'') onlinePaymentWayNm,
 			         ISNULL(C.VISIT_PAYMENT_WAY,'-') visitPaymentWay,
 			         DBO.FN_BASECODE('PAYMENT_WAY',C.VISIT_PAYMENT_WAY,'') visitPaymentWayNm,
-			         
+
 			         ISNULL(C.ONLINE_PAYMENT_METHOD,'-') onlinePaymentMethod,
 			         DBO.FN_BASECODE('PAYMENT_METHOD',C.ONLINE_PAYMENT_METHOD,'') onlinePaymentMethodNm,
 			         ISNULL(C.VISIT_PAYMENT_METHOD,'-') visitPaymentMethod,
 			         DBO.FN_BASECODE('PAYMENT_METHOD',C.VISIT_PAYMENT_METHOD,'') visitPaymentMethodNm,
 			         ISNULL(C.VISIT_START_DT,'-') visitStartDt,
 			         ISNULL(C.VISIT_END_DT,'-') visitEndDt,
-			         
+
 			         C.VISIT_SERVICE_PRICE visitServicePrice,
-			         
+
 			         ISNULL(A.AREA_CD,'-') areaCd,
 			         ISNULL((SELECT Z.AREA_NM FROM TB_ERP_AREA000 Z WHERE Z.AREA_CD = A.AREA_CD),'-') areaNm,
 			         ISNULL(A.ORG_CD,'-') orgCd,
@@ -1035,52 +1037,52 @@
 			         INNER JOIN TB_ERP_TCHER200 F
 			         ON       C.CUST_CD  = F.CUST_CD
 			         AND      C.CHILD_CD  = F.CHILD_CD
-			WHERE    1=1        		
-					
-			<!-- 인계회원 -->			
-			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '10'.toString() and map.tcherCd != null and map.tcherCd != ''">  
-					<![CDATA[  
+			WHERE    1=1
+
+			<!-- 인계회원 -->
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '10'.toString() and map.tcherCd != null and map.tcherCd != ''">
+					<![CDATA[
 						AND TRANS_PREV_USER_CD = #{map.tcherCd}
 		  			]]>
-			</if>    
-			
-			<!-- 인수회원 -->			
-			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '20'.toString() and map.tcherCd != null and map.tcherCd != ''">  
-					<![CDATA[  
+			</if>
+
+			<!-- 인수회원 -->
+			<if test="map.searchType != null and map.searchType != '' and map.searchType eq '20'.toString() and map.tcherCd != null and map.tcherCd != ''">
+					<![CDATA[
 						AND TRANS_USER_CD = #{map.tcherCd}
 		  			]]>
-			</if>    
+			</if>
     </select>
-    
-   
+
+
     <!-- 인수인계상세 -->
-    <select id="getTransMemberDetail" resultType="apiTcherTransManageResponseVO" parameterType="hashMap" statementType="PREPARED">   
-		SELECT   
+    <select id="getTransMemberDetail" resultType="apiTcherTransManageResponseVO" parameterType="hashMap" statementType="PREPARED">
+		SELECT
 					 ISNULL(F.TRANS_CD,'-') transCd,
 			         ISNULL(F.TRANS_REQUEST_DT,'-') transRequestDt,
 			         ISNULL(F.TRANS_REQUEST_USER_CD,'-') transRequestUserCd,
 			         ISNULL((SELECT Z.USER_NM FROM TB_ERP_USER000 Z WHERE Z.USER_CD = F.TRANS_REQUEST_USER_CD),'-') transRequestUserNm,
 			         ISNULL(F.TRANS_PREV_USER_CD,'-') transPrevUserCd,
 			         ISNULL((SELECT Z.USER_NM FROM TB_ERP_USER000 Z WHERE Z.USER_CD = F.TRANS_PREV_USER_CD),'-') transPrevUserNm,
-			         ISNULL(F.TRANS_USER_CD,'-') transUserCd,			         
+			         ISNULL(F.TRANS_USER_CD,'-') transUserCd,
 			         ISNULL((SELECT Z.USER_NM FROM TB_ERP_USER000 Z WHERE Z.USER_CD = F.TRANS_USER_CD),'-') transUserNm,
 			         ISNULL(F.TRANS_HOPE_DT,'-') transHopeDt,
-			         ISNULL(F.TRANS_REASON_CD,'-') transReasonCd,			         
+			         ISNULL(F.TRANS_REASON_CD,'-') transReasonCd,
 			         ISNULL(F.REQUEST_START_DT,'-') requestStartDt,
 			         ISNULL(F.REQUEST_START_HOUR,'-') requestStartHour,
-			         ISNULL(F.REQUEST_START_TIME,'-') requestStartTime,			         
+			         ISNULL(F.REQUEST_START_TIME,'-') requestStartTime,
 			         ISNULL(F.MOVE_DT,'-') moveDt,
 			         ISNULL(F.ZIPCODE,'-') zipcode,
 			         ISNULL(F.ADDRESS1,'-') address1,
 			         ISNULL(F.ADDRESS2,'-') address2,
-			         ISNULL(F.TRANS_REMARK,'-')  transRemark,			         
+			         ISNULL(F.TRANS_REMARK,'-')  transRemark,
 			         ISNULL(F.APPROVAL_DT,'-') approvalDt,
 			         ISNULL(F.APPROVAL_USER_CD,'-') approvalUserCd,
 			         ISNULL(F.APPROVAL_YN,'-') approvalYn,
 			         ISNULL(F.CONFIRM_YN,'-') confirmYn,
 			         DBO.FN_BASECODE('APPROVAL_YN',F.APPROVAL_YN,'') approvalYnNm,
-			         
-			         
+
+
 					 ISNULL(A.CUST_CD,'-') custCd,
 			         ISNULL(C.CHILD_CD,'-') childCd,
 			         ISNULL(A.GD1_NM,'-') gd1Nm,
@@ -1103,11 +1105,11 @@
 			         ISNULL(A.DELIVERY_ADDRESS1,'-') deliveryAddress1,
 			         ISNULL(A.DELIVERY_ADDRESS2,'-') deliveryAddress2,
 		         	 ISNULL(C.MEMBER_STATUS,'-') memberStatus,
-		         	 DBO.FN_BASECODE('MEMBER_STATUS',C.MEMBER_STATUS,'') memberStatusNm,		         	 
+		         	 DBO.FN_BASECODE('MEMBER_STATUS',C.MEMBER_STATUS,'') memberStatusNm,
 		         	 ISNULL((SELECT Z.APPROVAL_DT FROM TB_ERP_MEMBER050 Z WHERE Z.CUST_CD = C.CUST_CD AND Z.CHILD_CD = C.CHILD_CD AND Z.APPROVAL_YN = 'Y'),'-') cancelDt,
 			         ISNULL(B.SALES_TYPE,'-') salesType,
 			         DBO.FN_BASECODE('SALES_TYPE',B.SALES_TYPE,'') salesTypeNm,
-			         		         
+
 			         ISNULL(B.CONTRACT_DT,'-') contractDt,
 			         ISNULL(B.GOODS_CD,'-') goodsCd,
          			(SELECT Z.GOODS_NM FROM TB_ERP_GOODS000 Z WHERE Z.GOODS_CD = B.GOODS_CD) goodsNm,
@@ -1117,20 +1119,20 @@
 			         B.TOTAL_PRICE totalPrice,
 			         B.MONTH_PRICE monthPrice,
 			         B.CONTRACT_PRICE contractPrice,
-			         
+
 			         ISNULL(B.CONTRACT_PAYMENT_WAY,'-') contractPaymentWay,
-			         DBO.FN_BASECODE('PAYMENT_WAY',B.CONTRACT_PAYMENT_WAY,'') contractPaymentWayNm,			         
+			         DBO.FN_BASECODE('PAYMENT_WAY',B.CONTRACT_PAYMENT_WAY,'') contractPaymentWayNm,
 			         ISNULL(B.CONTRACT_PAYMENT_METHOD,'-') contractPaymentMethod,
-			         DBO.FN_BASECODE('PAYMENT_METHOD',B.CONTRACT_PAYMENT_METHOD,'') contractPaymentMethodNm,			         
+			         DBO.FN_BASECODE('PAYMENT_METHOD',B.CONTRACT_PAYMENT_METHOD,'') contractPaymentMethodNm,
 			         B.PAYMENT_PRICE paymentPrice,
 			         ISNULL(B.PAYMENT_WAY,'-') paymentWay,
-			         DBO.FN_BASECODE('PAYMENT_WAY',B.PAYMENT_WAY,'') paymentWayNm,			         
+			         DBO.FN_BASECODE('PAYMENT_WAY',B.PAYMENT_WAY,'') paymentWayNm,
 			         ISNULL(B.PAYMENT_METHOD,'-') paymentMethod,
-			         DBO.FN_BASECODE('PAYMENT_METHOD',B.PAYMENT_METHOD,'') paymentMethodNm,			   
+			         DBO.FN_BASECODE('PAYMENT_METHOD',B.PAYMENT_METHOD,'') paymentMethodNm,
 			         ISNULL(B.PAYMENT_YN,'-') paymentYn,
 			         DBO.FN_BASECODE('PAYMENT_YN',B.PAYMENT_YN,'') paymentYnNm,
-			         
-			         
+
+
 			         ISNULL(C.CHILDREN_CONTRACT_DT,'-') childrenContractDt,
 			         ISNULL(C.CONTRACT_TYPE,'-') contractType,
 			         DBO.FN_BASECODE('CONTRACT_TYPE',C.CONTRACT_TYPE,'') contractTypeNm,
@@ -1143,7 +1145,7 @@
 			         ISNULL(C.CHILDREN_SCHOOL_NM,'-') childrenSchoolNm,
 			         ISNULL(C.CHILDREN_GRADE_CD,'-') childrenGradeCd,
 			         DBO.FN_BASECODE('GRADE_CD',C.CHILDREN_GRADE_CD,'') childrenGradeCdNm,
-			         
+
 			         ISNULL(C.ONLINE_SERVICE_STATUS,'-') onlineServiceStatus,
 			         DBO.FN_BASECODE('ONLINE_SERVICE_STATUS',C.ONLINE_SERVICE_STATUS,'') onlineServiceStatusNm,
 			         ISNULL(C.ONLINE_SERVICE_YN,'-') onlineServiceYn,
@@ -1152,29 +1154,29 @@
 			         ISNULL(C.VISIT_SERVICE_STATUS,'-') visitServiceStatus,
 			         DBO.FN_BASECODE('VISIT_SERVICE_STATUS',C.VISIT_SERVICE_STATUS,'') visitServiceStatusNm,
 			         ISNULL(C.VISIT_SERVICE_YN,'-') visitServiceYn,
-			         DBO.FN_BASECODE('SERVICE_USE_YN',C.VISIT_SERVICE_YN,'') visitServiceYnNm,		
-			         	         
+			         DBO.FN_BASECODE('SERVICE_USE_YN',C.VISIT_SERVICE_YN,'') visitServiceYnNm,
+
 			         ISNULL(C.VISIT_TIME_CD,'-') visitTimeCd,
 			         DBO.FN_BASECODE('VISIT_TIME_CD',C.VISIT_TIME_CD,'') visitTimeCdNm,
-			         
+
 			         ISNULL(C.VISIT_NUMBER_CD,'-') visitNumberCd,
 			         DBO.FN_BASECODE('VISIT_NUMBER_CD',C.VISIT_NUMBER_CD,'') visitNumberCdNm,
-			         
-			         
+
+
 			         ISNULL(C.ONLINE_PAYMENT_WAY,'-') onlinePaymentWay,
 			         DBO.FN_BASECODE('PAYMENT_WAY',C.ONLINE_PAYMENT_WAY,'') onlinePaymentWayNm,
 			         ISNULL(C.VISIT_PAYMENT_WAY,'-') visitPaymentWay,
 			         DBO.FN_BASECODE('PAYMENT_WAY',C.VISIT_PAYMENT_WAY,'') visitPaymentWayNm,
-			         
+
 			         ISNULL(C.ONLINE_PAYMENT_METHOD,'-') onlinePaymentMethod,
 			         DBO.FN_BASECODE('PAYMENT_METHOD',C.ONLINE_PAYMENT_METHOD,'') onlinePaymentMethodNm,
 			         ISNULL(C.VISIT_PAYMENT_METHOD,'-') visitPaymentMethod,
 			         DBO.FN_BASECODE('PAYMENT_METHOD',C.VISIT_PAYMENT_METHOD,'') visitPaymentMethodNm,
 			         ISNULL(C.VISIT_START_DT,'-') visitStartDt,
 			         ISNULL(C.VISIT_END_DT,'-') visitEndDt,
-			         
+
 			         C.VISIT_SERVICE_PRICE visitServicePrice,
-			         
+
 			         ISNULL(A.AREA_CD,'-') areaCd,
 			         ISNULL((SELECT Z.AREA_NM FROM TB_ERP_AREA000 Z WHERE Z.AREA_CD = A.AREA_CD),'-') areaNm,
 			         ISNULL(A.ORG_CD,'-') orgCd,
@@ -1200,19 +1202,19 @@
 			         ON       C.CUST_CD  = F.CUST_CD
 			         AND       C.CHILD_CD  = F.CHILD_CD
 			WHERE    1=1
-						
-			<!-- 인수인계코드 -->			
-			<if test="map.transCd != null and map.transCd != ''">  
-					<![CDATA[  
+
+			<!-- 인수인계코드 -->
+			<if test="map.transCd != null and map.transCd != ''">
+					<![CDATA[
 						AND TRANS_CD = #{map.transCd}
 		  			]]>
-			</if>    
-			
+			</if>
+
     </select>
-    
+
      <!-- 배정목록 -->
-    <select id="getAssignList" resultType="apiTcherAssignManageResponseVO" parameterType="hashMap" statementType="PREPARED">   
-   		 SELECT   
+    <select id="getAssignList" resultType="apiTcherAssignManageResponseVO" parameterType="hashMap" statementType="PREPARED">
+   		 SELECT
 					 A.CUST_CD custCd,
 			         C.CHILD_CD childCd,
 			         A.GD1_NM gd1Nm,
@@ -1241,16 +1243,16 @@
 			         B.TOTAL_PRICE totalPrice,
 			         B.MONTH_PRICE monthPrice,
 			         B.CONTRACT_PRICE contractPrice,
-			         
+
 			         B.CONTRACT_PAYMENT_WAY contractPaymentWay,
-			         DBO.FN_BASECODE('PAYMENT_WAY',B.CONTRACT_PAYMENT_WAY,'') contractPaymentWayNm,			         
+			         DBO.FN_BASECODE('PAYMENT_WAY',B.CONTRACT_PAYMENT_WAY,'') contractPaymentWayNm,
 			         B.CONTRACT_PAYMENT_METHOD contractPaymentMethod,
-			         DBO.FN_BASECODE('PAYMENT_METHOD',B.CONTRACT_PAYMENT_METHOD,'') contractPaymentMethodNm,			         
+			         DBO.FN_BASECODE('PAYMENT_METHOD',B.CONTRACT_PAYMENT_METHOD,'') contractPaymentMethodNm,
 			         B.PAYMENT_PRICE paymentPrice,
 			         B.PAYMENT_WAY paymentWay,
-			         DBO.FN_BASECODE('PAYMENT_WAY',B.PAYMENT_WAY,'') paymentWayNm,			         
+			         DBO.FN_BASECODE('PAYMENT_WAY',B.PAYMENT_WAY,'') paymentWayNm,
 			         B.PAYMENT_METHOD paymentMethod,
-			         DBO.FN_BASECODE('PAYMENT_METHOD',B.PAYMENT_METHOD,'') paymentMethodNm,			   
+			         DBO.FN_BASECODE('PAYMENT_METHOD',B.PAYMENT_METHOD,'') paymentMethodNm,
 			         B.PAYMENT_YN paymentYn,
 			         DBO.FN_BASECODE('PAYMENT_YN',B.PAYMENT_YN,'') paymentYnNm,
 			         C.CHILDREN_CONTRACT_DT childrenContractDt,
@@ -1265,7 +1267,7 @@
 			         C.CHILDREN_SCHOOL_NM childrenSchoolNm,
 			         C.CHILDREN_GRADE_CD childrenGradeCd,
 			         DBO.FN_BASECODE('GRADE_CD',C.CHILDREN_GRADE_CD,'') childrenGradeCdNm,
-			         
+
 			         C.ONLINE_SERVICE_STATUS onlineServiceStatus,
 			         DBO.FN_BASECODE('ONLINE_SERVICE_STATUS',C.ONLINE_SERVICE_STATUS,'') onlineServiceStatusNm,
 			         C.ONLINE_SERVICE_YN onlineServiceYn,
@@ -1274,37 +1276,37 @@
 			         C.VISIT_SERVICE_STATUS visitServiceStatus,
 			         DBO.FN_BASECODE('VISIT_SERVICE_STATUS',C.VISIT_SERVICE_STATUS,'') visitServiceStatusNm,
 			         C.VISIT_SERVICE_YN visitServiceYn,
-			         DBO.FN_BASECODE('VISIT_SERVICE_YN',C.VISIT_SERVICE_YN,'') visitServiceYnNm,	
-			         		         
+			         DBO.FN_BASECODE('VISIT_SERVICE_YN',C.VISIT_SERVICE_YN,'') visitServiceYnNm,
+
 			         C.VISIT_TIME_CD visitTimeCd,
 			         DBO.FN_BASECODE('VISIT_TIME_CD',C.VISIT_TIME_CD,'') visitTimeCdNm,
-			         
+
 			         C.VISIT_NUMBER_CD visitNumberCd,
 			         DBO.FN_BASECODE('VISIT_NUMBER_CD',C.VISIT_NUMBER_CD,'') visitNumberCdNm,
-			         
-			         
+
+
 			         C.ONLINE_PAYMENT_WAY onlinePaymentWay,
 			         DBO.FN_BASECODE('PAYMENT_WAY',C.ONLINE_PAYMENT_WAY,'') onlinePaymentWayNm,
 			         C.VISIT_PAYMENT_WAY visitPaymentWay,
 			         DBO.FN_BASECODE('PAYMENT_WAY',C.VISIT_PAYMENT_WAY,'') visitPaymentWayNm,
-			         
+
 			         C.ONLINE_PAYMENT_METHOD onlinePaymentMethod,
 			         DBO.FN_BASECODE('PAYMENT_METHOD',C.ONLINE_PAYMENT_METHOD,'') onlinePaymentMethodNm,
 			         C.VISIT_PAYMENT_METHOD visitPaymentMethod,
 			         DBO.FN_BASECODE('PAYMENT_METHOD',C.VISIT_PAYMENT_METHOD,'') visitPaymentMethodNm,
-			       
+
 			         C.VISIT_START_DT visitStartDt,
-			         C.VISIT_END_DT visitEndDt,  
-			         
-			         
-			         
-					ISNULL(DBO.FN_CHILD_OPTION(C.CUST_CD , C.CHILD_CD,'VISIT_MONTH'),'-') visitMonth,		  
-					ISNULL(DBO.FN_CHILD_OPTION(C.CUST_CD , C.CHILD_CD,'VISIT_REMAIN_MONTH'),'-') visitRemainMonth,		  
-					
-	
-	
+			         C.VISIT_END_DT visitEndDt,
+
+
+
+					ISNULL(DBO.FN_CHILD_OPTION(C.CUST_CD , C.CHILD_CD,'VISIT_MONTH'),'-') visitMonth,
+					ISNULL(DBO.FN_CHILD_OPTION(C.CUST_CD , C.CHILD_CD,'VISIT_REMAIN_MONTH'),'-') visitRemainMonth,
+
+
+
 			         C.VISIT_SERVICE_PRICE visitServicePrice,
-			         
+
 			         A.AREA_CD areaCd,
 			         (SELECT Z.AREA_NM FROM TB_ERP_AREA000 Z WHERE Z.AREA_CD = A.AREA_CD) areaNm,
 			         A.ORG_CD orgCd,
@@ -1320,38 +1322,38 @@
 			         DBO.FN_VISIT_TCHERNM(C.CUST_CD , C.CHILD_CD) visitorTcherNm,
 			         DBO.FN_VISIT_TCHERHPNO(C.CUST_CD , C.CHILD_CD) visitorTcherHpNo,
 			         C.REMARK,
-			         
+
 					 ROW_NUMBER() OVER (ORDER BY ${map.orderColumn} ${map.orderType}) AS rowNum,
-					 ROW_NUMBER() OVER (ORDER BY ${map.orderColumn} ${map.orderType2}) AS rowNum2	
-					 		         
+					 ROW_NUMBER() OVER (ORDER BY ${map.orderColumn} ${map.orderType2}) AS rowNum2
+
 			FROM     TB_ERP_MEMBER000 A
 			         INNER JOIN TB_ERP_MEMBER100 B
 			         ON       A.CUST_CD = B.CUST_CD
 			         INNER JOIN TB_ERP_MEMBER200 C
 			         ON       A.CUST_CD = C.CUST_CD
-			         INNER JOIN TB_ERP_TCHER100 D			         
+			         INNER JOIN TB_ERP_TCHER100 D
 			         ON       C.CUST_CD = D.CUST_CD
 			         AND 	  C.CHILD_CD = D.CHILD_CD
 					 AND	  D.LAST_YN = 'Y'
 			WHERE    1=1
 
-			
-			<if test="map.tcherCd != null and map.tcherCd != ''">  
-					<![CDATA[  
+
+			<if test="map.tcherCd != null and map.tcherCd != ''">
+					<![CDATA[
 						AND D.ASSIGN_USER_CD = #{map.tcherCd}
 		  			]]>
-			</if>    
+			</if>
     </select>
-    
+
     <!-- 휴식목록 -->
-    <select id="getRestList" resultType="apiTcherRestResponseVO" parameterType="hashMap" statementType="PREPARED">   
+    <select id="getRestList" resultType="apiTcherRestResponseVO" parameterType="hashMap" statementType="PREPARED">
    		 SELECT
 					 A.CUST_CD custCd,
 			         F.REST_CD restCd,
 			         F.REST_REQUEST_USER_CD restRequestUserCd,
 			         F.REQUEST_YEAR requestYear,
 			         F.REQUEST_MONTH requestMonth,
-			         F.REST_REMARK restRemark,			           
+			         F.REST_REMARK restRemark,
 			         A.GD1_USER_CD gd1UserCd,
          			(SELECT Z.GOODS_NM FROM TB_ERP_GOODS000 Z WHERE Z.GOODS_CD = B.GOODS_CD) goodsNm,
 			         B.SUBJECT_NM subjectNm,
@@ -1359,7 +1361,7 @@
 			         C.CHILDREN_NM childrenNm,
 			         C.CHILDREN_SCHOOL_NM childrenSchoolNm,
 			         DBO.FN_BASECODE('GRADE_CD',C.CHILDREN_GRADE_CD,'') childrenGradeCdNm,
-			         
+
 			         C.VISIT_START_DT visitStartDt,
 			         C.VISIT_END_DT visitEndDt,
 					 '납부정보추후제공' as paymentInfo,
@@ -1402,86 +1404,86 @@
 		</if>
 		ORDER BY F.CREATED_AT DESC
     </select>
-    
+
     <!-- 교사조회-->
-    <select id="getTcherList" resultType="apiTcherManageVO" parameterType="hashMap" statementType="PREPARED">   
-				SELECT   
+    <select id="getTcherList" resultType="apiTcherManageVO" parameterType="hashMap" statementType="PREPARED">
+				SELECT
 		         A.TCHER_CD tcherCd,
 		         A.TCHER_NM tcherNm,
 		         A.TCHER_TYPE tcherType,
 		         A.ORG_CD orgCd,
-		         (SELECT Z.ORG_NM FROM TB_ERP_AREA100 Z WHERE Z.ORG_CD = A.ORG_CD AND Z.ORG_CLASS = A.TCHER_TYPE) orgNm,         
+		         (SELECT Z.ORG_NM FROM TB_ERP_AREA100 Z WHERE Z.ORG_CD = A.ORG_CD AND Z.ORG_CLASS = A.TCHER_TYPE) orgNm,
 				 (SELECT COUNT(1) FROM TB_ERP_TCHER100 Z WHERE Z.APPROVAL_USER_CD = A.TCHER_CD AND Z.LAST_YN = 'Y') memberCount,
-				 (SELECT COUNT(1) 
-					 FROM TB_ERP_TCHER100 Z 
-					 INNER JOIN TB_ERP_MEMBER200 ZZ 
-					 ON Z.CUST_CD = ZZ.CUST_CD 
-					 AND Z.CHILD_CD = ZZ.CHILD_CD 
-					 AND ZZ.VISIT_PAYMENT_WAY ='30' 
+				 (SELECT COUNT(1)
+					 FROM TB_ERP_TCHER100 Z
+					 INNER JOIN TB_ERP_MEMBER200 ZZ
+					 ON Z.CUST_CD = ZZ.CUST_CD
+					 AND Z.CHILD_CD = ZZ.CHILD_CD
+					 AND ZZ.VISIT_PAYMENT_WAY ='30'
 					 WHERE Z.LAST_YN = 'Y' AND Z.APPROVAL_USER_CD = A.TCHER_CD ) freeMemberCount,
-				(SELECT COUNT(1) 
-					 FROM TB_ERP_TCHER100 Z 
-					 INNER JOIN TB_ERP_MEMBER200 ZZ 
-					 ON Z.CUST_CD = ZZ.CUST_CD 
-					 AND Z.CHILD_CD = ZZ.CHILD_CD 
-					 AND ZZ.VISIT_PAYMENT_WAY ='30' 
+				(SELECT COUNT(1)
+					 FROM TB_ERP_TCHER100 Z
+					 INNER JOIN TB_ERP_MEMBER200 ZZ
+					 ON Z.CUST_CD = ZZ.CUST_CD
+					 AND Z.CHILD_CD = ZZ.CHILD_CD
+					 AND ZZ.VISIT_PAYMENT_WAY ='30'
 					 WHERE Z.LAST_YN = 'Y' AND Z.APPROVAL_USER_CD = A.TCHER_CD ) chargeMemberCount,
-				(SELECT COUNT(1) 
-					 FROM TB_ERP_TCHER100 Z 
-					 INNER JOIN TB_ERP_MEMBER200 ZZ 
-					 ON Z.CUST_CD = ZZ.CUST_CD 
-					 AND Z.CHILD_CD = ZZ.CHILD_CD 
-					 AND ZZ.VISIT_PAYMENT_WAY ='30' 
+				(SELECT COUNT(1)
+					 FROM TB_ERP_TCHER100 Z
+					 INNER JOIN TB_ERP_MEMBER200 ZZ
+					 ON Z.CUST_CD = ZZ.CUST_CD
+					 AND Z.CHILD_CD = ZZ.CHILD_CD
+					 AND ZZ.VISIT_PAYMENT_WAY ='30'
 					 WHERE Z.LAST_YN = 'Y' AND Z.APPROVAL_USER_CD = A.TCHER_CD ) chargeMemberCount,
 					 0 newMemberCount,
 					 (SELECT COUNT(1) FROM TB_ERP_TCHER200 Z WHERE Z.TRANS_PREV_USER_CD = A.TCHER_CD  ) transPrevCount,
 					 (SELECT COUNT(1) FROM TB_ERP_TCHER200 Z WHERE Z.TRANS_USER_CD = A.TCHER_CD  ) transCount,
-					 
-					 (SELECT COUNT(1) 
-					 FROM TB_ERP_TCHER100 Z 
-					 INNER JOIN TB_ERP_MEMBER100 ZZ 
-					 ON Z.CUST_CD = ZZ.CUST_CD  
+
+					 (SELECT COUNT(1)
+					 FROM TB_ERP_TCHER100 Z
+					 INNER JOIN TB_ERP_MEMBER100 ZZ
+					 ON Z.CUST_CD = ZZ.CUST_CD
 					 AND ZZ.GOODS_CD = 'G00002'
 					 WHERE Z.LAST_YN = 'Y' AND Z.APPROVAL_USER_CD = A.TCHER_CD ) goods1Count,
 
-					(SELECT COUNT(1) 
-					 FROM TB_ERP_TCHER100 Z 
-					 INNER JOIN TB_ERP_MEMBER100 ZZ 
-					 ON Z.CUST_CD = ZZ.CUST_CD  
+					(SELECT COUNT(1)
+					 FROM TB_ERP_TCHER100 Z
+					 INNER JOIN TB_ERP_MEMBER100 ZZ
+					 ON Z.CUST_CD = ZZ.CUST_CD
 					 AND ZZ.GOODS_CD = 'G00003'
 					 WHERE Z.LAST_YN = 'Y' AND Z.APPROVAL_USER_CD = A.TCHER_CD ) goods2Count,
-					 (SELECT COUNT(1) 
-					 FROM TB_ERP_TCHER100 Z 
-					 INNER JOIN TB_ERP_MEMBER100 ZZ 
-					 ON Z.CUST_CD = ZZ.CUST_CD  
+					 (SELECT COUNT(1)
+					 FROM TB_ERP_TCHER100 Z
+					 INNER JOIN TB_ERP_MEMBER100 ZZ
+					 ON Z.CUST_CD = ZZ.CUST_CD
 					 AND ZZ.GOODS_CD = 'G00004'
 					 WHERE Z.LAST_YN = 'Y' AND Z.APPROVAL_USER_CD = A.TCHER_CD ) goods3Count,
-					 (SELECT COUNT(1) 
-					 FROM TB_ERP_TCHER100 Z 
-					 INNER JOIN TB_ERP_MEMBER100 ZZ 
-					 ON Z.CUST_CD = ZZ.CUST_CD  
+					 (SELECT COUNT(1)
+					 FROM TB_ERP_TCHER100 Z
+					 INNER JOIN TB_ERP_MEMBER100 ZZ
+					 ON Z.CUST_CD = ZZ.CUST_CD
 					 AND ZZ.GOODS_CD = 'G00005'
 					 WHERE Z.LAST_YN = 'Y' AND Z.APPROVAL_USER_CD = A.TCHER_CD ) goods4Count,
-					 (SELECT COUNT(1) 
-					 FROM TB_ERP_TCHER100 Z 
-					 INNER JOIN TB_ERP_MEMBER100 ZZ 
-					 ON Z.CUST_CD = ZZ.CUST_CD  
+					 (SELECT COUNT(1)
+					 FROM TB_ERP_TCHER100 Z
+					 INNER JOIN TB_ERP_MEMBER100 ZZ
+					 ON Z.CUST_CD = ZZ.CUST_CD
 					 AND ZZ.GOODS_CD = 'G00006'
 					 WHERE Z.LAST_YN = 'Y' AND Z.APPROVAL_USER_CD = A.TCHER_CD ) goods5Count
 		FROM     TB_ERP_TCHER000 A
 		WHERE    1=1
-			
+
 			<!-- 사번 -->
-			<if test="map.tcherCd != null and map.tcherCd != ''">  
+			<if test="map.tcherCd != null and map.tcherCd != ''">
 					AND A.TCHER_CD = #{map.tcherCd}
-			</if>   
-			
+			</if>
+
 			<!-- 조직 -->
-			<if test="map.orgCd != null and map.orgCd != ''">  			
+			<if test="map.orgCd != null and map.orgCd != ''">
 					AND A.ORG_CD IN (SELECT ORG_CD from DBO.FN_ORGCD(#{map.orgCd}))
-			</if>       
+			</if>
     </select>
-    
+
     <!-- 공지사항 조회 -->
     <select id="getNoticeList" resultType="apiNoticeManageVO" parameterType="hashMap" statementType="PREPARED">
     	DECLARE @rowsPerPage INT = ISNULL(#{map.rowsPerPage},10), @pageNumber INT = ISNULL(#{map.pageNumber},1)
@@ -1567,21 +1569,21 @@
 		AND @RowsPerPage*(@PageNumber)
 		AND orgType = '1'
 	</select>
-    
-    
-    <select id="getNoticeListCount" resultType="java.lang.Integer" parameterType="hashMap" statementType="PREPARED">  
+
+
+    <select id="getNoticeListCount" resultType="java.lang.Integer" parameterType="hashMap" statementType="PREPARED">
 			SELECT    COUNT(1)
 			FROM     TB_ERP_NOTICE000 A
 			WHERE    1                     =1
-        
-			<!-- 공지코드 -->				
-			<if test="map.noticeCd != null and map.noticeCd != ''">  
+
+			<!-- 공지코드 -->
+			<if test="map.noticeCd != null and map.noticeCd != ''">
 					AND A.NOTICE_CD = #{map.noticeCd}
-			</if>      
-			<if test="map.areaCd != null and map.areaCd != ''">  
+			</if>
+			<if test="map.areaCd != null and map.areaCd != ''">
 					AND A.AREA_CD = #{map.areaCd}
-			</if>      
-			<if test="map.orgCd != null and map.orgCd != ''"> 			
+			</if>
+			<if test="map.orgCd != null and map.orgCd != ''">
 					AND A.ORG_CD IN (SELECT ORG_CD from DBO.FN_ORGCD(#{map.orgCd}))
 			</if>
 			<if test="map.orgType != null and map.orgType != ''">
@@ -1595,10 +1597,10 @@
 		WHERE    1                     =1
 		AND A.ORG_TYPE = '1'
 	</select>
-    
+
     <!-- 오늘의 알림 -->
-    <select id="getTodayArm" resultType="apiTodayArmVO" parameterType="hashMap" statementType="PREPARED">   
-     SELECT 
+    <select id="getTodayArm" resultType="apiTodayArmVO" parameterType="hashMap" statementType="PREPARED">
+     SELECT
 		(SELECT COUNT(1) FROM TB_ERP_MEMBER200 WHERE CONVERT(nvarchar(7), VISIT_END_DT, 112) = CONVERT(nvarchar(7), GETDATE(), 23) AND DBO.FN_VISIT_TCHERCD(CUST_CD ,CHILD_CD)= #{map.tcherCd} ) AS todayVisitEndCount,
 		(SELECT COUNT(1) FROM TB_ERP_TCHER200 WHERE APPROVAL_DT = CONVERT(nvarchar(10), GETDATE(), 23) AND TRANS_REQUEST_USER_CD = #{map.tcherCd}) AS todayTransApprovalCount,
 		(SELECT COUNT(1) FROM TB_ERP_TCHER200 WHERE TRANS_REQUEST_DT = CONVERT(nvarchar(10), GETDATE()-1, 23) AND APPROVAL_YN ='N' AND TRANS_REQUEST_USER_CD = #{map.tcherCd}) AS todayTransRequestCount,
@@ -1608,19 +1610,19 @@
 		(SELECT COUNT(1) FROM TB_ERP_MEMBER200 Z1 INNER JOIN TB_ERP_MEMBER100 Z2 ON Z1.CUST_CD = Z2.CUST_CD  WHERE CONVERT(nvarchar(7), Z1.VISIT_END_DT, 112) = CONVERT(nvarchar(7), GETDATE(), 23) AND DBO.FN_VISIT_TCHERCD(Z1.CUST_CD ,Z1.CHILD_CD)= #{map.tcherCd} AND Z2.GOODS_CD ='G00005' ) AS goods4EndCount,
 		(SELECT COUNT(1) FROM TB_ERP_MEMBER200 Z1 INNER JOIN TB_ERP_MEMBER100 Z2 ON Z1.CUST_CD = Z2.CUST_CD  WHERE CONVERT(nvarchar(7), Z1.VISIT_END_DT, 112) = CONVERT(nvarchar(7), GETDATE(), 23) AND DBO.FN_VISIT_TCHERCD(Z1.CUST_CD ,Z1.CHILD_CD)= #{map.tcherCd} AND Z2.GOODS_CD ='G00006' ) AS goods5EndCount
     </select>
-    
-    
+
+
     <!-- 오늘의 알림 -->
-    <select id="getCommonCode" resultType="apiCommonCodeVO" parameterType="hashMap" statementType="PREPARED">   
+    <select id="getCommonCode" resultType="apiCommonCodeVO" parameterType="hashMap" statementType="PREPARED">
     	SELECT SUB_CODE subCode , SUB_NAME subName
     	FROM TB_ERP_CODE100  A
     	WHERE 1=1
     	AND USE_YN = 'Y'
-    			
-		<if test="map.mainCode != null and map.mainCode != ''">  
+
+		<if test="map.mainCode != null and map.mainCode != ''">
 				AND A.MAIN_CODE = #{map.mainCode}
-		</if>      
-		
+		</if>
+
 		ORDER BY SORT
     </select>
 
@@ -1669,5 +1671,144 @@
 		FROM TB_ERP_MEMBER000
 		WHERE CUST_CD = #{custCd}
 		AND SERVICE_YN = '0'
+	</select>
+
+	<select id="getPaymentList" resultType="apiPaymentListVO" parameterType="hashMap" statementType="PREPARED">
+		DECLARE @rowsPerPage INT = ISNULL(#{map.rowsPerPage},10), @pageNumber INT = ISNULL(#{map.pageNumber},1)
+		SELECT * FROM (
+		SELECT  *,
+		ROW_NUMBER() OVER (ORDER BY CREATED_AT DESC) AS rowNum2
+		FROM VI_ERP_MEMBER
+		WHERE    1=1
+
+		<if test="map.tcherCd != null and map.tcherCd != ''">
+			<![CDATA[
+				AND (counselor1TcherCd = #{map.tcherCd} OR counselor2TcherCd = #{map.tcherCd} OR DBO.FN_VISIT_TCHERCD(custCd ,childCd) = #{map.tcherCd})
+			]]>
+		</if>
+		<!-- 계약자명 -->
+		<if test="map.gd1Nm != null and map.gd1Nm != ''">
+			<![CDATA[
+				AND   gd1Nm LIKE UPPER('%'+#{map.gd1Nm}+'%')
+			]]>
+		</if>
+
+		<!-- 계약자 -->
+		<if test="map.searchType != null and map.searchType != '' and map.searchType eq '10'.toString() and map.searchText != null and map.searchText != ''">
+			<![CDATA[
+				AND   gd1Nm LIKE UPPER('%'+#{map.searchText}+'%')
+			]]>
+		</if>
+
+		<!--등록일 시작 -->
+		<if test="map.fromDate != null and map.fromDate != ''">
+			<![CDATA[
+				AND regDt >= #{map.fromDate}
+			]]>
+		</if>
+
+		<!--등록일 종료 -->
+		<if test="map.toDate != null and map.toDate != ''">
+			<![CDATA[
+				AND regDt <= #{map.toDate}
+			]]>
+		</if>
+
+		) AS SOD
+
+		WHERE SOD.rowNum2 BETWEEN ((@pageNumber-1)*@rowsPerPage)+1
+		AND @rowsPerPage*(@pageNumber)
+	</select>
+
+	<select id="getPaymentListCount" resultType="Integer" parameterType="hashMap" statementType="PREPARED">
+		SELECT  COUNT(1)
+		FROM     VI_ERP_MEMBER
+		WHERE    1=1
+		<if test="map.tcherCd != null and map.tcherCd != ''">
+			<![CDATA[
+				AND (counselor1TcherCd = #{map.tcherCd} OR counselor2TcherCd = #{map.tcherCd} OR DBO.FN_VISIT_TCHERCD(custCd ,childCd) = #{map.tcherCd})
+			]]>
+		</if>
+		<!-- 계약자명 -->
+		<if test="map.gd1Nm != null and map.gd1Nm != ''">
+			<![CDATA[
+				AND   gd1Nm LIKE UPPER('%'+#{map.gd1Nm}+'%')
+			]]>
+		</if>
+		<!-- 계약자 -->
+		<if test="map.searchType != null and map.searchType != '' and map.searchType eq '10'.toString() and map.searchText != null and map.searchText != ''">
+			<![CDATA[
+				AND   gd1Nm LIKE UPPER('%'+#{map.searchText}+'%')
+			]]>
+		</if>
+		<!--등록일 시작 -->
+		<if test="map.fromDate != null and map.fromDate != ''">
+			<![CDATA[
+				AND regDt >= #{map.fromDate}
+			]]>
+		</if>
+
+		<!--등록일 종료 -->
+		<if test="map.toDate != null and map.toDate != ''">
+			<![CDATA[
+				AND regDt <= #{map.toDate}
+			]]>
+		</if>
+	</select>
+
+	<select id="getPaymentInfo" parameterType="hashMap" statementType="PREPARED" resultType="apiPaymentInfoVO">
+		SELECT
+			C.CHILD_CD,
+			C.CHILDREN_NM,
+			DBO.FN_BASECODE('GRADE_CD',C.CHILDREN_GRADE_CD,'') childrenGradeCdNm,
+			E.GOODS_NM,
+			B.SUBJECT_NM,
+			C.VISIT_END_DT,
+			C.VISIT_NUMBER_CD,
+			C.VISIT_TIME_CD,
+			A.HOME_ADDRESS1,
+			A.HOME_ADDRESS2,
+			A.GD1_NM,
+			DBO.FN_BASECODE('GD_RELATION_CD',A.GD1_RELATION_CD,'') gd1RelationCdNm,
+			A.HP_NO,
+			A.CUST_CD,
+			DBO.FN_BASECODE('SEX',C.CHILDREN_SEX,'') childrenSexNm,
+			C.CHILDREN_BIRTHDAY,
+			ISNULL(C.CHILDREN_SCHOOL_NM, '') CHILDREN_SCHOOL_NM,
+			DBO.FN_BASECODE('AGREEMENT_CD',B.AGREEMENT_CD,'') agreementCdNm,
+			DBO.FN_BASECODE('VISIT_NUMBER_CD',C.VISIT_NUMBER_CD,'') visitNumberCdNm,
+         	DBO.FN_BASECODE('VISIT_TIME_CD',C.VISIT_TIME_CD,'') visitTimeCdNm,
+			ISNULL( (SELECT ZZ.TCHER_NM FROM TB_ERP_MEMBER200 Z LEFT OUTER JOIN TB_ERP_TCHER000 ZZ ON Z.COUNSELOR1_TCHER_CD = ZZ.TCHER_CD WHERE Z.CUST_CD = #{map.custCd}), '') consultTcherNm,
+			ISNULL( (SELECT ZZZ.ORG_NM FROM TB_ERP_MEMBER200 Z LEFT OUTER JOIN TB_ERP_TCHER000 ZZ ON Z.COUNSELOR1_TCHER_CD = ZZ.TCHER_CD LEFT JOIN TB_ERP_AREA100 ZZZ ON ZZ.ORG_CD = ZZZ.ORG_CD WHERE Z.CUST_CD = #{map.custCd}), '') consultTcherOrgNm,
+			ISNULL( (SELECT ZZ.TCHER_NM FROM TB_ERP_MEMBER200 Z LEFT OUTER JOIN TB_ERP_TCHER000 ZZ ON Z.VISITOR_TCHER_CD = ZZ.TCHER_CD WHERE Z.CUST_CD = #{map.custCd}), '') visitTcherNm,
+			ISNULL( (SELECT ZZZ.ORG_NM FROM TB_ERP_TCHER000 Z INNER JOIN TB_ERP_TCHER100 ZZ ON Z.TCHER_CD = ZZ.ASSIGN_USER_CD INNER JOIN  TB_ERP_AREA100 ZZZ ON Z.ORG_CD = ZZZ.ORG_CD WHERE ZZ.CHILD_CD = #{map.childCd} AND ZZ.CUST_CD = #{map.custCd}), '') visitTcherOrgNm,
+			'100000' as contractPrice,
+			DBO.FN_BASECODE('PAYMENT_METHOD',B.CONTRACT_PAYMENT_METHOD,'') contractPaymentMethodNm,
+			ISNULL(G.CARD_COMPANY_NAME, '') cardCompanyName,
+			ISNULL(F.CARD_NO, '') cardNo,
+			ISNULL(F.INSTALL_PERIOD, '') installPeriod,
+			DBO.FN_BASECODE('BANK_CD',B.BANK_CD,'') bankNm,
+			B.BANK_ACCOUNT_NO,
+			B.WITH_DRAW_DAY,
+			B.BANK_ACCOUNT_NM,
+			B.TOTAL_PRICE,
+			B.PAYMENT_PRICE,
+			B.MONTH_PRICE,
+			'CMS' as paymentMethod,
+			'분할납부' as paymentType
+		FROM TB_ERP_MEMBER000 A
+		INNER JOIN TB_ERP_MEMBER100 B
+		ON A.CUST_CD = B.CUST_CD
+		INNER JOIN TB_ERP_MEMBER200 C
+		ON A.CUST_CD = C.CUST_CD
+		LEFT OUTER JOIN TB_ERP_TCHER000 D
+		ON C.COUNSELOR1_TCHER_CD = D.TCHER_CD
+		INNER JOIN TB_ERP_GOODS000 E
+		ON B.GOODS_CD = E.GOODS_CD
+		LEFT OUTER JOIN TB_ERP_KICC_RESULT F
+		ON A.CUST_CD = F.CUST_CD
+		LEFT OUTER JOIN TB_ERP_CREDIT_CARD G
+		ON F.ISSUER_NO = G.CARD_NUMBER_CODE
+		WHERE C.CHILD_CD = #{map.childCd}
 	</select>
 </mapper>

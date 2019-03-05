@@ -940,5 +940,29 @@ public class OpenAPIController extends BaseController {
 		return apiService.getQaList(requestParams);
 	}
 
+	@RequestMapping(value = "/api/v4/edu/getPaymentList",method = RequestMethod.GET, produces = APPLICATION_JSON)
+	@ApiOperation("납부목록 조회")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "tcherCd", value = "상담교사코드", dataType = "String", paramType = "query", required = true),
+			@ApiImplicitParam(name = "fromDate", value = "검색시작일", dataType = "String", paramType = "query", required = false),
+			@ApiImplicitParam(name = "toDate", value = "검색종료일", dataType = "String", paramType = "query", required = false),
+			@ApiImplicitParam(name = "gd1Nm", value = "회원명", dataType = "String", paramType = "query", required = false),
+			@ApiImplicitParam(name = "rowsPerPage", value = "한페이지당 검색건수", dataType = "int", paramType = "query", required = false),
+			@ApiImplicitParam(name = "pageNumber", value = "현재페이지 번호", dataType = "int", paramType = "query", required = false)
+	})
+	public ApiResultObjectPagingVO getPaymentList(RequestParams<ApiMemberManageVO> vo) {
+    	return apiService.getPaymentList(vo);
+	}
+
+	@RequestMapping(value = "/api/v4/edu/getPaymentInfo",method = RequestMethod.GET, produces = APPLICATION_JSON)
+	@ApiOperation("납부 상세 정보")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "childCd", value = "자녀코드", dataType = "String", paramType = "query", required = true),
+			@ApiImplicitParam(name = "custCd", value = "계약코드", dataType = "String", paramType = "query", required = true)
+	})
+	public ApiResultObjectVO getPaymentInfo(RequestParams<ApiMemberManageVO> vo) {
+		return apiService.getPaymentInfo(vo);
+	}
+
 
 }

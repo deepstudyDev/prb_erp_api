@@ -9,23 +9,23 @@ import org.apache.ibatis.annotations.Param;
 
 
 public interface ApiMapper extends MyBatisMapper {
-	
+
 	List<ApiCommonCodeVO> getCommonCode(RequestParams<ApiCommonCodeVO> vo);
-	
-	ApiUserVO getUserInfo(RequestParams<ApiUserVO> vo);	
+
+	ApiUserVO getUserInfo(RequestParams<ApiUserVO> vo);
     List<ApiGoodsManageVO> getGoodsManageList(RequestParams<ApiGoodsManageVO> vo);
     int getGoodsManageListCount(RequestParams<ApiGoodsManageVO> vo);
 
     int getTodayMemberCount(RequestParams<ApiMemberManageVO> vo);
     int getTotalMemberCount(RequestParams<ApiMemberManageVO> vo);
-    
+
     List<ApiMemberManageVO> getMemberList(RequestParams<ApiMemberManageVO> vo);
     List<ApiMemberDetailVO> getMemberDetail(RequestParams<ApiMemberDetailVO> vo);
-    
+
     List<ApiMemberChildVO> getContractInfoDetail(RequestParams<Object> vo);
-    
+
     int getMemberListCount(RequestParams<ApiMemberManageVO> vo);
-    
+
     //계약헤더정보
     ApiMemberHeaderVO getMemberHeader(RequestParams<Object> vo);
     //계약헤더정보(핀노드 추가요청건 - 안지호)
@@ -36,15 +36,15 @@ public interface ApiMapper extends MyBatisMapper {
     ApiMemberChildVO getMemberChildAnyParam(RequestParams<Object> vo);
     //자녀계약정보 - 모든자녀
     List<ApiMemberChildVO> getMemberChilds(RequestParams<Object> vo);
-    
+
     //자녀계약정보 - 형제정보
     List<ApiBrotherVO> getMemberBrothers(RequestParams<Object> vo);
-    
-    
+
+
     //인수인계목록
     List<ApiTcherTransManageResponseVO> getTransMemberList(RequestParams vo);
     ApiTcherTransManageResponseVO getTransMemberDetail(RequestParams vo);
-    
+
     //배정목록
     List<ApiTcherAssignManageResponseVO> getAssignList(RequestParams vo);
     //휴식목록
@@ -61,15 +61,15 @@ public interface ApiMapper extends MyBatisMapper {
     List<ApiTodayArmVO> getTodayArm(RequestParams vo);
     /*
      * 아이디 비밀번호찾기
-     */    
+     */
 
 	ApiUserVO findUser(RequestParams<ApiUserVO> vo);
-	
-	
+
+
 	/*
 	 * sms
 	 */
-	
+
     List<ApiSendMasterVO> getSendList(RequestParams<ApiSendMasterVO> vo);
     int getSendListCount(RequestParams<ApiSendMasterVO> vo);
 
@@ -84,5 +84,10 @@ public interface ApiMapper extends MyBatisMapper {
 
     int getUserCountBlockedLogin(@Param("custCd") String custCd);
 
+    List<ApiPaymentListVO> getPaymentList(RequestParams<ApiMemberManageVO> vo);
 
-}  
+    Integer getPaymentListCount(RequestParams<ApiMemberManageVO> vo);
+
+    ApiPaymentInfoVO getPaymentInfo(RequestParams<ApiMemberManageVO> vo);
+
+}
