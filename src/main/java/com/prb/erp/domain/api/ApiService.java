@@ -11,12 +11,10 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import com.prb.erp.domain.apk.ApkVersionVO;
-import com.prb.erp.domain.froebel.FroebelApiService;
 import com.prb.erp.domain.kicc.KiccResultService;
 import com.prb.erp.domain.member.MemberManageMapper;
 import com.prb.erp.domain.member.MemberManageVO;
 import com.prb.erp.domain.user.User;
-import com.prb.erp.procedure.inter.FroebelInterfaceService;
 import com.prb.erp.utils.CommonUtils;
 import com.prb.erp.utils.PagingSupport;
 import org.apache.commons.lang.StringUtils;
@@ -61,14 +59,12 @@ public class ApiService extends BaseService {
 	@Inject private TcherRestManageService tcherRestManageService;
 	@Inject private TcherAssignManageService tcherAssignManageService;
 	@Inject private MemberBrotherService memberBrotherService;
-	@Inject private FroebelInterfaceService froebelInterfaceService;
 
 	@Inject private SendMasterService sendMasterService;
 	@Inject private SendDetailService sendDetailService;
 	@Inject private UserService userService;
 
 	@Inject private KiccResultService kiccResultService;
-	@Inject private FroebelApiService froebelApiService;
 
 	@Inject private MemberManageMapper memberManageMapper;
 
@@ -420,15 +416,7 @@ public class ApiService extends BaseService {
 
 				jdbcTemplate.update(qInsert);
 
-				//프뢰벨 결제 데이터 전송하기
-				String froebeCustCd = froebelApiService.saveFroebelContract(member, memberItem, memberChild);
-				if (!"".equals(froebeCustCd)) {
-					result.setFroebelCustCd(froebeCustCd);
-				}
 	        	result.setKeyCd("custCd");
-				//프뢰벨 학무보, 자녀 정보 프로시저 연동
-				froebelInterfaceService.insertMemberManage(member, "I");
-				froebelInterfaceService.insertChildManage(memberChild, "I");
 
 				result.setKeyCd("custCd");
 	        	result.setKeyValue(apiVo.getCustCd());
@@ -1071,6 +1059,49 @@ public class ApiService extends BaseService {
 
 	}
 
+	//공지조회(전체 + 방문,상담)
+	public ApiResultObjectPagingVO getNewNoticeList2(RequestParams vo) {
+		int pageNumber = vo.getInt("pageNumber");
+		int rowsPerPage = vo.getInt("rowsPerPage");
+
+		if (pageNumber == 0) pageNumber = 1;
+		if (rowsPerPage == 0) rowsPerPage = 5;
+
+		int startNumber = PagingSupport.getPagingStartNumber(pageNumber, vo.getInt("rowsPerPage"));
+
+
+		vo.put("startNumber", startNumber);
+		vo.put("rowsPerPage", rowsPerPage);
+		vo.put("pageNumber" ,pageNumber);
+
+		ApiResultObjectPagingVO result = new ApiResultObjectPagingVO();
+		List<ApiNoticeManageVO> list = apiMapper.getNoticeListTypeAll2(vo);
+
+		result.setResult(list);
+
+		//현재페이지
+		result.setPageNumber(pageNumber);
+
+		int totalCntTypeAll = apiMapper.getNoticeListCountTypeAll2(vo);
+		result.setTotalCnt(totalCntTypeAll);
+
+		String resultCode;
+		String resultMsg;
+
+		if (list.size() > 0){
+			resultCode = "S";
+			resultMsg = "SUCCESS";
+		}else{
+			resultCode = "F1";
+			resultMsg = "결과가 없습니다.";
+		}
+
+		result.setResultCode(resultCode);
+		result.setResultMsg(resultMsg);
+		return result;
+
+	}
+
     //오늘의알림
     public List<ApiTodayArmVO> getTodayArm(RequestParams vo) {
     	List<ApiTodayArmVO> details = apiMapper.getTodayArm(vo);
@@ -1508,6 +1539,9 @@ public class ApiService extends BaseService {
 
 		if (memberManageVO != null) {
 			//학부모 회원가입ID 유효성, 중복 체크
+			/**
+			 * TODO. "getUserCdCountByLoginId" --> custCd와 loginId로 가입여부 체크 수정해야함
+			 */
 			int parentCnt = memberManageMapper.getUserCdCountByLoginId(parentLoginId);
 			boolean isParentForbiddenWord = com.prb.erp.utils.StringUtils.containsStrList(forbiddenWordCntList, parentLoginId);
 			if (parentCnt > 0 || isParentForbiddenWord) {
@@ -1521,6 +1555,9 @@ public class ApiService extends BaseService {
 		}
 		if (childManageVO != null) {
 			//자녀 회원가입ID 유효성, 중복 체크
+			/**
+			 * TODO. "getUserCdCountByLoginId" --> custCd와 loginId로 가입여부 체크 수정해야함
+			 */
 			int childCnt = memberManageMapper.getUserCdCountByLoginId(childLoginId);
 			boolean isChildForbiddenWord = com.prb.erp.utils.StringUtils.containsStrList(forbiddenWordCntList, childLoginId);
 			if (childCnt > 0 || isChildForbiddenWord) {
@@ -1592,9 +1629,9 @@ public class ApiService extends BaseService {
 	}
 
 	public ApiResultObjectVO getCurrentApkVersion() {
-		ApkVersionVO apkVersionVO = apiMapper.getCurrentApkVersion();
+		List<ApkVersionVO> apkVersionList = apiMapper.getCurrentApkVersion();
 		ApiResultObjectVO apiResultObjectVO = new ApiResultObjectVO();
-		apiResultObjectVO.setResult(apkVersionVO);
+		apiResultObjectVO.setResult(apkVersionList);
 		apiResultObjectVO.setResultCode(S);
 		apiResultObjectVO.setResultMsg(SUCCESS);
 		return apiResultObjectVO;
@@ -1677,6 +1714,50 @@ public class ApiService extends BaseService {
 		result.setResultMsg("SUCCESS");
 
 		return result;
+	}
+
+	@Transactional
+	public void saveFroebelLoginInfo(RequestParams vo) throws Exception {
+		String loginCd = vo.getString("loginCd","");
+		String userType = vo.getString("userType","");
+		String userNm = vo.getString("userNm","");
+		String userPs = vo.getString("userPs","");
+
+		User user = new User();
+		user.setUserCd(loginCd);
+		user.setUserPs(bCryptPasswordEncoder.encode(userPs));
+		user.setUserType(userType);
+		user.setUserPs2(userPs);
+		user.setDecisionYn(N);
+		user.setUserNm(userNm);
+		user.setHpNo(null);
+		user.setTelNo(null);
+		user.setCustCd(null);
+		//학부모 로그인 정보 저장
+		userService.saveMemberFroebel(user, NEW);
+	}
+
+	public ApiResultObjectPagingVO getCurrentTwoNoticeList() {
+
+		ApiResultObjectPagingVO result = new ApiResultObjectPagingVO();
+		List<ApiNoticeManageVO> list = apiMapper.getCurrentTwoNoticeList();
+
+		result.setResult(list);
+
+		String resultCode;
+		String resultMsg;
+
+		if (list != null){
+			resultCode = "S";
+			resultMsg = "SUCCESS";
+		}else{
+			resultCode = "F1";
+			resultMsg = "결과가 없습니다.";
+		}
+		result.setResultCode(resultCode);
+		result.setResultMsg(resultMsg);
+		return result;
+
 	}
 
 }

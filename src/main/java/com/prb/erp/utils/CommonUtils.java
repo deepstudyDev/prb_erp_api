@@ -1,13 +1,16 @@
 package com.prb.erp.utils;
 
 import java.text.SimpleDateFormat;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class CommonUtils {
-	
+
 	//오늘날짜
 	public static String getCurrentTimeStamp() {
 	    SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");//dd/MM/yyyy
@@ -34,5 +37,13 @@ public class CommonUtils {
 		String repreNnm = firstRepreNum1 + firstRepreNum[1] + firstRepreNum[2] + gd1RelationCd;
 		return repreNnm;
 	}
-	
+
+	public static void main(String[] args) {
+		Clock baseClock = Clock.systemDefaultZone();
+		Clock clock = Clock.offset(baseClock, Duration.ofHours(72));
+		clock = Clock.offset(baseClock, Duration.ofDays(-90));
+		Instant instant = Instant.now(clock);
+		System.out.println(instant);
+	}
+
 }

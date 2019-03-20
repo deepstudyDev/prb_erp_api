@@ -77,7 +77,7 @@ public interface ApiMapper extends MyBatisMapper {
      * APk 최신버전
      * @return
      */
-    ApkVersionVO getCurrentApkVersion();
+    List<ApkVersionVO> getCurrentApkVersion();
 
     List<ApiQaManageVO> getQaList(RequestParams vo);
     Integer getQaListCount(RequestParams vo);
@@ -89,5 +89,11 @@ public interface ApiMapper extends MyBatisMapper {
     Integer getPaymentListCount(RequestParams<ApiMemberManageVO> vo);
 
     ApiPaymentInfoVO getPaymentInfo(RequestParams<ApiMemberManageVO> vo);
+
+    List<ApiNoticeManageVO> getCurrentTwoNoticeList();
+
+    List<ApiNoticeManageVO> getNoticeListTypeAll2(RequestParams vo);
+
+    int getNoticeListCountTypeAll2(RequestParams vo);
 
 }

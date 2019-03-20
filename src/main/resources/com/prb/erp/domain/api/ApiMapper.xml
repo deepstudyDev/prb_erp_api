@@ -1508,35 +1508,17 @@
 			FROM     TB_ERP_NOTICE000 A
 			         INNER JOIN TB_ERP_USER000 B
 			         ON       A.UPDATED_BY = B.USER_CD
-			WHERE    1                     =1
-
-			<!-- 공지코드 -->
-			<!--<if test="map.noticeCd != null and map.noticeCd != ''">-->
-					<!--AND A.NOTICE_CD = #{map.noticeCd}-->
-			<!--</if>-->
-			<!--<if test="map.areaCd != null and map.areaCd != ''">-->
-					<!--AND A.AREA_CD = #{map.areaCd}-->
-			<!--</if>-->
-			<!--<if test="map.orgCd != null and map.orgCd != ''">-->
-					<!--AND A.ORG_CD IN (SELECT ORG_CD from DBO.FN_ORGCD(#{map.orgCd}))-->
-			<!--</if>-->
+			WHERE    1 =1
+			<if test="map.orgCd != null and map.orgCd != ''">
+				AND A.ORG_CD IN (SELECT ORG_CD from DBO.FN_ORGCD(#{map.orgCd}))
+			</if>
+			<if test="map.orgType != null and map.orgType != ''">
+				AND A.ORG_TYPE = #{map.orgType}
+			</if>
 			) AS SOD
 
 		WHERE SOD.RowNum2 BETWEEN ((@PageNumber-1)*@RowsPerPage)+1
 		AND @RowsPerPage*(@PageNumber)
-		<!-- 공지코드 -->
-		<if test="map.noticeCd != null and map.noticeCd != ''">
-			AND noticeCd = #{map.noticeCd}
-		</if>
-		<if test="map.areaCd != null and map.areaCd != ''">
-			AND areaCd = #{map.areaCd}
-		</if>
-		<if test="map.orgCd != null and map.orgCd != ''">
-			AND orgCd IN (SELECT ORG_CD from DBO.FN_ORGCD(#{map.orgCd}))
-		</if>
-		<if test="map.orgType != null and map.orgType != ''">
-			AND orgType = #{map.orgType}
-		</if>
     </select>
 
 	<select id="getNoticeListTypeAll" resultType="apiNoticeManageVO" parameterType="hashMap" statementType="PREPARED">
@@ -1563,11 +1545,10 @@
 		INNER JOIN TB_ERP_USER000 B
 		ON       A.UPDATED_BY = B.USER_CD
 		WHERE    1                     =1
+		AND A.ORG_TYPE = '1'
 		) AS SOD
-
 		WHERE SOD.RowNum2 BETWEEN ((@PageNumber-1)*@RowsPerPage)+1
 		AND @RowsPerPage*(@PageNumber)
-		AND orgType = '1'
 	</select>
 
 
@@ -1627,7 +1608,12 @@
     </select>
 
 	<select id="getCurrentApkVersion" resultType="apkVersionVO">
-		SELECT IDX, APK_VERSION, APK_FILE_PATH
+		SELECT
+			PACKAGE_NAME,
+			APK_VERSION,
+			APK_VERSION_CODE as appVersionCode,
+			APK_FILE_PATH,
+			APP_TYPE
 		FROM TB_ERP_APK_VERSION
 		WHERE IS_LOG = 0
 	</select>
@@ -1763,6 +1749,7 @@
 			DBO.FN_BASECODE('GRADE_CD',C.CHILDREN_GRADE_CD,'') childrenGradeCdNm,
 			E.GOODS_NM,
 			B.SUBJECT_NM,
+			DBO.FN_BASECODE('SALES_TYPE',B.SALES_TYPE,'') salesTypeNm,
 			C.VISIT_END_DT,
 			C.VISIT_NUMBER_CD,
 			C.VISIT_TIME_CD,
@@ -1780,7 +1767,7 @@
          	DBO.FN_BASECODE('VISIT_TIME_CD',C.VISIT_TIME_CD,'') visitTimeCdNm,
 			ISNULL( (SELECT ZZ.TCHER_NM FROM TB_ERP_MEMBER200 Z LEFT OUTER JOIN TB_ERP_TCHER000 ZZ ON Z.COUNSELOR1_TCHER_CD = ZZ.TCHER_CD WHERE Z.CUST_CD = #{map.custCd}), '') consultTcherNm,
 			ISNULL( (SELECT ZZZ.ORG_NM FROM TB_ERP_MEMBER200 Z LEFT OUTER JOIN TB_ERP_TCHER000 ZZ ON Z.COUNSELOR1_TCHER_CD = ZZ.TCHER_CD LEFT JOIN TB_ERP_AREA100 ZZZ ON ZZ.ORG_CD = ZZZ.ORG_CD WHERE Z.CUST_CD = #{map.custCd}), '') consultTcherOrgNm,
-			ISNULL( (SELECT ZZ.TCHER_NM FROM TB_ERP_MEMBER200 Z LEFT OUTER JOIN TB_ERP_TCHER000 ZZ ON Z.VISITOR_TCHER_CD = ZZ.TCHER_CD WHERE Z.CUST_CD = #{map.custCd}), '') visitTcherNm,
+			ISNULL(DBO.FN_VISIT_TCHERNM(C.CUST_CD , C.CHILD_CD),'-') visitTcherNm,
 			ISNULL( (SELECT ZZZ.ORG_NM FROM TB_ERP_TCHER000 Z INNER JOIN TB_ERP_TCHER100 ZZ ON Z.TCHER_CD = ZZ.ASSIGN_USER_CD INNER JOIN  TB_ERP_AREA100 ZZZ ON Z.ORG_CD = ZZZ.ORG_CD WHERE ZZ.CHILD_CD = #{map.childCd} AND ZZ.CUST_CD = #{map.custCd}), '') visitTcherOrgNm,
 			'100000' as contractPrice,
 			DBO.FN_BASECODE('PAYMENT_METHOD',B.CONTRACT_PAYMENT_METHOD,'') contractPaymentMethodNm,
@@ -1810,5 +1797,119 @@
 		LEFT OUTER JOIN TB_ERP_CREDIT_CARD G
 		ON F.ISSUER_NO = G.CARD_NUMBER_CODE
 		WHERE C.CHILD_CD = #{map.childCd}
+	</select>
+
+	<select id="getCurrentTwoNoticeList" resultType="apiNoticeManageVO">
+		SELECT
+			TOP 2 A.NOTICE_CD noticeCd,
+			A.AREA_CD areaCd,
+			(SELECT Z.AREA_NM FROM TB_ERP_AREA000 Z WHERE Z.AREA_CD = A.AREA_CD) areaNm,
+			A.ORG_CD orgCd,
+			(SELECT Z.ORG_NM FROM TB_ERP_AREA100 Z WHERE Z.ORG_CD = A.ORG_CD) orgNm,
+			A.NOTICE_TITLE noticeTitle,
+			A.NOTICE_CONTENTS noticeContents,
+			A.CREATED_AT createdAt,
+			A.CREATED_BY createdBy,
+			A.UPDATED_AT updatedAt,
+			A.UPDATED_BY updatedBy,
+			B.USER_CD regUserCd,
+			B.USER_NM regUserNm,
+			A.ORG_TYPE orgType,
+			CONVERT(CHAR(10), A.UPDATED_AT, 23) regDt
+		FROM TB_ERP_NOTICE000 A
+		INNER JOIN TB_ERP_USER000 B
+	 	ON A.UPDATED_BY = B.USER_CD
+		WHERE 1=1
+		ORDER BY regDt DESC
+	</select>
+
+	<select id="getNoticeListTypeAll2" resultType="apiNoticeManageVO" parameterType="hashMap" statementType="PREPARED">
+        SELECT
+        	SOD.*,
+			ROW_NUMBER() OVER ( ORDER BY SOD.orgType ASC)  AS RowNum
+        FROM
+		(
+			SELECT
+				A.NOTICE_CD noticeCd,
+				A.AREA_CD   areaCd,
+				(SELECT	Z.AREA_NM FROM TB_ERP_AREA000 Z WHERE Z.AREA_CD = A.AREA_CD) areaNm,
+				A.ORG_CD orgCd,
+				(SELECT Z.ORG_NM FROM TB_ERP_AREA100 Z WHERE Z.ORG_CD = A.ORG_CD) orgNm,
+				A.NOTICE_TITLE noticeTitle,
+				A.NOTICE_CONTENTS noticeContents,
+				A.CREATED_AT createdAt,
+				A.CREATED_BY createdBy,
+				A.UPDATED_AT updatedAt,
+				A.UPDATED_BY updatedBy,
+				B.USER_CD regUserCd,
+				B.USER_NM regUserNm,
+				A.ORG_TYPE orgType,
+				CONVERT(CHAR(10), A.UPDATED_AT, 23) regDt,
+				A.UPDATED_AT
+			FROM TB_ERP_NOTICE000 A
+			INNER JOIN TB_ERP_USER000 B
+			ON A.UPDATED_BY = B.USER_CD
+			WHERE 1=1
+			AND A.ORG_TYPE = '1'
+
+			UNION ALL
+
+			SELECT
+				A.NOTICE_CD noticeCd,
+				A.AREA_CD   areaCd,
+				( SELECT Z.AREA_NM FROM TB_ERP_AREA000 Z WHERE Z.AREA_CD = A.AREA_CD ) areaNm,
+				A.ORG_CD orgCd,
+				( SELECT Z.ORG_NM FROM TB_ERP_AREA100 Z WHERE Z.ORG_CD = A.ORG_CD ) orgNm,
+				A.NOTICE_TITLE noticeTitle,
+				A.NOTICE_CONTENTS noticeContents,
+				A.CREATED_AT createdAt,
+				A.CREATED_BY createdBy,
+				A.UPDATED_AT updatedAt,
+				A.UPDATED_BY updatedBy,
+				B.USER_CD regUserCd,
+				B.USER_NM regUserNm,
+				A.ORG_TYPE orgType,
+				CONVERT(CHAR(10), A.UPDATED_AT, 23) regDt,
+			   A.UPDATED_AT
+			FROM TB_ERP_NOTICE000 A
+			INNER JOIN TB_ERP_USER000 B
+			ON A.UPDATED_BY = B.USER_CD
+			WHERE 1=1
+			<if test="map.orgCd != null and map.orgCd != ''">
+				AND A.ORG_CD IN (SELECT ORG_CD from DBO.FN_ORGCD(#{map.orgCd}))
+			</if>
+			<if test="map.orgType != null and map.orgType != ''">
+				AND A.ORG_TYPE = #{map.orgType}
+			</if>
+		 ) SOD
+		ORDER BY SOD.orgType ASC
+		OFFSET #{map.startNumber} ROWS FETCH NEXT #{map.rowsPerPage} ROWS ONLY
+	</select>
+
+	<select id="getNoticeListCountTypeAll2" resultType="java.lang.Integer" parameterType="hashMap" statementType="PREPARED">
+		SELECT count(SOD.noticeCd)
+		FROM
+		(
+			SELECT A.NOTICE_CD noticeCd
+			FROM TB_ERP_NOTICE000 A
+			INNER JOIN TB_ERP_USER000 B
+			ON A.UPDATED_BY = B.USER_CD
+			WHERE 1 =1
+			AND A.ORG_TYPE = '1'
+
+			UNION ALL
+
+			SELECT A.NOTICE_CD noticeCd
+			FROM TB_ERP_NOTICE000 A
+			INNER JOIN TB_ERP_USER000 B
+			ON A.UPDATED_BY = B.USER_CD
+			WHERE 1 =1
+			<if test="map.orgCd != null and map.orgCd != ''">
+				AND A.ORG_CD IN (SELECT ORG_CD from DBO.FN_ORGCD(#{map.orgCd}))
+			</if>
+			<if test="map.orgType != null and map.orgType != ''">
+				AND A.ORG_TYPE = #{map.orgType}
+			</if>
+		) SOD
 	</select>
 </mapper>

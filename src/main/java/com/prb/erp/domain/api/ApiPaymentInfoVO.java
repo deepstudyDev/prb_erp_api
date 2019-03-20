@@ -19,6 +19,8 @@ public class ApiPaymentInfoVO {
 
     private String subjectNm;
 
+    private String salesTypeNm;
+
     private String visitEndDt;
 
     private String homeAddress1;

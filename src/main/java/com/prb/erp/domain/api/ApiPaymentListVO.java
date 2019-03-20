@@ -36,4 +36,6 @@ public class ApiPaymentListVO {
     private String custLoginId;
 
     private String childLoginId;
+
+    private String regDt;
 }

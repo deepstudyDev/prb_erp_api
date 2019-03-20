@@ -7,7 +7,7 @@ public class ApkVersionVO {
 
     private Integer idx;
 
-    private String packageName = "com.ideepstudy.stu.realease";
+    private String packageName;
 
     private String apkVersion;
 
@@ -22,4 +22,9 @@ public class ApkVersionVO {
     private String createDate;
 
     private Integer rowNum;
+
+    private Integer appVersionCode;
+
+    private String appType;
+
 }

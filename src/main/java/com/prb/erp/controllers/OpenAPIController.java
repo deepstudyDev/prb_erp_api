@@ -539,13 +539,14 @@ public class OpenAPIController extends BaseController {
 	@ApiOperation("공지목록(전체/상담/방문 구분)")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "orgType", value = "조직구분(1:전체, 12:상담사원, 14:방문사원)", dataType = "int", paramType = "query", required = true),
-			@ApiImplicitParam(name = "orgCd", value = "조직코드(전체는 orgCd 값이 없습니다)", dataType = "String", paramType = "query", required = true),
+			@ApiImplicitParam(name = "orgCd", value = "조직코드(전체는 orgCd 값이 없습니다)", dataType = "String", paramType = "query", required = false),
 			@ApiImplicitParam(name = "rowsPerPage", value = "한페이지당 검색건수", dataType = "int", paramType = "query", required = false),
 			@ApiImplicitParam(name = "pageNumber", value = "현재페이지 번호", dataType = "int", paramType = "query", required = false)
 	})
 	public ApiResultObjectPagingVO getNoticeListByType(RequestParams vo) {
 		UserLogUtil.saveUserLog("OpenAPIController","getNoticeListByType","GET");
-		return apiService.getNewNoticeList(vo);
+		//return apiService.getNewNoticeList(vo);
+		return apiService.getNewNoticeList2(vo);
 	}
 
     //오늘의알림
@@ -964,5 +965,17 @@ public class OpenAPIController extends BaseController {
 		return apiService.getPaymentInfo(vo);
 	}
 
+	//프뢰벨 요청 으로 개발
+	@RequestMapping(value = "/api/v4/edu/saveFroebelLoginInfo",method = RequestMethod.POST, produces = APPLICATION_JSON)
+	public void saveFroebelLoginInfo(RequestParams<ApiFroebelLoginInfoVO>vo) throws Exception {
+		apiService.saveFroebelLoginInfo(vo);
+	}
+
+	@RequestMapping(value = "/api/v4/edu/getCurrentTwoNoticeList",method = RequestMethod.GET, produces = APPLICATION_JSON)
+	@ApiOperation("공지목록 최신2개")
+	public ApiResultObjectPagingVO getCurrentTwoNoticeList() {
+		//UserLogUtil.saveUserLog("OpenAPIController","getNoticeList","GET");
+		return apiService.getCurrentTwoNoticeList();
+	}
 
 }
